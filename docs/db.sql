@@ -1,4 +1,4 @@
--- MySQL Workbench Forward Engineering
+-- MySQL Workbench Forward Engineerin-- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -97,7 +97,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `Order_Status` ;
 
 CREATE TABLE IF NOT EXISTS `Order_Status` (
-  `id` VARCHAR(12) NOT NULL,
+  `id` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -108,13 +108,13 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `Order` ;
 
 CREATE TABLE IF NOT EXISTS `Order` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `total` DOUBLE(7,2) NOT NULL DEFAULT '1',
   `is_special` TINYINT NOT NULL DEFAULT 0,
   `phone` VARCHAR(10) NOT NULL,
   `name` VARCHAR(45) NULL,
-  `anotations` VARCHAR(250) NULL,
-  `Order_Status_id` VARCHAR(12) NOT NULL DEFAULT 'REGISTRADO',
+  `date` DATE NOT NULL DEFAULT CURDATE(),
+  `Order_Status_id` VARCHAR(20) NOT NULL DEFAULT 'REGISTRADO',
   PRIMARY KEY (`id`),
   INDEX `fk_Orders_Order_Status1_idx` (`Order_Status_id` ASC) VISIBLE,
   CONSTRAINT `fk_Orders_Order_Status1`
@@ -206,19 +206,38 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `Extra`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Extra` ;
+
+CREATE TABLE IF NOT EXISTS `Extra` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `detail` VARCHAR(100) NOT NULL,
+  `price` DOUBLE(7,2) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `Bill_Detail`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `Bill_Detail` ;
 
 CREATE TABLE IF NOT EXISTS `Bill_Detail` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `unitary_price` DOUBLE(7,2) NOT NULL,
+  `cuantity` TINYINT(2) NOT NULL DEFAULT 1,
   `Bill_id` INT NOT NULL,
   `Inventory_Pledge_id` INT NOT NULL,
   `Inventory_Size_id` VARCHAR(4) NOT NULL,
-  `unitary_price` DOUBLE(7,2) NOT NULL,
-  `cuantity` TINYINT(2) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`),
+  `Extra_id` INT NULL,
+  PRIMARY KEY (`id`),
   INDEX `fk_Bill_has_Inventory_Inventory1_idx` (`Inventory_Pledge_id` ASC, `Inventory_Size_id` ASC) VISIBLE,
   INDEX `fk_Bill_has_Inventory_Bill1_idx` (`Bill_id` ASC) VISIBLE,
+  UNIQUE INDEX `Bill_id_UNIQUE` (`Bill_id` ASC) VISIBLE,
+  UNIQUE INDEX `Inventory_Pledge_id_UNIQUE` (`Inventory_Pledge_id` ASC) VISIBLE,
+  UNIQUE INDEX `Inventory_Size_id_UNIQUE` (`Inventory_Size_id` ASC) VISIBLE,
+  INDEX `fk_Bill_Detail_Extra1_idx` (`Extra_id` ASC) VISIBLE,
   CONSTRAINT `fk_Bill_has_Inventory_Bill1`
     FOREIGN KEY (`Bill_id`)
     REFERENCES `Bill` (`id`)
@@ -227,6 +246,11 @@ CREATE TABLE IF NOT EXISTS `Bill_Detail` (
   CONSTRAINT `fk_Bill_has_Inventory_Inventory1`
     FOREIGN KEY (`Inventory_Pledge_id` , `Inventory_Size_id`)
     REFERENCES `Inventory` (`Pledge_id` , `Size_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Bill_Detail_Extra1`
+    FOREIGN KEY (`Extra_id`)
+    REFERENCES `Extra` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -238,18 +262,18 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `Order_Detail` ;
 
 CREATE TABLE IF NOT EXISTS `Order_Detail` (
-  `id` INT NOT NULL,
+  `Order_id` INT NOT NULL,
   `Inventory_Pledge_id` INT NOT NULL,
   `Inventory_Size_id` VARCHAR(4) NOT NULL,
   `cuantity` TINYINT NOT NULL DEFAULT 1,
   `anotation` VARCHAR(100) NULL,
-  `Order_Status_id` VARCHAR(12) NOT NULL,
-  PRIMARY KEY (`id`, `Inventory_Pledge_id`, `Inventory_Size_id`),
+  `Order_Status_id` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`Order_id`, `Inventory_Pledge_id`, `Inventory_Size_id`),
   INDEX `fk_Order_has_Inventory_Inventory1_idx` (`Inventory_Pledge_id` ASC, `Inventory_Size_id` ASC) VISIBLE,
-  INDEX `fk_Order_has_Inventory_Order1_idx` (`id` ASC) VISIBLE,
+  INDEX `fk_Order_has_Inventory_Order1_idx` (`Order_id` ASC) VISIBLE,
   INDEX `fk_Order_Detail_Order_Status1_idx` (`Order_Status_id` ASC) VISIBLE,
   CONSTRAINT `fk_Order_has_Inventory_Order1`
-    FOREIGN KEY (`id`)
+    FOREIGN KEY (`Order_id`)
     REFERENCES `Order` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
@@ -270,6 +294,7 @@ USE `novedades` ;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
 
 -- WORKERS
@@ -293,6 +318,56 @@ INSERT INTO `Inventory` (`Pledge_id`, `Size_id`, `price`) VALUES (4, '6', 300), 
 -- BUILDINGS
 INSERT INTO `novedades`.`Building` (`name`, `direction`) VALUES ('Novedades Mercado San Pedro', '5a Calle 10-64 Zona 1 SP SM');
 INSERT INTO `novedades`.`Building` (`name`) VALUES ('Almacen Cruz Blanca');
+-- AVAILABILITY
+-- Stock for Novedades Mercado San Pedro (Building_id = 1)
+INSERT INTO `Stock` (`Building_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `stock`) VALUES
+  -- Set stock for CHUMPA DE DIARIO ADVANCE
+  (1, 1, '6', FLOOR(RAND() * 21)), (1, 1, '8', FLOOR(RAND() * 21)), (1, 1, '10', FLOOR(RAND() * 21)), (1, 1, '12', FLOOR(RAND() * 21)), (1, 1, '14', FLOOR(RAND() * 21)), 
+  (1, 1, '16', FLOOR(RAND() * 21)), (1, 1, 'XS', FLOOR(RAND() * 21)), (1, 1, 'S', FLOOR(RAND() * 21)), (1, 1, 'M', FLOOR(RAND() * 21)), (1, 1, 'L', FLOOR(RAND() * 21)), 
+  (1, 1, 'XL', FLOOR(RAND() * 21)),(1, 1, 'XXL', FLOOR(RAND() * 21)),
+  -- Set stock for CAMISA POLO ADVANCE
+  (1, 2, '6', FLOOR(RAND() * 21)), (1, 2, '8', FLOOR(RAND() * 21)), (1, 2, '10', FLOOR(RAND() * 21)), (1, 2, '12', FLOOR(RAND() * 21)), (1, 2, '14', FLOOR(RAND() * 21)), (1, 2, '16', FLOOR(RAND() * 21)), (1, 2, 'XS', FLOOR(RAND() * 21)), (1, 2, 'S', FLOOR(RAND() * 21)),
+  (1, 2, 'M', FLOOR(RAND() * 21)), (1, 2, 'L', FLOOR(RAND() * 21)), (1, 2, 'XL', FLOOR(RAND() * 21)), (1, 2, 'XXL', FLOOR(RAND() * 21)), 
+  -- Set stock for PLAYERA FISICA ADVANCE
+  (1, 3, '6', FLOOR(RAND() * 21)), (1, 3, '8', FLOOR(RAND() * 21)), (1, 3, '10', FLOOR(RAND() * 21)), (1, 3, '12', FLOOR(RAND() * 21)), (1, 3, '14', FLOOR(RAND() * 21)), (1, 3, '16', FLOOR(RAND() * 21)), (1, 3, 'XS', FLOOR(RAND() * 21)),
+  (1, 3, 'S', FLOOR(RAND() * 21)), (1, 3, 'M', FLOOR(RAND() * 21)), (1, 3, 'L', FLOOR(RAND() * 21)), (1, 3, 'XL', FLOOR(RAND() * 21)), (1, 3, 'XXL', FLOOR(RAND() * 21)),
+  -- Set stock for PANTS FISICA ADVANCE
+  (1, 4, '6', FLOOR(RAND() * 21)), (1, 4, '8', FLOOR(RAND() * 21)), (1, 4, '10', FLOOR(RAND() * 21)), (1, 4, '12', FLOOR(RAND() * 21)), (1, 4, '14', FLOOR(RAND() * 21)), (1, 4, '16', FLOOR(RAND() * 21)), (1, 4, 'XS', FLOOR(RAND() * 21)),
+  (1, 4, 'S', FLOOR(RAND() * 21)), (1, 4, 'M', FLOOR(RAND() * 21)), (1, 4, 'L', FLOOR(RAND() * 21)), (1, 4, 'XL', FLOOR(RAND() * 21)), (1, 4, 'XXL', FLOOR(RAND() * 21));
+
+-- Stock for Almacen Cruz Blanca (Building_id = 2)
+INSERT INTO `Stock` (`Building_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `stock`) VALUES
+  -- Set stock for CHUMPA DE DIARIO ADVANCE
+  (2, 1, '6', FLOOR(RAND() * 21)), (2, 1, '8', FLOOR(RAND() * 21)), (2, 1, '10', FLOOR(RAND() * 21)), (2, 1, '12', FLOOR(RAND() * 21)), (2, 1, '14', FLOOR(RAND() * 21)), (2, 1, '16', FLOOR(RAND() * 21)),
+  (2, 1, 'XS', FLOOR(RAND() * 21)), (2, 1, 'S', FLOOR(RAND() * 21)), (2, 1, 'M', FLOOR(RAND() * 21)), (2, 1, 'L', FLOOR(RAND() * 21)), (2, 1, 'XL', FLOOR(RAND() * 21)), (2, 1, 'XXL', FLOOR(RAND() * 21)),
+  -- Set stock for CAMISA POLO ADVANCE
+  (2, 2, '6', FLOOR(RAND() * 21)), (2, 2, '8', FLOOR(RAND() * 21)), (2, 2, '10', FLOOR(RAND() * 21)), (2, 2, '12', FLOOR(RAND() * 21)), (2, 2, '14', FLOOR(RAND() * 21)), (2, 2, '16', FLOOR(RAND() * 21)),
+  (2, 2, 'XS', FLOOR(RAND() * 21)), (2, 2, 'S', FLOOR(RAND() * 21)), (2, 2, 'M', FLOOR(RAND() * 21)), (2, 2, 'L', FLOOR(RAND() * 21)), (2, 2, 'XL', FLOOR(RAND() * 21)), (2, 2, 'XXL', FLOOR(RAND() * 21)),
+  -- Set stock for PLAYERA FISICA ADVANCE
+  (2, 3, '6', FLOOR(RAND() * 21)), (2, 3, '8', FLOOR(RAND() * 21)), (2, 3, '10', FLOOR(RAND() * 21)), (2, 3, '12', FLOOR(RAND() * 21)), (2, 3, '14', FLOOR(RAND() * 21)), (2, 3, '16', FLOOR(RAND() * 21)), (2, 3, 'XS', FLOOR(RAND() * 21)),
+  (2, 3, 'S', FLOOR(RAND() * 21)), (2, 3, 'M', FLOOR(RAND() * 21)),  (2, 3, 'L', FLOOR(RAND() * 21)), (2, 3, 'XL', FLOOR(RAND() * 21)), (2, 3, 'XXL', FLOOR(RAND() * 21)),  
+  -- Set stock for PANTS FISICA ADVANCE
+  (2, 4, '6', FLOOR(RAND() * 21)), (2, 4, '8', FLOOR(RAND() * 21)), (2, 4, '10', FLOOR(RAND() * 21)), (2, 4, '12', FLOOR(RAND() * 21)), (2, 4, '14', FLOOR(RAND() * 21)), (2, 4, '16', FLOOR(RAND() * 21)), (2, 4, 'XS', FLOOR(RAND() * 21)),
+  (2, 4, 'S', FLOOR(RAND() * 21)), (2, 4, 'M', FLOOR(RAND() * 21)), (2, 4, 'L', FLOOR(RAND() * 21)), (2, 4, 'XL', FLOOR(RAND() * 21)), (2, 4, 'XXL', FLOOR(RAND() * 21));
+
+-- ORDERS
+INSERT INTO `Order_Status` (`id`) VALUES ('ENLISTED'), ('WAREHOUSE'),('DELIVERED'),('PARTIALLY DELIVERED'),('CANCELED');
+-- ORDER FOR 3 CAMISA POLO ADVANCE 8 (240) + EMBROIDERY ON EXTRAS (20) 
+INSERT INTO `Order` (`total`, `is_special`, `phone`, `name`, `Order_Status_id`, `date`) VALUES (260, TRUE, CONCAT('', FLOOR(10000000 + RAND() * (99999999 - 10000000 + 1))), 'Chismosin', 'DELIVERED', CURDATE() - INTERVAL 1 WEEK);
+INSERT INTO `Order_Detail` (`Order_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `cuantity`, `Order_Status_id`, `anotation`) VALUES ('1', '2', '8', '3', 'DELIVERED', 'Bordar el nombre Fino Filipino');
+
+
+
+-- BILLS / RECEIPES
+-- 1 CHUMPA DE DIARIO ADVANCE 10 (180) + 2 CAMISA POLO ADVANCE 12 (100)
+INSERT INTO `Bill` (`total`, `date`, `Worker_id`) VALUES (380.00, CURDATE(), 'SELLS1');
+-- 1 PANTS FISICA ADVANCE XL (400) 
+INSERT INTO `Bill` (`name`, `NIT`, `total`, `date`, `Worker_id`) VALUES ('Pochoclo', CONCAT('', FLOOR(10000000 + RAND() * (99999999 - 10000000 + 1))), 400.00, DATE('2022-01-01') + INTERVAL FLOOR(RAND() * (DATEDIFF('2023-12-31', '2022-01-01') + 1)) DAY, 'SELLS1');
+-- 1 Order FOR ORDER 1 (300)
+INSERT INTO `Bill` (`name`, `NIT`, `total`, `date`, `Worker_id`, `Order_id`) VALUES ('Pochoclo', CONCAT('', FLOOR(10000000 + RAND() * (99999999 - 10000000 + 1))), 260, CURDATE(), 'SELLS1', 1);
+-- NOTE: may i switch FK for 1:1 at Extra and Order Detail?
+INSERT INTO `Extra` (`detail`, `price`) VALUES ('Bordar el nombre Juanito Perez', '20');
+INSERT INTO `novedades`.`Bill_Detail` (`unitary_price`, `cuantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `Extra_id`) VALUES ('80', '3', '3', '2', '8', '1');
 
 -- DROP USER IF EXISTS 'novedades-client'@'%';
 -- CREATE USER 'novedades-client'@'%' IDENTIFIED BY 'GehYwLt7Yvn99I4';
