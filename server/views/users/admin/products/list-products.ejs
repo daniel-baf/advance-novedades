@@ -1,0 +1,101 @@
+<!-- products.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy6gD0Om/um5OBAePjM5XP0cy7w2zqLOZ" crossorigin="anonymous">
+    <title>Admin View</title>
+    <!-- Include Bootstrap CSS from CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Products Details</title>
+</head>
+
+<body>
+
+    <div class="container mt-5">
+
+        <% data.stockable_pile.forEach((product)=> { %>
+
+            <!-- Display Product Name -->
+            <div class="jumbotron">
+                <h3 class="display-4"><%- product.name %></h3>
+                <!-- Button to Toggle Building Details -->
+                <button class="btn btn-primary" onclick="toggleBuildings('<%- product.name %>')"
+                    id="toggleButton<%- product.name %>">
+                    Expandir
+                </button>
+            </div>
+
+            <!-- Container for Buildings -->
+            <div id="<%- product.name %>Buildings" class="row" style="display: none;">
+
+                <div class="card-group">
+
+                    <!-- Display Buildings -->
+                    <% product.locations.forEach((location, index)=> { %>
+                        <div class="col-md-6 mb-4">
+                            <!-- Each building takes up 6 columns on medium-sized screens and larger -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><%- location.name %></h5>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Display Sizes and Stock for each Building -->
+                                    <!-- Apply custom style if stock is lower than 5 -->
+                                    <% location.availability.forEach((item)=> { %>
+                                        <p class="card-text" style="<%- item.stock < 5 ? 'color: red;' : '' %>">Talla:
+                                            <%- item.size %>, Disponibilidad: <%- item.stock %>
+                                        </p>
+                                        <% }); %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Start a new row after every 2 columns -->
+                        <% if ((index + 1) % 2===0) { %>
+                </div>
+            </div>
+            <div class="row">
+                <% } %>
+                    <% }); %>
+            </div>
+
+
+            <% }); %>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <script>
+        function toggleBuildings(productName) {
+            var buildingsContainer = document.getElementById(productName + 'Buildings');
+            buildingsContainer.style.display = (buildingsContainer.style.display === 'none') ? 'block' : 'none';
+        }
+        function toggleBuildings(productName) {
+            var buildingsContainer = document.getElementById(productName + 'Buildings');
+            var toggleButton = document.getElementById('toggleButton' + productName);
+
+            // Toggle the visibility of the buildings container
+            buildingsContainer.style.display = (buildingsContainer.style.display === 'none') ? 'block' : 'none';
+
+            // Change the text content of the button based on the current visibility state
+            toggleButton.textContent = (buildingsContainer.style.display === 'none') ? 'Expandir' : 'Minimizar';
+        }
+    </script>
+
+</body>
+
+</html>
