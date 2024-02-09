@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `Worker` (
     FOREIGN KEY (`Worker_Area_id`)
     REFERENCES `Worker_Area` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -62,7 +62,7 @@ DROP TABLE IF EXISTS `Building` ;
 
 CREATE TABLE IF NOT EXISTS `Building` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(45) NOT NULL UNIQUE,
   `direction` VARCHAR(85) NOT NULL DEFAULT 'city',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `Order` (
     FOREIGN KEY (`Order_Status_id`)
     REFERENCES `Order_Status` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -145,12 +145,12 @@ CREATE TABLE IF NOT EXISTS `Bill` (
     FOREIGN KEY (`Order_id`)
     REFERENCES `Order` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Bill_Worker1`
     FOREIGN KEY (`Worker_id`)
     REFERENCES `Worker` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -170,12 +170,12 @@ CREATE TABLE IF NOT EXISTS `Inventory` (
     FOREIGN KEY (`Pledge_id`)
     REFERENCES `Pledge` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Pledge_has_Size_Size1`
     FOREIGN KEY (`Size_id`)
     REFERENCES `Size` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -196,12 +196,12 @@ CREATE TABLE IF NOT EXISTS `Stock` (
     FOREIGN KEY (`Building_id`)
     REFERENCES `Building` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Building_has_Inventory_Inventory1`
     FOREIGN KEY (`Inventory_Pledge_id` , `Inventory_Size_id`)
     REFERENCES `Inventory` (`Pledge_id` , `Size_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -242,17 +242,17 @@ CREATE TABLE IF NOT EXISTS `Bill_Detail` (
     FOREIGN KEY (`Bill_id`)
     REFERENCES `Bill` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Bill_has_Inventory_Inventory1`
     FOREIGN KEY (`Inventory_Pledge_id` , `Inventory_Size_id`)
     REFERENCES `Inventory` (`Pledge_id` , `Size_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Bill_Detail_Extra1`
     FOREIGN KEY (`Extra_id`)
     REFERENCES `Extra` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 
@@ -276,17 +276,17 @@ CREATE TABLE IF NOT EXISTS `Order_Detail` (
     FOREIGN KEY (`Order_id`)
     REFERENCES `Order` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Order_has_Inventory_Inventory1`
     FOREIGN KEY (`Inventory_Pledge_id` , `Inventory_Size_id`)
     REFERENCES `Inventory` (`Pledge_id` , `Size_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Order_Detail_Order_Status1`
     FOREIGN KEY (`Order_Status_id`)
     REFERENCES `Order_Status` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
 USE `novedades` ;

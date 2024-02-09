@@ -6,11 +6,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+Wy6gD0Om/um5OBAePjM5XP0cy7w2zqLOZ" crossorigin="anonymous">
-    <title>Admin View</title>
     <!-- Include Bootstrap CSS from CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/admin/list-products.css">
     <title>Products Details</title>
 </head>
 
@@ -47,9 +45,18 @@
                                     <!-- Display Sizes and Stock for each Building -->
                                     <!-- Apply custom style if stock is lower than 5 -->
                                     <% location.availability.forEach((item)=> { %>
-                                        <p class="card-text" style="<%- item.stock < 5 ? 'color: red;' : '' %>">Talla:
-                                            <%- item.size %>, Disponibilidad: <%- item.stock %>
-                                        </p>
+                                        <div class="row list-editable">
+                                            <div class="col-md-6">
+                                                <p class="card-text <%= item.stock < 5 ? 'low-stock' : '' %>">
+                                                    Talla: <%- item.size %>, Disponibilidad: <%- item.stock %>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6 text-md-right">
+                                                <a name="" id="" class="btn btn-primary"
+                                                    href="/admin/edit-product?building-id=<%=location.id%>&inventory-pledge-id=<%=product.id%>&inventory-size-id=<%=item.size%>"
+                                                    role="button">Editar</a>
+                                            </div>
+                                        </div>
                                         <% }); %>
                                 </div>
                             </div>
@@ -72,29 +79,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
-
-    <script>
-        function toggleBuildings(productName) {
-            var buildingsContainer = document.getElementById(productName + 'Buildings');
-            buildingsContainer.style.display = (buildingsContainer.style.display === 'none') ? 'block' : 'none';
-        }
-        function toggleBuildings(productName) {
-            var buildingsContainer = document.getElementById(productName + 'Buildings');
-            var toggleButton = document.getElementById('toggleButton' + productName);
-
-            // Toggle the visibility of the buildings container
-            buildingsContainer.style.display = (buildingsContainer.style.display === 'none') ? 'block' : 'none';
-
-            // Change the text content of the button based on the current visibility state
-            toggleButton.textContent = (buildingsContainer.style.display === 'none') ? 'Expandir' : 'Minimizar';
-        }
-    </script>
+    <script src="/js/admin/list-products.js"></script>
 
 </body>
 
