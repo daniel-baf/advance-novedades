@@ -30,18 +30,21 @@ router.post("/signin", (req, res) => {
         _query = "SELECT * FROM Worker WHERE id = ? AND password = ?;"
         db_connection.query(_query, [id, password], (_error, _result) => {
             // error handling
-            if (_error || _result.length <= 0) renderLoginPage(req, res, 'Ha ocurrido un error, no hemos podido encontrar tus datos');
-            // valid login
-            _response = { id: _result[0].id, name: _result[0].name, role: _result[0].Worker_Area_id };
-            req.session.user = _response;
-            if (_response.role == 'ADMIN') {
-                return res.redirect(302, '/admin/dashboard');
-            } else if (_response.role == 'SELLS') {
-                return res.redirect(302, '/sells/dashboard');
-            } else if (_response.role == 'PRODUCTION') {
-                return res.redirect(302, '/production/dashboard');
-            } else { // If none of the roles match, render login page with an error message
-                return renderLoginPage(req, res, 'No se reconoce tu usuario');
+            if (_error || (!_result || _result.length == 0)) {
+                renderLoginPage(req, res, 'No hemos podido encontrar tus datos ');
+                return
+            } else {// valid login
+                _response = { id: _result[0].id, name: _result[0].name, role: _result[0].Worker_Area_id };
+                req.session.user = _response;
+                if (_response.role == 'ADMIN') {
+                    return res.redirect(302, '/admin/dashboard');
+                } else if (_response.role == 'SELLS') {
+                    return res.redirect(302, '/sells/dashboard');
+                } else if (_response.role == 'PRODUCTION') {
+                    return res.redirect(302, '/production/dashboard');
+                } else { // If none of the roles match, render login page with an error message
+                    return renderLoginPage(req, res, 'No se reconoce tu usuario');
+                }
             }
         });
     } catch (error) {
