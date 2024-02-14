@@ -401,7 +401,7 @@ INSERT INTO `Bill` (`name`, `NIT`, `total`, `date`, `Worker_id`, `Order_id`) VAL
 INSERT INTO `Extra` (`detail`, `price`) VALUES ('Bordar el nombre Juanito Perez', '20');
 INSERT INTO `novedades`.`Bill_Detail` (`unitary_price`, `cuantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `Extra_id`) VALUES ('80', '3', '3', '2', '8', '1');
 
--- DROP USER IF EXISTS 'novedades-client'@'%';
--- CREATE USER 'novedades-client'@'%' IDENTIFIED BY 'GehYwLt7Yvn99I4';
--- GRANT ALL PRIVILEGES ON `novedades`.* TO 'novedades-client'@'%';
--- FLUSH PRIVILEGES;
+DROP USER IF EXISTS 'novedades-client'@'%';
+CREATE USER 'novedades-client'@'%' IDENTIFIED BY 'GehYwLt7Yvn99I4';
+GRANT ALL PRIVILEGES ON `novedades`.* TO 'novedades-client'@'%';
+FLUSH PRIVILEGES;

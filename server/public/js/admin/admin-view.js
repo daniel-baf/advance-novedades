@@ -8,7 +8,7 @@ $(document).ready(function () {
 
     $('.close').click(function() {
         $(this).closest('.alert').alert('close');
-      });
+    });
 
 
     // function to handle modals asyncronously

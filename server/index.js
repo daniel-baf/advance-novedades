@@ -4,6 +4,9 @@ const session = require('express-session')
 const path = require('path')
 const morgan = require('morgan')
 var cors = require('cors');
+// inection
+// const sqlstring = require('sqlstring');
+
 // router
 
 const app = express();          // app uses express
@@ -34,6 +37,9 @@ const mockSessionMiddleware = (req, res, next) => {
     };
     next();
 };
+
+// SQL INJECTION MIDDLEWARE
+// TODO HANDLE SQLINJECTION
 
 // Apply the mock session middleware to your Express app
 app.use(mockSessionMiddleware);

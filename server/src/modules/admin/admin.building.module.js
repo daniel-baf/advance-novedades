@@ -1,7 +1,7 @@
 const path = require('path')
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 const { getBuildings } = require(path.join(__dirname, "./admin.products.module"));
-const { BUILDING_INSERT_QUERY, BUILDING_UPDATE_QUERY, BUILDING_SEARCH_ID_QUERY } = require('../../config/consts');
+const { BUILDING_INSERT_QUERY, BUILDING_UPDATE_QUERY, BUILDING_SEARCH_ID_QUERY, BUILDING_DELETE_QUERY } = require('../../config/consts');
 
 
 
@@ -15,7 +15,7 @@ async function insertBuilding(building_name, building_direction) {
     try {
         // Check valid inputs
         if (building_name === '' || building_direction === '') {
-            return [false, 'Invalid inputs'];
+            return [false, 'Valores ingresados invalidos'];
         }
 
         // Perform the insert query
@@ -40,11 +40,11 @@ async function searchBuilding(building_id) {
     // use promisses to send the result
     try {
         const result = await new Promise((resolve, reject) => {
-            db_connection.query(BUILDING_SEARCH_ID_QUERY, [building_id], (error, result) => {
+            db_connection.query(BUILDING_SEARCH_ID_QUERY, [building_id], (error, _result) => {
                 if (error) {
                     reject("No se ha podido encontrar el edificio con id " + building_id + " ERROR " + error);
                 } else {
-                    resolve(result);
+                    resolve(_result);
                 }
             });
         });
@@ -55,14 +55,19 @@ async function searchBuilding(building_id) {
 }
 
 
+// update a building into the DB
 async function updateBuilding(building_id, building_name, building_direction) {
     try {
+        if (typeof (building_id) == 'undefined' || typeof (building_name) == undefined || typeof (building_id) == 'undefined') {
+            return [false, "Atributo/os no valido/os"]
+        }
+
         const result = await new Promise((resolve, reject) => {
             db_connection.query(BUILDING_UPDATE_QUERY, [building_name, building_direction, building_id], (_error, _result) => {
                 if (_error) {
                     reject("No se ha podido editar el edificio: " + _error)
                 } else {
-                    resolve(result)
+                    resolve(_result)
                 }
             });
         });
@@ -72,4 +77,26 @@ async function updateBuilding(building_id, building_name, building_direction) {
     }
 }
 
-module.exports = { listBuildings, insertBuilding, updateBuilding, searchBuilding }
+// DELETE a building from DB
+async function deleteBuilding(building_id) {
+    try {
+        if (typeof (building_id) == 'undefined') {
+            return [false, "No se reconoce el id"]
+        }
+        // fetch result
+        const result = await new Promise((resolve, reject) => {
+            db_connection.query(BUILDING_DELETE_QUERY, [building_id], (_error, _result) => {
+                if (_error) {
+                    reject("No se pudo borrar el edificio seleccionado, este edificio es usado en otras consultas")
+                } else {
+                    resolve(_result)
+                }
+            })
+        })
+        return [true, {message: "Se ha borrado el edificio con id " +  building_id, col_modified: result}]
+    } catch (error) {
+        return [false, "No se pudo borrar el dificio " + error]
+    }
+}
+
+module.exports = { listBuildings, insertBuilding, updateBuilding, searchBuilding, deleteBuilding }

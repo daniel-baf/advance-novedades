@@ -21,12 +21,19 @@
         <p>Recuerda que el edificio puede ser el punto de venta o la misma fabrica, el campo ID no puede ser editado, el
             nombre debe ser unico</p>
 
+        <div>
+            <%- include("../../../partials/messages.ejs") %>
+        </div>
+
         <form action="/admin/update-building" method="POST">
             <div class="form-group">
                 <label for="building_id">Id</label>
-                <input type="text" class="form-control" name="building_id" id="building_id"
-                    aria-describedby="building_id" placeholder='ID del edificio' disabled value="<%=building.id%>">
-                <small id="building_id class=" form-text text-muted">ID del edificio, no se debe editar</small>
+                <!-- Hidden input field to store building_id -->
+                <input type="hidden" name="building_id" value="<%=building.id%>">
+                <!-- Visible input field for display purposes only -->
+                <input type="text" class="form-control" id="building_id_test" aria-describedby="building_id_test"
+                    placeholder='ID del edificio' disabled value="<%=building.id%>">
+                <small id="building_id_test" class="form-text text-muted">ID del edificio, no se debe editar</small>
             </div>
             <div class="form-group">
                 <label for="building_name">Nombre</label>
@@ -43,7 +50,7 @@
             </div>
             <button type="submit" class="btn btn-primary">Actualizar</button>
             <a name="delete-building" id="delete-building" class="btn btn-danger"
-                href="/admin/remove-building/<%=building.id%>" role="button">Borrar</a>
+                href="/admin/delete-building/<%=building.id%>" role="button">Borrar</a>
         </form>
     </div>
 
