@@ -5,7 +5,6 @@ const path = require('path');
 // routes
 adminBuildingRouter = require(path.join(__dirname, 'admin/', 'admin.buildings.routes'));
 
-
 // buildings paths
 router.use(adminBuildingRouter.router);
 // products paths

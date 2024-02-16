@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin View</title>
+    <!-- Include Bootstrap CSS from CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Add your additional CSS styles here if needed -->
+    <link rel="stylesheet" href="/css/admin/list-inventory.css">
+</head>
+
+<nav>
+    <%- include("../../../partials/nav.ejs")%>
+</nav>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div>
+                <%- include("../../../partials/admin-aside") %>
+            </div>
+            <!-- Main content area -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div>
+                    <%- include("../../../partials/messages.ejs", {message: message, error_message: error_message})%>
+                </div>
+                <div>
+                    <h1>Inventario por tallas</h1>
+                    <p>Aca puedes eliminar, editar y ver todos los productos que tienes y por tallas. Puedes borrarlos,
+                        pero solamente si es algo que nunca se haya vendido, de lo contario, el
+                        registro sera permanente</p>
+                    <!-- DISPLAY VALUES FROM DB DYNAMICALLY -->
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="center-text id-column">ID P.</th>
+                                <th class="center-text name-column">NOMBRE PRENDA</th>
+                                <th class="center-text size-column">TALLA</th>
+                                <th class="center-text price-column">PRECIO</th>
+                                <th class="center-text actions-column">ACCIONES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% data.forEach(_product=> { %>
+                                <tr>
+                                    <td class="center-text">
+                                        <%= _product.Pledge_id %>
+                                    </td>
+                                    <td>
+                                        <%= _product.name %>
+                                    </td>
+                                    <td class="center-text">
+                                        <%= _product.Size_id %>
+                                    </td>
+                                    <td class="center-text">
+                                        <%= _product.price %>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons row mx-2">
+                                            <a name="link-edit-inventory" id="link-edit-inventory"
+                                                class="btn btn-warning edit-btn col mx-1"
+                                                href="/admin/list-inventory/edit/<%=_product.Pledge_id%>/<%=_product.Size_id%>/<%=_product.price%>"
+                                                role="button">Editar</a>
+                                            <a name="link-delete-inventory" id="link-delete-inventory"
+                                                class="btn btn-danger delete-btn col mx-1"
+                                                href="/admin/list-inventory/edit/<%=_product.Pledge_id%>/<%=_product.Size_id%>"
+                                                role="button">Borrar</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                    <!-- Add more rows as needed -->
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+<footer>
+    <%- include("../../../partials/footer.ejs")%>
+</footer>
+
+</html>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Your custom JavaScript to handle panel visibility -->
+<script src="/js/admin/admin-view.js"></script>

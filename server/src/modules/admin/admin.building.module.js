@@ -93,7 +93,7 @@ async function deleteBuilding(building_id) {
                 }
             })
         })
-        return [true, {message: "Se ha borrado el edificio con id " +  building_id, col_modified: result}]
+        return [true, { message: "Se ha borrado el edificio con id " + building_id, col_modified: result }]
     } catch (error) {
         return [false, "No se pudo borrar el dificio " + error]
     }
