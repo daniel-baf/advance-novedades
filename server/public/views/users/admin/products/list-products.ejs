@@ -25,6 +25,12 @@
             </div>
             <!-- Main content area -->
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <h1>Productos por existencia y edificio</h1>
+                <div>
+                    <%- include("../../../partials/messages.ejs")%>
+                </div>
+
+
                 <div class="container mt-5">
 
                     <% data.stockable_pile.forEach((product)=> { %>
@@ -65,8 +71,8 @@
                                                             </p>
                                                         </div>
                                                         <div class="col-md-6 text-md-right">
-                                                            <a name="" id="" class="btn btn-primary"
-                                                                href="/admin/edit-product?building-id=<%=location.id%>&inventory-pledge-id=<%=product.id%>&inventory-size-id=<%=item.size%>"
+                                                            <a name="" id="" class="btn btn-primary edit-link-ref"
+                                                                href="/admin/load-products/edit-product/<%=location.id%>/<%=product.id%>/<%=item.size%>"
                                                                 role="button">Editar</a>
                                                         </div>
                                                     </div>
@@ -89,6 +95,58 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edicion de stock</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/load-products/update-product" method="POST">
+                        <div class="form-group">
+                            <!-- hidden inputs for ID to send at backend -->
+                            <input type="text" class="form-control" name="building_id" id="building_id"
+                                aria-describedby="building_id" placeholder="building Id" hidden>
+                            <input type="text" class="form-control" name="pledge_id" id="pledge_id"
+                                aria-describedby="pledge_id" placeholder="pledge_id" hidden>
+                            <input type="text" class="form-control" name="size_id" id="size_id"
+                                aria-describedby="size_id" placeholder="size_id" hidden>
+                            <!-- non editable values -->
+                            <div class="form-group">
+                                <label for="pledge_name">Prenda</label>
+                                <input type="text" class="form-control" name="pledge_name" id="pledge_name"
+                                    aria-describedby="pledge_name_s" placeholder="Nombre Prenda" disabled>
+                                <small id="pledge_name_s" class="form-text text-muted">El nombre de la prenda</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="building_name">Nombre del edificio</label>
+                                <input type="text" class="form-control" name="building_name" id="building_name"
+                                    aria-describedby="building_name" placeholder="Nombre edificio" disabled>
+                                <small id="building_name" class="form-text text-muted">Nombre del edificio</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="stock">Existencia</label>
+                                <input type="text" class="form-control" name="stock" id="stock"
+                                    aria-describedby="stock_small" placeholder="Existencia">
+                                <small id="stock_small" class="form-text text-muted">No. de prendas que hay en el
+                                    edificio</small>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Guardar</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <p>Recuerda que solo puedes editar las existencias</p>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 <footer>
@@ -101,4 +159,6 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/js/admin/list-products.js"></script>

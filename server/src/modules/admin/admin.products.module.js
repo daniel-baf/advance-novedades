@@ -1,5 +1,5 @@
 const path = require('path');
-const { STOCK_SELECT_QUERY, PLEDGE_SELECT_QUERY, BUILDING_SELECT_EXCLUDE_DIR, SIZE_SELECT_ALL_QUERY } = require('../../config/consts');
+const { STOCK_SELECT_QUERY, PLEDGE_SELECT_QUERY, BUILDING_SELECT_EXCLUDE_DIR, SIZE_SELECT_ALL_QUERY, STOCK_SELECT_BY_PK_QUERY, STOCK_UPDATE_QUERY } = require('../../config/consts');
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
 
@@ -88,6 +88,44 @@ async function generateProductsJSON(_buildings, _pledges) {
     }
 }
 
+// find stock by 3PK id on DB
+async function findStockByPK(building_id, pledge_id, size_id) {
+    try {
+        data = await new Promise((resolve, reject) => {
+            db_connection.query(STOCK_SELECT_BY_PK_QUERY, [pledge_id, size_id, building_id], (_error, _result) => {
+                if (_error) {
+                    reject("No se pudo encontrar datos para los datos proporcionados, llaves invalidas. " + _error);
+                } else {
+                    resolve(_result)
+                }
+            });
+        });
+        return { pname: data[0].pname, bname: data[0].bname, stock: data[0].stock }
+    } catch (error) {
+        throw new Error("Cannot get data from DB to stock by PK")
+    }
+}
+
+// update the stock on db
+async function updateStock(building_id, pledge_id, size_id, stock) {
+    try {
+        // check invalid stock
+        if (stock < 0) throw new Error("Stock no puede ser negativo")
+        data = await new Promise((resolve, reject) => {
+            db_connection.query(STOCK_UPDATE_QUERY, [stock, building_id, pledge_id, size_id], (_error, _result) => {
+                if (_error) {
+                    reject("No se pudo actualizar los datos para el stock" + _error);
+                } else {
+                    resolve(_result)
+                }
+            });
+        });
+        return { message: "Se ha actualizado el stock" }
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 // get sizes list FROM DB
 async function getSizes() {
     return new Promise((resolve, reject) => {
@@ -101,4 +139,4 @@ async function getSizes() {
     });
 }
 
-module.exports = { loadProducts, getBuildings, getSizes }
+module.exports = { loadProducts, getBuildings, getSizes, findStockByPK, updateStock }
