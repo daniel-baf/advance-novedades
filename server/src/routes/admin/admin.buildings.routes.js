@@ -67,13 +67,14 @@ router.get("/delete-building/:building_id", async (req, res) => {
 })
 
 // render dashboard for admins
-async function renderDashboard(req, res, message, error_message) {
+async function renderDashboard(req, res, message, error_message, view) {
     try {
+        view = typeof (view) == 'undefined' ? 'products' : view
         // load buildings for subview
         _data = { buildings: [], sizes: [] }
         _data.buildings = await listBuildings();  // get buildings list
-        _data.sizes = 
-        res.render('users/admin/admin-view', { name: req.session.user.id, data: _data, message: message, error_message: error_message })
+        _data.sizes =
+            res.render('users/admin/admin-view', { name: req.session.user.id, data: _data, message: message, error_message: error_message, view: view })
     } catch (error) {
         res.render('500', { error_message: 'Ooops, a error just ocurred ' + error })
     }

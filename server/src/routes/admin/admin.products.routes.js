@@ -9,7 +9,7 @@ router.get("/load-products", async (req, res) => {
     // get data from DB and generate custom JSON
     try {
         _data = await loadProducts();
-        res.render("users/admin/products/list-products", { data: _data });
+        res.render("users/admin/products/list-products", { data: _data, name: req.session.user.id });
         // return res.status(201).json({ data: _data });
     } catch (error) {
         res.render('500', { error_message: 'Ooops, a error just ocurred ' + error })

@@ -2,7 +2,7 @@
 
 <!-- views/admin/admin-users.ejs -->
 <h2>Panel de existencias</h2>
-<p>Aca podra crear listar eliminar o editar productos, edificios y existencias</p>
+<p class="subtitle">Aca podra crear listar eliminar o editar productos, edificios y existencias</p>
 
 <div class="container">
     <!-- BUILDINGS INIT -->
@@ -56,8 +56,20 @@
     <!-- end horizontal split line -->
     <!-- PLEDGES INIT  -->
     <div>
+        <h3>Prendas</h3>
+        <p class="subtitle">Aca podra ver todo lo relacionado con las prendas</p>
         <div class="row">
-            <h3>Prendas</h3>
+            <div class="col-md-4">
+                <h4> Prenda</h4>
+            </div>
+            <div class="col-md-4">
+                <h4> Inventario</h4>
+            </div>
+            <div class="col-md-4">
+                <h4> Stock </h4>
+                <a name="load-products-link" id="load-products-link" class="btn btn-secondary"
+                    href="/admin/load-products" role="button">listar</a>
+            </div>
         </div>
     </div>
     <!-- PLEDGE END -->

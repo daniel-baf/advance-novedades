@@ -1,0 +1,14 @@
+h2 {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.subtitle {
+    text-align: center;
+}
+
+h3, h4 {
+    margin-top: 2rem;
+    text-align: center;
+    font-weight: bold;
+}

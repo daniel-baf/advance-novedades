@@ -37,7 +37,7 @@ router.post("/signin", (req, res) => {
                 _response = { id: _result[0].id, name: _result[0].name, role: _result[0].Worker_Area_id };
                 req.session.user = _response;
                 if (_response.role == 'ADMIN') {
-                    return res.redirect(302, '/admin/dashboard');
+                    return res.redirect(302, '/admin/dashboard/products');
                 } else if (_response.role == 'SELLS') {
                     return res.redirect(302, '/sells/dashboard');
                 } else if (_response.role == 'PRODUCTION') {

@@ -11,9 +11,9 @@ router.use(adminBuildingRouter.router);
 // products paths
 router.use(require(path.join(__dirname, 'admin/', 'admin.products.routes')));
 
-router.get("/dashboard", async (req, res) => {
-    adminBuildingRouter.renderDashboard(req, res, '', '');
+router.get("/dashboard/:view", async (req, res) => {
+    let view = req.params.view
+    adminBuildingRouter.renderDashboard(req, res, '', '', view);
 })
-
 
 module.exports = router;
