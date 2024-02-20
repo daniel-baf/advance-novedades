@@ -57,7 +57,7 @@ app.set('views', path.join(__dirname, 'public/views/'));
 
 // CSS
 app.use("/css", express.static(path.join(__dirname, "node_modules/bootstrap/dist/css"))); // <- This will use the contents of 'bootstrap/dist/css' which is placed in your node_modules folder as if it is in your '/styles/css' directory.
-app.use("/js", express.static(path.join(__dirname, "node_modules/bootstrap/dist/css"))); // <- This will use the contents of 'bootstrap/dist/css' which is placed in your node_modules folder as if it is in your '/styles/css' directory.
+app.use("/js", express.static(path.join(__dirname, "node_modules/bootstrap/dist/js"))); // <- This will use the contents of 'bootstrap/dist/css' which is placed in your node_modules folder as if it is in your '/styles/css' directory.
 
 
 module.exports = app;             // export configuration

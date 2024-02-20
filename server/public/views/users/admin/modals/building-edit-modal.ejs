@@ -38,7 +38,8 @@
             <div class="form-group">
                 <label for="building_name">Nombre</label>
                 <input type="text" class="form-control" name="building_name" id="building_name"
-                    aria-describedby="building_bame" placeholder="Nombre del edificio" value="<%=building.name%>">
+                    aria-describedby="building_bame" placeholder="Nombre del edificio" value="<%=building.name%>"
+                    required>
                 <small id="building_bame" class="form-text text-muted">Nombre del edificio</small>
             </div>
             <div class="form-group">
@@ -55,11 +56,7 @@
     </div>
 
     <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <!-- Latest compiled JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
     <script src="/js/admin/list-products.js"></script>
 </body>
 

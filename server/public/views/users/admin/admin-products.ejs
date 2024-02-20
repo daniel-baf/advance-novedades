@@ -16,7 +16,7 @@
                     <div class="form-group">
                         <label for="building_name">Nombre</label>
                         <input type="text" class="form-control" name="building_name" id="building_name"
-                            aria-describedby="building-id" placeholder="nombre del edificio">
+                            aria-describedby="building-id" placeholder="nombre del edificio" required>
                         <small id="building-id" class="form-text text-muted">Ingresa el nombre del edificio</small>
                     </div>
                     <div class="form-group">
@@ -86,49 +86,61 @@
 
     <div>
         <h4>Creacion de prendas</h4>
+        <p class="subtitle">Crea una nueva prenda y asigna precios por tallas</p>
         <div>
+            <form action="/admin/load-products/create" id="pledge-create-form">
+                <div class="row">
+                    <!-- CHECKBOX SELCTOR, SHOW A INPUT IF SELECTED, HIDE IF UNSELECTED -->
+                    <!-- CHECKBOX SELECTOR -->
+                    <div class="col-md-5">
+                        <% _data.sizes.forEach(_size=> { %>
+                            <div class="row">
+                                <div class="form-group col-sm-2">
+                                    <div class="form-check">
+                                        <!-- Use a unique ID for each checkbox -->
+                                        <input class="form-check-input unhide-input" type="checkbox"
+                                            id="showInput<%= _size.id %>" value="<%=_size.id%>">
+                                        <label class="form-check-label" for="showInput<%= _size.id %>">
+                                            <%= _size.id %>
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- Use a unique ID for each input container -->
+                                <div id="inputContainer<%= _size.id %>" class="d-none col-lg-10">
+                                    <div class="form-group">
+                                        <div class="form-group">
+                                            <label for="price-product<%= _size.id %>">Precio</label>
+                                            <!-- Use a unique ID for each input -->
+                                            <input type="number" class="form-control"
+                                                name="price-product<%= _size.id %>" id="price-product<%= _size.id %>"
+                                                aria-describedby="price-product-small<%= _size.id %>"
+                                                placeholder="100.00">
+                                            <small id="price-product-small<%= _size.id %>"
+                                                class="form-text text-muted">Precio para la
+                                                talla <%= _size.id %></small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
 
-            <div class="row">
-                <!-- NAME PART -->
-                <div class="col-md-6">
-                    <form action="/admin/load-products/create" id="pledge-create-form">
+                    </div>
+                    <!-- NAME PART -->
+                    <div class="col-md-7">
                         <div class="form-group">
                             <label for="new_peldge_name">Nombre</label>
                             <input type="text" class="form-control" name="new_peldge_name" id="new_peldge_name"
-                                aria-describedby="helpId" placeholder="Nombre para la nueva prenda">
+                                aria-describedby="helpId" placeholder="Nombre para la nueva prenda" required>
                             <small id="helpId" class="form-text text-muted">Nombre para la nueva prenda</small>
                         </div>
-                    </form>
-
-                </div>
-                <div class="col-md-5">
-                    <!-- SELECT OF SIZES -->
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox
-                            input</label>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-                        <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox
-                            input</label>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDisabled" disabled>
-                        <label class="form-check-label" for="flexSwitchCheckDisabled">Disabled switch checkbox
-                            input</label>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckCheckedDisabled" checked
-                            disabled>
-                        <label class="form-check-label" for="flexSwitchCheckCheckedDisabled">Disabled checked switch
-                            checkbox input</label>
+                        <button type="submit" class="btn btn-light btn-lg btn-block">Guardar</button>
                     </div>
                 </div>
-            </div>
+            </form>
             <p>Crea una nueva prenda y configura los precios y tallas</p>
         </div>
     </div>
 </div>
 
+<script src="/js/bootstrap.js"></script>
 <script src="/js/admin/admin-products.js"></script>

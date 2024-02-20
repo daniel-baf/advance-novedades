@@ -34,19 +34,19 @@
                     <!-- PRODUCT DIV -->
                     <div>
                         <% data.stockable_pile.forEach((product)=> { %>
-                            <div>
+                            <div class="mb-5">
                                 <!-- Display Product Name -->
                                 <div class="jumbotron">
                                     <h3 class="display-4"><%- product.name %></h3>
                                     <!-- Button to Toggle Building Details -->
-                                    <button class="btn btn-primary" onclick="toggleBuildings('<%- product.name %>')"
-                                        id="toggleButton<%- product.name %>">
+                                    <button class="btn btn-primary" onclick="toggleBuildings('<%- product.id %>')"
+                                        id="toggleButton<%- product.id %>">
                                         Expandir
                                     </button>
                                 </div>
                                 <div>
                                     <!-- Container for Buildings -->
-                                    <div id="<%- product.name %>Buildings" class="row" style="display: none;">
+                                    <div id="<%- product.id %>Buildings" class="row" style="display: none;">
                                         <div class="row">
                                             <% product.locations.forEach((location, index)=> { %>
                                                 <div class="col-md-6">
@@ -130,7 +130,7 @@
                             <div class="form-group">
                                 <label for="stock">Existencia</label>
                                 <input type="number" class="form-control" name="stock" id="stock"
-                                    aria-describedby="stock_small" placeholder="Existencia">
+                                    aria-describedby="stock_small" placeholder="Existencia" required>
                                 <small id="stock_small" class="form-text text-muted">No. de prendas que hay en el
                                     edificio</small>
                             </div>
@@ -153,10 +153,5 @@
 
 </html>
 
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-<!-- Latest compiled JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/bootstrap.js"></script>
 <script src="/js/admin/list-products.js"></script>

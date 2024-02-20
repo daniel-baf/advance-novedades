@@ -61,9 +61,9 @@ $(document).ready(function () {
 });
 
 // toggles the div and displ;ay content
-function toggleBuildings(productName) {
-    var buildingsContainer = document.getElementById(productName + 'Buildings');
-    var toggleButton = document.getElementById('toggleButton' + productName);
+function toggleBuildings(productId) {
+    var buildingsContainer = document.getElementById(productId + 'Buildings');
+    var toggleButton = document.getElementById('toggleButton' + productId);
 
     // Toggle the visibility of the buildings container
     buildingsContainer.style.display = (buildingsContainer.style.display === 'none') ? 'block' : 'none';
