@@ -46,7 +46,7 @@ router.post("/update-building", async (req, res) => {
     try {
         let { building_id, building_name, building_direction } = req.body;
         // check for valid inputs
-        if (building_id === '' || building_name === '' || building_direction) {
+        if (building_id === '' || building_name === '' || building_direction === '') {
             renderDashboard(req, res, '', 'Valores ingresados invalidos');
             return;
         }

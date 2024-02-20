@@ -67,5 +67,10 @@ router.get("/load-pledges/delete/:id", async (req, res) => {
     }
 });
 
+// create a new pledge and utomatically insert inventory to DB using transactions
+router.post("/load-pledges/create/", async (req, res) => {
+    res.status(200).json({ message: "Not implemented yet" });
+});
+
 module.exports = router;
 

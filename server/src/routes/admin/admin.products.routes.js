@@ -29,6 +29,7 @@ async function renderProductStockList(req, res, message, error_message) {
     // get data from DB and generate custom JSON
     try {
         _data = await loadProducts();
+        // res.status(200).json({ data: _data, name: req.session.user.id, message: message, error_message: error_message });
         res.render("users/admin/products/list-products", { data: _data, name: req.session.user.id, message: message, error_message: error_message });
     } catch (error) {
         // res.render('500', { error_message: 'Ooops, a error just ocurred ' + error })

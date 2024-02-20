@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Include Bootstrap CSS from CDN -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/admin/list-products.css">
     <title>Products Details</title>
 </head>
@@ -31,65 +31,65 @@
 
 
                 <div class="container mt-5">
-
-                    <% data.stockable_pile.forEach((product)=> { %>
-
-                        <!-- Display Product Name -->
-                        <div class="jumbotron">
-                            <h3 class="display-4"><%- product.name %></h3>
-                            <!-- Button to Toggle Building Details -->
-                            <button class="btn btn-primary" onclick="toggleBuildings('<%- product.name %>')"
-                                id="toggleButton<%- product.name %>">
-                                Expandir
-                            </button>
-                        </div>
-
-                        <!-- Container for Buildings -->
-                        <div id="<%- product.name %>Buildings" class="row" style="display: none;">
-
-                            <div class="card-group">
-
-                                <!-- Display Buildings -->
-                                <% product.locations.forEach((location, index)=> { %>
-                                    <div class="col-md-6 mb-4">
-                                        <!-- Each building takes up 6 columns on medium-sized screens and larger -->
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="mb-0"><%- location.name %></h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <!-- Display Sizes and Stock for each Building -->
-                                                <!-- Apply custom style if stock is lower than 5 -->
-                                                <% location.availability.forEach((item)=> { %>
-                                                    <div class="row list-editable">
-                                                        <div class="col-md-6">
-                                                            <p
-                                                                class="card-text <%= item.stock < 5 ? 'low-stock' : '' %>">
-                                                                Talla: <%- item.size %>, Disponibilidad: <%- item.stock
-                                                                        %>
-                                                            </p>
-                                                        </div>
-                                                        <div class="col-md-6 text-md-right">
-                                                            <a name="" id="" class="btn btn-primary edit-link-ref"
-                                                                href="/admin/load-products/edit-product/<%=location.id%>/<%=product.id%>/<%=item.size%>"
-                                                                role="button">Editar</a>
+                    <!-- PRODUCT DIV -->
+                    <div>
+                        <% data.stockable_pile.forEach((product)=> { %>
+                            <div>
+                                <!-- Display Product Name -->
+                                <div class="jumbotron">
+                                    <h3 class="display-4"><%- product.name %></h3>
+                                    <!-- Button to Toggle Building Details -->
+                                    <button class="btn btn-primary" onclick="toggleBuildings('<%- product.name %>')"
+                                        id="toggleButton<%- product.name %>">
+                                        Expandir
+                                    </button>
+                                </div>
+                                <div>
+                                    <!-- Container for Buildings -->
+                                    <div id="<%- product.name %>Buildings" class="row" style="display: none;">
+                                        <div class="row">
+                                            <% product.locations.forEach((location, index)=> { %>
+                                                <div class="col-md-6">
+                                                    <div class="card-group">
+                                                        <!-- Each building takes up 6 columns on medium-sized screens and larger -->
+                                                        <div class="card">
+                                                            <div class="card-header">
+                                                                <h5 class="mb-0"><%- location.name %></h5>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <!-- Display Sizes and Stock for each Building -->
+                                                                <!-- Apply custom style if stock is lower than 5 -->
+                                                                <% location.availability.forEach((item)=> { %>
+                                                                    <div class="row list-editable">
+                                                                        <div class="col-md-6">
+                                                                            <p
+                                                                                class="card-text <%= item.stock < 5 ? 'low-stock' : '' %>">
+                                                                                Talla: <%- item.size %>, Disponibilidad:
+                                                                                    <%- item.stock %>
+                                                                            </p>
+                                                                        </div>
+                                                                        <div class="col-md-6 text-md-right">
+                                                                            <a name="" id=""
+                                                                                class="btn btn-primary edit-link-ref"
+                                                                                href="/admin/load-products/edit-product/<%=location.id%>/<%=product.id%>/<%=item.size%>"
+                                                                                role="button">Editar</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <% }); %>
+                                                            </div>
+                                                            <!-- END AVAILABILITY -->
                                                         </div>
                                                     </div>
-                                                    <% }); %>
-                                            </div>
+                                                </div>
+                                                <% }); %>
                                         </div>
+                                        <!-- END LOCATIONS -->
                                     </div>
-
-                                    <!-- Start a new row after every 2 columns -->
-                                    <% if ((index + 1) % 2===0) { %>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <% } %>
-                                <% }); %>
-                        </div>
-                        <% }); %>
-                </div>
+                            <!-- END PRODCUTS -->
+                            <% }); %>
+                    </div>
             </main>
         </div>
     </div>
@@ -145,7 +145,6 @@
             </div>
         </div>
     </div>
-
 </body>
 
 <footer>
