@@ -9,6 +9,11 @@ const { insertBuilding, searchBuilding, updateBuilding, deleteBuilding } = requi
 router.post("/insert-building", async (req, res) => {
     try {
         let { building_name, building_direction } = req.body;
+        // check for valid inputs
+        if (building_name === '') {
+            renderDashboard(req, res, '', 'Valores ingresados invalidos');
+            return;
+        }
         _response = await insertBuilding(building_name, building_direction);
         if (_response[0]) {
             renderDashboard(req, res, _response[1], '');
@@ -40,6 +45,12 @@ router.get("/edit-building/:building_id", async (req, res) => {
 router.post("/update-building", async (req, res) => {
     try {
         let { building_id, building_name, building_direction } = req.body;
+        // check for valid inputs
+        if (building_id === '' || building_name === '' || building_direction) {
+            renderDashboard(req, res, '', 'Valores ingresados invalidos');
+            return;
+        }
+        // forward request
         _response = await updateBuilding(building_id, building_name, building_direction);
         if (_response[0]) {
             renderDashboard(req, res, _response[1].message, '');
@@ -55,6 +66,11 @@ router.post("/update-building", async (req, res) => {
 router.get("/delete-building/:building_id", async (req, res) => {
     try {
         let building_id = req.params.building_id;
+        // check valid input
+        if (building_id === '') {
+            renderDashboard(req, res, '', 'Valores ingresados invalidos');
+            return;
+        }
         // get data
         db_result = await deleteBuilding(building_id);
         if (db_result[0]) {

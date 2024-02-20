@@ -28,7 +28,7 @@ $(document).ready(function () {
     // get data from DB without reloading DOM
     function fetchData(pledge_id) {
         return new Promise(async (resolve, reject) => {
-            const url = `/admin/load-pledge/search/${pledge_id}`;
+            const url = `/admin/load-pledges/search/${pledge_id}`;
             try {
                 const response = await fetch(url);
                 if (!response.ok) {

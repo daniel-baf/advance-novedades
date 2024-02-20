@@ -9,7 +9,7 @@ router.get("/load-inventory", (req, res) => {
     try {
         renderInventoryList(req, res)
     } catch (error) {
-        res.redirect("/login")
+        res.render("/login", { error_message: "No hemos podidio cargar el inventario" });
     }
 })
 
@@ -21,7 +21,7 @@ async function renderInventoryList(req, res, message = '', error_message = '') {
         // res.status(200).json({ name: req.session.user.id, message: message, error_message: error_message, data: db_iventory });
         res.render("users/admin/products/list-inventory", { name: req.session.user.id, message: message, error_message: error_message, data: db_iventory });
     } catch (error) {
-        res.redirect("/login")
+        res.render("/login", { error_message: "No se puede procesar la solicitud para renderizar el inventario" });
     }
 }
 
@@ -36,7 +36,7 @@ router.get("/load-inventory/delete/:pledge_id/:pledge_size", async (req, res) =>
             renderInventoryList(req, res, '', _response[1]);
         }
     } catch (error) {
-        res.render('500', { error_message: 'Ooops, a error just ocurred ' + error })
+        res.render("/login", { error_message: "No hemos podidio borrar del inventario " });
     }
 });
 

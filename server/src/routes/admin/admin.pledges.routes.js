@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getPledges, getPledgeById, updatePledge } = require('../../modules/admin/admin.pledges.module');
+const { getPledges, getPledgeById, updatePledge, deletePledge } = require('../../modules/admin/admin.pledges.module');
 
 // PLEDGES ROUTES
 router.get("/load-pledges", (req, res) => {
@@ -16,7 +16,7 @@ async function renderPledgesList(req, res, message = '', error_message = '') {
 }
 
 // seraches on DB for pledge by id and return JSON as async function
-router.get("/load-pledge/search/:id", async (req, res) => {
+router.get("/load-pledges/search/:id", async (req, res) => {
     let pledge_id = req.params.id;
     db_data = await getPledgeById(pledge_id);
     if (db_data[0]) {
@@ -26,7 +26,8 @@ router.get("/load-pledge/search/:id", async (req, res) => {
     }
 });
 
-router.post("/load-pledge/update/", async (req, res) => {
+// update a pledge into DB
+router.post("/load-pledges/update/", async (req, res) => {
     try {
         let { Pledge_id, Pledge_name } = req.body;
         if (Pledge_name == '' || Pledge_name == undefined) {
@@ -43,7 +44,27 @@ router.post("/load-pledge/update/", async (req, res) => {
     } catch (error) {
         renderPledgesList(req, res, '', _fetch_data[1]);
     }
+});
 
+// delete a pledge into DB
+router.get("/load-pledges/delete/:id", async (req, res) => {
+    try {
+        let pledge_id = req.params.id;
+        // check for valid inputs
+        if (pledge_id == '' || pledge_id == undefined) {
+            renderPledgesList(req, res, '', 'Valores ingresados invalidos');
+            return; // exit method if invalid
+        }
+        // valid operation GOTO db
+        _fetch_data = await deletePledge(pledge_id);
+        if (_fetch_data[0]) {
+            renderPledgesList(req, res, _fetch_data[1], '');
+        } else {
+            renderPledgesList(req, res, '', _fetch_data[1]);
+        }
+    } catch (error) {
+        renderPledgesList(req, res, '', _fetch_data[1]);
+    }
 });
 
 module.exports = router;

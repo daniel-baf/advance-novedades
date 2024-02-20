@@ -1,5 +1,5 @@
 const path = require('path');
-const { PLEDGE_SELECT_QUERY, PLEDGE_SELECT_BY_PK_QUERY, PLEDGE_UPDATE_QUERY } = require('../../config/consts');
+const { PLEDGE_SELECT_QUERY, PLEDGE_SELECT_BY_PK_QUERY, PLEDGE_UPDATE_QUERY, PLEDGE_DELETE_QUERY } = require('../../config/consts');
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
 // get all pledges from DB
@@ -51,4 +51,23 @@ async function updatePledge(pledge_id, pledge_name) {
     }
 }
 
-module.exports = { getPledges, getPledgeById, updatePledge }
+// delete a pledge from DB
+async function deletePledge(pledge_id) {
+    try {
+        db_data = await new Promise((resolve, reject) => {
+            db_connection.query(PLEDGE_DELETE_QUERY, [pledge_id], (error, result) => {
+                if (error) {
+                    reject("No se puede borrar un registro que ya esta siendo usado en otras consultas"); // Reject the Promise if there is an error
+                } else {
+                    resolve(result);  // Resolve the Promise with the result
+                }
+            });
+        });
+        return [true, "Prenda eliminada para el id: " + pledge_id];
+    } catch (error) {
+        return [false, error];
+    }
+}
+
+
+module.exports = { getPledges, getPledgeById, updatePledge, deletePledge }

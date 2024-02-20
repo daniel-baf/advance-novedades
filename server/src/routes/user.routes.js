@@ -50,8 +50,8 @@ router.post("/signin", (req, res) => {
             }
         });
     } catch (error) {
-        // unhandled error, render page 500 error
-        return res.status(500).json({ message: 'Something went wrong on server ' + error })
+        // send to login
+        renderLoginPage(req, res, undefined, error);
     }
 });
 
@@ -61,6 +61,11 @@ router.post("/signup", (req, res) => {
     try {
         // extract JSON data from request body
         let { password, name, Worker_area_id } = req.body;
+        // check invalid dta
+        if (password == '' || name == '' || Worker_area_id == '') {
+            return res.status(406).json({ message: 'No se han enviado datos validos' });
+        }
+
         // encrypt and create password
         password = encrypt(password); // encrypt password
         _query = "CALL insertWorkerAndGetId(?, ?, ?, @generated_id);";
@@ -79,7 +84,7 @@ router.post("/signup", (req, res) => {
             });
         })
     } catch (error) {
-        res.status(500).json({ message: 'Ooops, a error just ocurred ' + error })
+        renderLoginPage(req, res, undefined, error);
     }
 });
 
