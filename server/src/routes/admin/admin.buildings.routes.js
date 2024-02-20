@@ -51,6 +51,7 @@ router.post("/update-building", async (req, res) => {
     }
 })
 
+// delete a building from DB
 router.get("/delete-building/:building_id", async (req, res) => {
     try {
         let building_id = req.params.building_id;

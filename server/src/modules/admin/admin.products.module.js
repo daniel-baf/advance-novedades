@@ -1,5 +1,6 @@
 const path = require('path');
-const { STOCK_SELECT_QUERY, PLEDGE_SELECT_QUERY, BUILDING_SELECT_EXCLUDE_DIR, SIZE_SELECT_ALL_QUERY, STOCK_SELECT_BY_PK_QUERY, STOCK_UPDATE_QUERY } = require('../../config/consts');
+const { STOCK_SELECT_QUERY, BUILDING_SELECT_EXCLUDE_DIR, SIZE_SELECT_ALL_QUERY, STOCK_SELECT_BY_PK_QUERY, STOCK_UPDATE_QUERY } = require('../../config/consts');
+const { getPledges } = require(path.join(__dirname, "./admin.pledges.module"));
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
 
@@ -28,19 +29,6 @@ function getBuildings() {
             }
         });
 
-    });
-}
-
-// get all pledges from DB
-function getPledges() {
-    return new Promise((resolve, reject) => {
-        db_connection.query(PLEDGE_SELECT_QUERY, (error, result) => {
-            if (error) {
-                reject("No hemos podido encontrar prendas: " + error); // Reject the Promise if there is an error
-            } else {
-                resolve(result);  // Resolve the Promise with the result
-            }
-        });
     });
 }
 

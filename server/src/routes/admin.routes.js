@@ -10,6 +10,7 @@ router.use(adminBuildingRouter.router);
 // products paths
 router.use(require(path.join(__dirname, 'admin/', 'admin.products.routes')));
 
+// render main view of dashboard, with a view parameter display just x parameteres
 router.get("/dashboard/:view", async (req, res) => {
     let view = req.params.view
     adminBuildingRouter.renderDashboard(req, res, '', '', view);

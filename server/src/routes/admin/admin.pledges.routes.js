@@ -1,0 +1,50 @@
+const express = require('express');
+const router = express.Router();
+const { getPledges, getPledgeById, updatePledge } = require('../../modules/admin/admin.pledges.module');
+
+// PLEDGES ROUTES
+router.get("/load-pledges", (req, res) => {
+    renderPledgesList(req, res)
+});
+
+// render page and fetch data
+async function renderPledgesList(req, res, message = '', error_message = '') {
+    // get pledges list
+    db_data = await getPledges();
+    // res.status(200).json({ data: db_data, message: message, error_message: error_message });
+    res.render("users/admin/products/list-pledges", { name: req.session.user.id, message: message, error_message: error_message, data: db_data });
+}
+
+// seraches on DB for pledge by id and return JSON as async function
+router.get("/load-pledge/search/:id", async (req, res) => {
+    let pledge_id = req.params.id;
+    db_data = await getPledgeById(pledge_id);
+    if (db_data[0]) {
+        res.status(200).json(db_data[1]);
+    } else {
+        res.status(400).json({ error_message: db_data[1] });
+    }
+});
+
+router.post("/load-pledge/update/", async (req, res) => {
+    try {
+        let { Pledge_id, Pledge_name } = req.body;
+        if (Pledge_name == '' || Pledge_name == undefined) {
+            renderPledgesList(req, res, '', 'El nombre no puede estar vacio');
+            return; // exit method if invalid
+        }
+        // valid operation GOTO db
+        _fetch_data = await updatePledge(Pledge_id, Pledge_name);
+        if (_fetch_data[0]) {
+            renderPledgesList(req, res, _fetch_data[1], '');
+        } else {
+            renderPledgesList(req, res, '', _fetch_data[1]);
+        }
+    } catch (error) {
+        renderPledgesList(req, res, '', _fetch_data[1]);
+    }
+
+});
+
+module.exports = router;
+

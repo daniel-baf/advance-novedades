@@ -4,7 +4,7 @@ const { loadProducts, findStockByPK, updateStock } = require('../../modules/admi
 
 // INVENTORY
 router.use(require('./admin.inventory.routes'));
-
+router.use(require('./admin.pledges.routes'))
 
 // PRODUCTS
 // load all stock
@@ -12,7 +12,7 @@ router.get("/load-products", (req, res) => {
     renderProductStockList(req, res)
 });
 
-// edit stock
+// edit stock, a post petition with a json object
 router.post("/load-products/update-product", async (req, res) => {
     // get params
     try {
@@ -24,6 +24,7 @@ router.post("/load-products/update-product", async (req, res) => {
     }
 })
 
+// fetches all products by stock and renders this as html
 async function renderProductStockList(req, res, message, error_message) {
     // get data from DB and generate custom JSON
     try {
@@ -35,7 +36,7 @@ async function renderProductStockList(req, res, message, error_message) {
     }
 }
 
-// display stock
+// edit a producto by stock
 router.get("/load-products/edit-product/:building_id/:pledge_id/:size_id", async (req, res) => {
     try {
         // get data from DB

@@ -1,7 +1,7 @@
 
 // A $( document ).ready() block.
 $(document).ready(function () {
-
+    //  ajax call to data to edit product
     $('.edit-link-ref').on('click', async function (event) {
         // Prevent the default action of the link
         event.preventDefault();
@@ -45,8 +45,8 @@ $(document).ready(function () {
         });
     }
 
+    // unhide the modal and
     function displayModal(_fetched_data) {
-        console.log(_fetched_data);
         // Populate form fields with data
         $('#building_id').val(_fetched_data.ids.building_id);
         $('#pledge_id').val(_fetched_data.ids.pledge_id);
