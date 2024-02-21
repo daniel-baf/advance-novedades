@@ -1,6 +1,6 @@
 const path = require('path')
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
-const { INVENTORY_SELECT_QUERY, INVENTORY_DELETE_QUERY, INVENTORY_SELECT_BY_PK_QUERY, INVENTORY_UPDATE_QUERY } = require('../../config/consts');
+const { INVENTORY_SELECT_QUERY, INVENTORY_DELETE_QUERY, INVENTORY_SELECT_BY_PK_QUERY, INVENTORY_UPDATE_QUERY, INVENTORY_INSERT_QUERY } = require('../../config/consts');
 
 
 // deletes a product from inventory (product and size)
@@ -90,4 +90,30 @@ async function searchInventoryByPK(pledge_id, pledge_size) {
 }
 
 
-module.exports = { getAllInventory, deleteProductFromInventory, updateProductFromInventory, searchInventoryByPK }
+// insert into DB by pledge ID multiple sizes and prices
+// structru e sizes:prices = {size: '', price: n}
+async function insertInventory(pledge_id, sizes_prices) {
+    try {
+        // gen SQL insert VALUES
+        const inventory_pledges = [];
+        sizes_prices.forEach(size => {
+            inventory_pledges.push([pledge_id, size.size, size.price]);
+        });
+        // insert into DB
+        result = await new Promise((resolve, reject) => {
+            // insert sizes
+            db_connection.query(INVENTORY_INSERT_QUERY, [inventory_pledges], (err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+        return [true, "Prenda " + pledge_id + " insertada con exito"];
+    } catch (error) {
+        return [false, "No se pudo insertar la prenda y sus tallas: " + error];
+    }
+}
+
+module.exports = { getAllInventory, deleteProductFromInventory, updateProductFromInventory, searchInventoryByPK, insertInventory }

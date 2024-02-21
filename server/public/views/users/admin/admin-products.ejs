@@ -95,16 +95,18 @@
                     <div class="col-md-5">
                         <% _data.sizes.forEach(_size=> { %>
                             <div class="row">
+                                <!-- CHECKBOX -->
                                 <div class="form-group col-sm-2">
                                     <div class="form-check">
                                         <!-- Use a unique ID for each checkbox -->
-                                        <input class="form-check-input unhide-input" type="checkbox"
+                                        <input class="form-check-input unhide-size-input" type="checkbox"
                                             id="showInput<%= _size.id %>" value="<%=_size.id%>">
                                         <label class="form-check-label" for="showInput<%= _size.id %>">
                                             <%= _size.id %>
                                         </label>
                                     </div>
                                 </div>
+                                <!-- INPUT -->
                                 <!-- Use a unique ID for each input container -->
                                 <div id="inputContainer<%= _size.id %>" class="d-none col-lg-10">
                                     <div class="form-group">

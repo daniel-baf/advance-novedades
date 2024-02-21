@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getPledges, getPledgeById, updatePledge, deletePledge } = require('../../modules/admin/admin.pledges.module');
+const { getPledges, getPledgeById, updatePledge, deletePledge, createPledge } = require('../../modules/admin/admin.pledges.module');
 
 // PLEDGES ROUTES
 router.get("/load-pledges", (req, res) => {
@@ -57,6 +57,7 @@ router.get("/load-pledges/delete/:id", async (req, res) => {
         }
         // valid operation GOTO db
         _fetch_data = await deletePledge(pledge_id);
+        console.log(_fetch_data);
         if (_fetch_data[0]) {
             renderPledgesList(req, res, _fetch_data[1], '');
         } else {
@@ -69,7 +70,18 @@ router.get("/load-pledges/delete/:id", async (req, res) => {
 
 // create a new pledge and utomatically insert inventory to DB using transactions
 router.post("/load-pledges/create/", async (req, res) => {
-    res.status(200).json({ message: "Not implemented yet" });
+    try {
+        let { name, sizes } = req.body;
+        _result = await createPledge(name, sizes);
+        // res.status(200).json({ result: _result });
+        if (_result[0]) {
+            res.status(200).json({ message: _result[1] });
+        } else {
+            res.status(400).json({ error_message: _result[1] });
+        }
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
 });
 
 module.exports = router;
