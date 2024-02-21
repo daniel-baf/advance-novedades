@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin View</title>
+    <!-- Include Bootstrap CSS from CDN -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <!-- Add your additional CSS styles here if needed -->
+    <link rel="stylesheet" href="/css/admin/admin-view.css">
+</head>
+
+<nav>
+    <%- include("../../partials/nav.ejs")%>
+</nav>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div>
+                <%- include("../../partials/admin-aside") %>
+            </div>
+
+            <!-- Main content area -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div>
+                    <%- include("../../partials/messages.ejs", {message: message, error_message: error_message})%>
+                </div>
+                <!-- Admin Products Panel -->
+                <div>
+                    <% if (view=='products' ) { %>
+                        <div id="adminProducts" class="hide-me-panel">
+                            <%- include("admin-products", { buildings: data.buildings })%>
+                        </div>
+                        <% } %>
+                </div>
+                <!-- Admin Users Panel -->
+                <div>
+                    <% if (view=='users' ) { %>
+                        <div id="adminUsers" class="hide-me-panel">
+                            <%- include("admin-users")%>
+                        </div>
+                        <% } %>
+                </div>
+                <!-- Admin Finance Panel -->
+                <div>
+                    <% if (view=='finance' ) { %>
+                        <div id="adminFinance" class="hide-me-panel">
+                            <%- include("admin-finance")%>
+                        </div>
+                        <% } %>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+<footer>
+    <%- include("../../partials/footer.ejs")%>
+</footer>
+
+</html>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="/js/bootstrap.js"></script>
+<!-- Your custom JavaScript to handle panel visibility -->
+<script src="/js/admin/admin-view.js"></script>
