@@ -64,8 +64,6 @@ async function deletePledge(pledge_id) {
                 }
             });
         });
-        let status = "true";
-        console.log(status)
         return [true, "Prenda eliminada para el id: " + pledge_id];
     } catch (error) {
         return [false, error];

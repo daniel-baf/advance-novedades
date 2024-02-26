@@ -30,7 +30,7 @@ const mockSessionMiddleware = (req, res, next) => {
     if (process.env.NODE_ENV === 'DEVELOPMENT') {
         // Set up a mock session object with user information
         req.session.user = {
-            id: 'ADM TEST', // Replace with the actual user ID
+            id: 'ADM1', // Replace with the actual user ID
             username: 'REMOVE ME ON PRODUCTION', // Replace with the actual username
             // Add any other user information needed for testing
         }
@@ -38,7 +38,6 @@ const mockSessionMiddleware = (req, res, next) => {
     next();
 };
 
-// SQL INJECTION MIDDLEWARE
 // TODO HANDLE SQLINJECTION
 
 // Apply the mock session middleware to your Express app

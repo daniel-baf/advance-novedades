@@ -10,6 +10,8 @@ adminBuildingRouter = require(path.join(__dirname, 'admin/', 'admin.buildings.ro
 router.use(adminBuildingRouter.router);
 // products paths
 router.use(require(path.join(__dirname, 'admin/', 'admin.products.routes')));
+// users paths
+router.use(require(path.join(__dirname, 'admin/', 'admin.users.routes')));
 
 // render main view of dashboard, with a view parameter display just x parameteres
 router.get("/dashboard/:view", async (req, res) => {

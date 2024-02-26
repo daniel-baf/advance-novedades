@@ -57,7 +57,6 @@ router.get("/load-pledges/delete/:id", async (req, res) => {
         }
         // valid operation GOTO db
         _fetch_data = await deletePledge(pledge_id);
-        console.log(_fetch_data);
         if (_fetch_data[0]) {
             renderPledgesList(req, res, _fetch_data[1], '');
         } else {

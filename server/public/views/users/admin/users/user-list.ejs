@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin View</title>
+    <!-- Include Bootstrap CSS from CDN -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <!-- Add your additional CSS styles here if needed -->
+    <link rel="stylesheet" href="/css/admin/admin-view.css">
+</head>
+
+<nav>
+    <%- include("../../../partials/nav.ejs")%>
+</nav>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div>
+                <%- include("../../../partials/admin-aside") %>
+            </div>
+
+            <!-- Main content area -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <!-- TITLE -->
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Usuarios</h1>
+                    <p>Listado de resultados encontrados</p>
+                </div>
+                <div>
+                    <div>
+                        <%- include("../../../partials/messages.ejs", {message: message, error_message:
+                            error_message})%>
+                    </div>
+                    <div class="table-responsive">
+                        <!-- TABLE -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="center-text ">CODIGO</th>
+                                    <th class="center-text ">NOMBRE</th>
+                                    <th class="center-text ">AUTORIZADO</th>
+                                    <th class="center-text ">AREA</th>
+                                    <th class="center-text ">ACCIONES</th>
+                                </tr>
+                            </thead>
+                            <div>
+                                <tbody>
+                                    <% users.forEach(_user=> { %>
+                                        <tr>
+                                            <td class="center-text">
+                                                <%= _user.id %>
+                                            </td>
+                                            <td class="center-text">
+                                                <%= _user.name %>
+                                            </td>
+                                            <td class="center-text">
+                                                <%- _user.allowed ? 'Si' : 'No' %>
+                                            </td>
+                                            <td class="center-text">
+                                                <%= _user.Worker_Area_id %>
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons row mx-2">
+                                                    <!-- Button trigger modal -->
+                                                    <a name="link-auth-user" class="btn btn-primary col mx-1"
+                                                        href="/admin/user/edit/<%=_user.id%>?current_view=<%= current_view %>"
+                                                        role="button">Editar</a>
+                                                    <!-- toggle text Autorizar and unaotorize if is allowed  -->
+                                                    <a name="link-edit-user"
+                                                        class="btn btn-outline-warning edit-btn col mx-1 "
+                                                        href="/admin/user/<%- !_user.allowed? 'auth': 'unauth' %>/<%=_user.id%>?current_view=<%= current_view %>"
+                                                        role="button"> <%- !_user.allowed? 'Autorizar' : 'Bloquear' %>
+                                                    </a>
+                                                    <a name="link-delete-user" class="btn btn-danger col mx-1"
+                                                        href="/admin/user/delete/<%=_user.id%>?current_view=<%= current_view %>"
+                                                        role="button">Borrar</a>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- Add more rows as needed -->
+                                        <% }) %>
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+<footer>
+    <%- include("../../../partials/footer.ejs")%>
+</footer>
+
+</html>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="/js/bootstrap.js"></script>
+<!-- Your custom JavaScript to handle panel visibility -->
+<script src="/js/admin/admin-view.js"></script>
