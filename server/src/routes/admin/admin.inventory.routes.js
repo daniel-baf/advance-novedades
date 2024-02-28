@@ -50,7 +50,6 @@ router.get("/load-inventory/search/:pledge_id/:pledge_size", async (req, res) =>
         }
         res.status(200).json(_fetched_data[1]);
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: 'Ooops, a error just ocurred ' + error })
     }
 });

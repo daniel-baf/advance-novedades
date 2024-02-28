@@ -51,6 +51,19 @@
                         </div>
                         <% } %>
                 </div>
+                <div>
+                    <!-- INVALID VIEW PARAMETER -->
+                    <% if (view!='products' && view!='users' && view!='finance' ) { %>
+                        <div id="adminInvalid" class="hide-me-panel">
+                            <h2>Panel de administrador</h2>
+                            <div class="alert alert-info" role="alert">
+                                <strong>info</strong> Estas accediendo a una pestaña no valida, selecciona una opcion
+                                del menu para continuar
+                            </div>
+                            <p>Selecciona una opción del menú para continuar</p>
+                        </div>
+                        <% } %>
+                </div>
             </main>
         </div>
     </div>
