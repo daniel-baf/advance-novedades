@@ -1,5 +1,5 @@
 const path = require('path');
-const { USER_WORKER_AREA_SELECT_QUERY, USER_SELECT_BY_ID_NO_PASS_QUERY, USER_SELECT_ALL_NO_PASS_QUERY, USER_REMOVE_ACCESS_QUERY, USER_GRANT_ACCESS_QUERY } = require('../../config/consts');
+const { USER_WORKER_AREA_SELECT_QUERY, USER_SELECT_BY_ID_NO_PASS_QUERY, USER_SELECT_ALL_NO_PASS_QUERY, USER_REMOVE_ACCESS_QUERY, USER_GRANT_ACCESS_QUERY, USER_DELETE_QUERY, USER_INSERT_QUERY, USER_UPDATE_QUERY, USER_UPDATE_NO_PASS_QUERY } = require('../../config/consts');
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 const encrypt = require(path.join(__dirname, "../../modules/database/encrypter.module"))
 
@@ -46,9 +46,8 @@ async function signup(password, name, Worker_area_id, authorized) {
         authorized = authorized == 'true' ? true : false;
         // encrypt and create password
         password = encrypt(password); // encrypt password
-        _query = "CALL insertWorkerAndGetId(?, ?, ?, ?, @generated_id);";
         let fetched_data = await new Promise((resolve, reject) => {
-            db_connection.query(_query, [password, name, Worker_area_id, authorized], (error, result) => {
+            db_connection.query(USER_INSERT_QUERY, [password, name, Worker_area_id, authorized], (error, result) => {
                 // error handling
                 if (error) reject('No es posible insertar al usuario');
                 // retrieve OUT variable value
@@ -114,8 +113,68 @@ async function toggleAuthorizationToUser(id, session, authorize) {
         return [true, "Permisos actualizados correctamente."];
     } catch (error) {
         // return error
-        return [false, error.message];
+        return [false, error];
     }
 }
 
-module.exports = { listWorkerAreas, signup, searchUserById, searchAllUsers, toggleAuthorizationToUser }
+// function to delete a user from DB
+async function deleteUserById(id) {
+    try {
+        // check invalid dta as null or undefined
+        if (!id) {
+            throw new Error('No se han enviado datos validos');
+        }
+        let fetched_data = await new Promise((resolve, reject) => {
+            db_connection.query(USER_DELETE_QUERY, [id], (error, result) => {
+                // error handling
+                if (error) {
+                    reject('No es posible eliminar al usuario, es posible que el usuario ya sea parte del registro de otras transacciones');
+                } else {
+                    resolve(result);
+                }
+            })
+        });
+        // return success
+        return [true, "Usuario eliminado correctamente. " + fetched_data[0]];
+    } catch (error) {
+        // return error
+        return [false, error];
+    }
+};
+
+// update user function, user contains structue from DB
+async function updateUser(user, edit_password = false) {
+    try {
+        if (!user) { // undefined...
+            throw new Error('No se han enviado datos validos');
+        }
+        // check invalid dta as null or undefined
+        if (!user.id || (!user.password && edit_password) || !user.name || !user.Working_Area_id || user.allowed === undefined) {
+            throw new Error('Campos incompletos');
+        }
+        let _query = edit_password ? USER_UPDATE_QUERY : USER_UPDATE_NO_PASS_QUERY;
+        let _pool = [user.name, user.allowed, user.Working_Area_id, user.id]
+        // encrypt and create password if updated
+        if (edit_password) {
+            user.password = encrypt(user.password); // encrypt password
+            _pool.unshift(user.password); // append password to beggingnig
+        }
+        let fetched_data = await new Promise((resolve, reject) => {
+            db_connection.query(_query, _pool, (error, result) => {
+                // error handling
+                if (error) {
+                    reject('No es posible actualizar al usuario ' + error);
+                    return
+                }
+                resolve(result);
+            })
+        });
+        // return success
+        return [true, `Usuario actualizado correctamente con ID ${user.id}`];
+    } catch (error) {
+        // return error
+        return [false, error];
+    }
+};
+
+module.exports = { listWorkerAreas, signup, searchUserById, searchAllUsers, toggleAuthorizationToUser, deleteUserById, updateUser }

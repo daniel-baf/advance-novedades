@@ -79,7 +79,7 @@ router.post("/load-pledges/create/", async (req, res) => {
             res.status(400).json({ error_message: _result[1] });
         }
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).json({ message: error });
     }
 });
 

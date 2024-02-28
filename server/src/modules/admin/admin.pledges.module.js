@@ -107,7 +107,7 @@ async function createPledge(pledge_name, sizes) {
                     message = "Se ha insertado la prenda con exito"
                 } catch (error) {
                     aborted_transation = true;
-                    message = error.message;
+                    message = error;
                 } finally {
                     if (aborted_transation) {
                         db_connection.rollback();
@@ -121,7 +121,7 @@ async function createPledge(pledge_name, sizes) {
         });
         return fetched_data;
     } catch (error) {
-        return [false, error.message];
+        return [false, error];
     }
 }
 

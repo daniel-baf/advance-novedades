@@ -17,6 +17,10 @@ const USER_SELECT_BY_ID_NO_PASS_QUERY = "SELECT id, name, allowed, Worker_Area_i
 const USER_SELECT_ALL_NO_PASS_QUERY = "SELECT id, name, allowed, Worker_Area_id FROM Worker ORDER BY (Worker_Area_id) DESC, `name` ASC;"
 const USER_REMOVE_ACCESS_QUERY = "UPDATE Worker SET allowed = 0 WHERE id = ?;"
 const USER_GRANT_ACCESS_QUERY = "UPDATE Worker SET allowed = 1 WHERE id = ?;"
+const USER_DELETE_QUERY = "DELETE FROM Worker WHERE id = ?;"
+const USER_UPDATE_NO_PASS_QUERY = "UPDATE Worker SET `name` = ?, `allowed` = ?, `Worker_Area_id` = ? WHERE (`id` = ?);"
+const USER_UPDATE_QUERY = "UPDATE Worker SET `password` = ?, `name` = ?, `allowed` = ?, `Worker_Area_id` = ? WHERE (`id` = ?);"
+const USER_INSERT_QUERY = "CALL insertWorkerAndGetId(?, ?, ?, ?, @generated_id);";
 // STOCK
 const INVENTORY_SELECT_QUERY = "SELECT i.*, p.name FROM novedades.Inventory AS i INNER JOIN Pledge as p ON p.id = i.Pledge_id;"
 const INVENTORY_SELECT_BY_PK_QUERY = "SELECT p.name, i.* FROM Inventory AS i INNER JOIN Pledge AS p ON p.id = i.Pledge_id WHERE (Pledge_id = ?) and (Size_id = ?);"
@@ -46,7 +50,7 @@ module.exports = {
     SIZE_SELECT_ALL_QUERY,
     // users
     USER_WORKER_AREA_SELECT_QUERY, USER_SELECT_BY_PASS_ID_QUERY, USER_SELECT_BY_ID_NO_PASS_QUERY, USER_SELECT_ALL_NO_PASS_QUERY,
-    USER_REMOVE_ACCESS_QUERY, USER_GRANT_ACCESS_QUERY,
+    USER_REMOVE_ACCESS_QUERY, USER_GRANT_ACCESS_QUERY, USER_DELETE_QUERY, USER_UPDATE_QUERY, USER_INSERT_QUERY, USER_UPDATE_NO_PASS_QUERY,
     // ADMIN VIEWS
     USERS_VIEW
 }

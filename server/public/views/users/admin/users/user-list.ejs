@@ -66,8 +66,11 @@
                                             <td>
                                                 <div class="action-buttons row mx-2">
                                                     <!-- Button trigger modal -->
-                                                    <a name="link-auth-user" class="btn btn-primary col mx-1"
-                                                        href="/admin/user/edit/<%=_user.id%>?current_view=<%= current_view %>"
+                                                    <a name="link-edit-user" class="btn btn-primary col mx-1 edit-btn"
+                                                        data-toggle="modal" data-target="#modelId"
+                                                        data-id="<%= _user.id %>" data-name="<%= _user.name %>"
+                                                        data-allowed="<%= _user.allowed %>"
+                                                        data-worker-area-id="<%= _user.Worker_Area_id %>"
                                                         role="button">Editar</a>
                                                     <!-- toggle text Autorizar and unaotorize if is allowed  -->
                                                     <a name="link-edit-user"
@@ -91,6 +94,82 @@
             </main>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form method="POST" action="/admin/user/update" id="update-user-form">
+                            <div class="form-group">
+                                <label for="edit-id">Codigo</label>
+                                <input type="text" class="form-control" name="id" id="edit-id"
+                                    aria-describedby="id-small" placeholder="Codigo xxx" readonly required>
+                                <small id="id-small" class="form-text text-muted">Id del usuario, no editable</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-name">Nombre</label>
+                                <input type="text" class="form-control" name="name" id="edit-name"
+                                    aria-describedby="name-small" placeholder="Nombre de ejemplo" required>
+                                <small id="name-small" class="form-text text-muted">Nombre del usuario</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-password">Contraseña</label>
+                                <input type="password" class="form-control" name="password" id="edit-password"
+                                    aria-describedby="password-small" placeholder="Contraseña ejemplo" readonly
+                                    required>
+                                <small id="password-small" class="form-text text-muted">Ingresa la contraseña del
+                                    usuario</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="current_view" id="current_view"
+                                    aria-describedby="current_view_small" placeholder="current view"
+                                    value="<%=current_view%>" hidden>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" name="allowed"
+                                                id="edit-allowed">
+                                            Autorizado
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" name="update_password"
+                                                id="edit-update-password">
+                                            Editar contraseña
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="edit-Working_Area_id">Area</label>
+                                        <select class="custom-select" name="Working_Area_id" id="edit-Working_Area_id"
+                                            required>
+                                            <option selected disabled>-- SELECCIONAR --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-outline-warning" form="update-user-form">Guardar
+                        Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 <footer>
@@ -102,4 +181,4 @@
 <!-- Bootstrap JS and dependencies -->
 <script src="/js/bootstrap.js"></script>
 <!-- Your custom JavaScript to handle panel visibility -->
-<script src="/js/admin/admin-view.js"></script>
+<script src="/js/admin/list-user.js"></script>

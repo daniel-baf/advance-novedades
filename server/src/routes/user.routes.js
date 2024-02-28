@@ -3,9 +3,13 @@ require('dotenv').config()
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+
+
 const { USER_SELECT_BY_PASS_ID_QUERY, USER_SELECT_BY_ID_QUERY } = require('../config/consts');
 const db_connection = require(path.join(__dirname, "../modules/database/db-connection"));
 const encrypt = require(path.join(__dirname, "../modules/database/encrypter.module"))
+
+const { listWorkerAreas } = require('../modules/admin/admin.users.module');
 
 
 // main view, implemente a landing page
@@ -59,6 +63,16 @@ router.post("/signin", (req, res) => {
     } catch (error) {
         // send to login
         renderLoginPage(req, res, undefined, error);
+    }
+});
+
+// get areas of work
+router.get("/user/get-areas", async (req, res) => {
+    try {
+        let aread_db = await listWorkerAreas();
+        res.status(200).json({ areas: aread_db });
+    } catch (error) {
+        res.status(500).json({ error: "No se ha podido obtener las areas de trabajo, " + error });
     }
 });
 

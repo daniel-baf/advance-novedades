@@ -3,7 +3,7 @@ const path = require('path');
 const router = express.Router();
 
 const { USERS_VIEW } = require('../../config/consts');
-const { signup, searchUserById, toggleAuthorizationToUser, searchAllUsers } = require(path.join(__dirname, '../../modules/admin/admin.users.module'));
+const { deleteUserById, signup, searchUserById, toggleAuthorizationToUser, searchAllUsers, updateUser } = require('../../modules/admin/admin.users.module');
 adminBuildingRouter = require(path.join(__dirname, 'admin.buildings.routes'));
 
 // render view of usersListPage
@@ -48,7 +48,7 @@ async function executeToggleGrants(req, res, authorize = false) {
         }
     } catch (error) {
         // render dashboard and display error message if any
-        adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la busqueda de usuarios, " + error.message, USERS_VIEW);
+        adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la busqueda de usuarios, " + error, USERS_VIEW);
     }
 }
 
@@ -63,6 +63,7 @@ router.post("/user/create", async (req, res) => {
     if (!success) {
         // render page with error
         adminBuildingRouter.renderDashboard(req, res, '', data, USERS_VIEW);
+        return;
     }
     // render page with success message
     adminBuildingRouter.renderDashboard(req, res, data, '', USERS_VIEW);
@@ -85,6 +86,18 @@ router.get("/user/search", async (req, res) => {
     }
 });
 
+// get info from a user as JSON
+router.get("/user/get/:id", async (req, res) => {
+    try {
+        // extract JSON data from request body
+        let { id } = req.params; // id to remove
+        let _db_user = await searchUserById(id);
+        res.status(200).json({ user: _db_user });
+    } catch (error) {
+        res.status(500).json({ error: "No se ha podido obtener el usuario, " + error });
+    }
+});
+
 router.get("/user/search/all", async (req, res) => {
     try {
         let users_db = await searchUsersArrayMiddleFunction(search_all = true);
@@ -101,13 +114,53 @@ router.get("/user/search/all", async (req, res) => {
 });
 
 router.get("/user/delete/:id", async (req, res) => {
-    // extract JSON data from request body
-    let { id } = req.params; // id to remove
-    let { current_view } = req.query; // recover current view to render page again
-    // call delete function
+    try {
+        // extract JSON data from request body
+        let { id } = req.params; // id to remove
+        let { current_view } = req.query; // recover current view to render page again
+        let _response = await deleteUserById(id);  // call delete function
+        // check if success
+        let db_user = await searchUsersArrayMiddleFunction(search_all = current_view === '', id = current_view);
+        if (!_response[0]) {
+            // render page with error message
+            renderUserListPage(db_user, res, req, '', _response[1], current_view = current_view);
+            return;
+        } else {
+            // render page with success message
+            renderUserListPage(db_user, res, req, _response[1], '', current_view = current_view);
+            return;
+        }
+    } catch (error) {
+        // render dashboard and display error message if any
+        adminBuildingRouter.renderDashboard(req, res, '', "Error inesperado para eliminar usuarios, " + error, USERS_VIEW);
+    }
+
 });
 
-router.get("/user/update/:id", async (req, res) => {
+// update multiple data from a user
+router.post("/user/update/", async (req, res) => {
+    try {
+        // extract JSON data from request body
+        let { id, password, name, Working_Area_id, allowed, current_view, update_password } = req.body;
+        allowed = !!allowed;                // convert to boolean
+        update_password = !!update_password; // convert to boolean
+        // create user object
+        let user = { id, password, name, Working_Area_id, allowed };
+        let _response = await updateUser(user, update_password);
+        let db_user = await searchUsersArrayMiddleFunction(search_all = current_view === '', id = current_view);
+        // check if success
+        if (!_response[0]) {
+            // render page with error message
+            renderUserListPage(db_user, res, req, '', _response[1], current_view = current_view);
+            return;
+        } else {
+            // render page with success message
+            renderUserListPage(db_user, res, req, _response[1], '', current_view = current_view);
+            return;
+        }
+    } catch (error) {
+        adminBuildingRouter.renderDashboard(req, res, '', "Error no definido para actualizar usuario, " + error, USERS_VIEW);
+    }
 });
 
 // authorize user
@@ -121,6 +174,8 @@ router.get("/user/unauth/:id", async (req, res) => {
     // extract JSON data from request body
     executeToggleGrants(req, res, false);
 });
+
+
 
 module.exports = router;
 
