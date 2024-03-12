@@ -2,8 +2,9 @@ const express = require('express');
 const path = require('path');
 const router = express.Router();
 
-const { getAllExpenseType } = require('../../modules/admin/admin.finance.module');
+const { getAllExpenseType, insertExpense, insertExpenseType } = require('../../modules/admin/admin.finance.module');
 const { renderDashboard } = require('./admin.buildings.routes');
+const { ADMIN_FINANCE_VIEW } = require('../../config/consts');
 
 // generic function to get a JSON with expenses
 async function getExpensesType() {
@@ -26,17 +27,27 @@ router.get("/finance/list-all/expense", async (req, res) => {
 // inserts a new expense type into DB and renders main view
 router.post("/finance/insert/expense-type", (req, res) => {
     // retrieve data from body
-    res.status(200).json("INSERTAR TIPO DE GASTO")
+    try {
+        let { expense_type } = req.body;
+        insertExpenseType(expense_type, req.session.user.id)
+            .then((message) => { renderDashboard(req, res, message, '', ADMIN_FINANCE_VIEW) })
+            .catch((error) => { renderDashboard(req, res, '', error, ADMIN_FINANCE_VIEW) })
+    } catch (error) {
+        renderDashboard(req, res, '', error, ADMIN_FINANCE_VIEW); // unexpected error
+    }
 })
 
 // inserts a new expense into Db AND RENDER MAIN VIEW
-router.post("/finance/insert/expense", (req, res) => {
+router.post("/finance/insert/expense", async (req, res) => {
     // retrieve data from body
     try {
         let { expense_ammount, expense_type } = req.body;
-        res.status(200).json({ message: "INSERTAR TIPO DE GASTO", data: { "expense ammount": expense_ammount, "expense_type": expense_type } })
+        insertExpense(expense_ammount, req.session.user.id, expense_type)
+            .then((message) => { renderDashboard(req, res, message, '', ADMIN_FINANCE_VIEW) })
+            .catch((error) => { renderDashboard(req, res, '', error, ADMIN_FINANCE_VIEW) })
+        return;
     } catch (error) {
-        renderDashboard(req, res, '', error);
+        renderDashboard(req, res, '', error, ADMIN_FINANCE_VIEW); // unexpected error
     }
 })
 

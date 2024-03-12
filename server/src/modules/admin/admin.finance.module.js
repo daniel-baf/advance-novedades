@@ -16,7 +16,7 @@ function getAllExpenseType() {
 }
 
 // insert into DB a new expense type
-function insertExpense(_ammount, _worker_id, _expense_type) {
+function insertExpense(_ammount = 0, _worker_id = '', _expense_type = '') {
     return new Promise((resolve, reject) => {
         // check if ammount is > 0
         if (_ammount < 0) reject('No puedes ingresar valores menores a 0')
@@ -40,7 +40,7 @@ function insertExpense(_ammount, _worker_id, _expense_type) {
 }
 
 // inset an expense type into DB
-function insertExpenseType(_expense_name) {
+function insertExpenseType(_expense_name = '', _worker_id = '') {
     return new Promise((resolve, reject) => {
         // check if _expense_type is invalid
         if (!_expense_name) reject('No has ingresado un valor valido para el tipo de gasto')
@@ -59,4 +59,4 @@ function insertExpenseType(_expense_name) {
     });
 }
 
-module.exports = { getAllExpenseType }
+module.exports = { getAllExpenseType, insertExpense, insertExpenseType }
