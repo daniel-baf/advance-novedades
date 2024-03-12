@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const router = express.Router();
 
-const { USERS_VIEW } = require('../../config/consts');
+const { ADMIN_USER_VIEW } = require('../../config/consts');
 const { deleteUserById, signup, searchUserById, toggleAuthorizationToUser, searchAllUsers, updateUser } = require('../../modules/admin/admin.users.module');
 adminBuildingRouter = require(path.join(__dirname, 'admin.buildings.routes'));
 
@@ -48,7 +48,7 @@ async function executeToggleGrants(req, res, authorize = false) {
         }
     } catch (error) {
         // render dashboard and display error message if any
-        adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la busqueda de usuarios, " + error, USERS_VIEW);
+        adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la busqueda de usuarios, " + error, ADMIN_USER_VIEW);
     }
 }
 
@@ -62,11 +62,11 @@ router.post("/user/create", async (req, res) => {
     // check if success
     if (!success) {
         // render page with error
-        adminBuildingRouter.renderDashboard(req, res, '', data, USERS_VIEW);
+        adminBuildingRouter.renderDashboard(req, res, '', data, ADMIN_USER_VIEW);
         return;
     }
     // render page with success message
-    adminBuildingRouter.renderDashboard(req, res, data, '', USERS_VIEW);
+    adminBuildingRouter.renderDashboard(req, res, data, '', ADMIN_USER_VIEW);
 });
 
 router.get("/user/search", async (req, res) => {
@@ -76,13 +76,13 @@ router.get("/user/search", async (req, res) => {
         let db_user = await searchUsersArrayMiddleFunction(search_all = user === '', id = user);
         // check if db_user is empty array
         if (db_user.length == 0) {
-            adminBuildingRouter.renderDashboard(req, res, "No existe un usuario con el ID proporcinado", '', USERS_VIEW);
+            adminBuildingRouter.renderDashboard(req, res, "No existe un usuario con el ID proporcinado", '', ADMIN_USER_VIEW);
             return;
         }
         // TODO valid user data, render a new view
         renderUserListPage(db_user, res, req, '', '', current_view = user);
     } catch (error) {
-        adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la busqueda de usuarios, " + error, USERS_VIEW);
+        adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la busqueda de usuarios, " + error, ADMIN_USER_VIEW);
     }
 });
 
@@ -103,13 +103,13 @@ router.get("/user/search/all", async (req, res) => {
         let users_db = await searchUsersArrayMiddleFunction(search_all = true);
         // check if users_db is empty array
         if (users_db.length == 0) {
-            adminBuildingRouter.renderDashboard(req, res, "No se encontraron usuarios", '', USERS_VIEW);
+            adminBuildingRouter.renderDashboard(req, res, "No se encontraron usuarios", '', ADMIN_USER_VIEW);
             return;
         }
         // valid search, render all fetched users
         renderUserListPage(users_db, res, req, current_view = '');
     } catch (error) {
-        adminBuildingRouter.renderDashboard(req, res, '', "No se pudieron buscar todos los usuarios, " + error, USERS_VIEW);
+        adminBuildingRouter.renderDashboard(req, res, '', "No se pudieron buscar todos los usuarios, " + error, ADMIN_USER_VIEW);
     }
 });
 
@@ -132,7 +132,7 @@ router.get("/user/delete/:id", async (req, res) => {
         }
     } catch (error) {
         // render dashboard and display error message if any
-        adminBuildingRouter.renderDashboard(req, res, '', "Error inesperado para eliminar usuarios, " + error, USERS_VIEW);
+        adminBuildingRouter.renderDashboard(req, res, '', "Error inesperado para eliminar usuarios, " + error, ADMIN_USER_VIEW);
     }
 
 });
@@ -159,7 +159,7 @@ router.post("/user/update/", async (req, res) => {
             return;
         }
     } catch (error) {
-        adminBuildingRouter.renderDashboard(req, res, '', "Error no definido para actualizar usuario, " + error, USERS_VIEW);
+        adminBuildingRouter.renderDashboard(req, res, '', "Error no definido para actualizar usuario, " + error, ADMIN_USER_VIEW);
     }
 });
 

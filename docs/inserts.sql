@@ -74,3 +74,10 @@ INSERT INTO `Bill` (`name`, `NIT`, `total`, `date`, `Worker_id`, `Order_id`) VAL
 INSERT INTO `Extra` (`detail`, `price`) VALUES ('Bordar el nombre Juanito Perez', '20');
 INSERT INTO `Bill_Detail` (`unitary_price`, `cuantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `Extra_id`) VALUES ('80', '3', '3', '2', '8', '1');
 
+-- EXPENSES
+INSERT INTO `Expense_Type` (`name`) VALUES ('SALARIOS'), ('Mobiliario y Equipo'), ('Herramientas'),('Alquileres'),('Gastos Varios');
+INSERT INTO `Expense` (`ammount`, `Worker_id`, `Expense_Type_id`) VALUES (123.12, 'ADM1', 1), (155.12, 'ADM1', 2), (182.12, 'ADM1', 3);
+
+
+
+

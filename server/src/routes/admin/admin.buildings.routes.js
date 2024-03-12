@@ -3,6 +3,8 @@ const router = express.Router();
 const { listBuildings, insertBuilding, searchBuilding, updateBuilding, deleteBuilding } = require('../../modules/admin/admin.building.module');
 const { listWorkerAreas } = require('../../modules/admin/admin.users.module');
 const { getSizes } = require('../../modules/admin/admin.products.module');
+const { getAllExpenseType } = require('../../modules/admin/admin.finance.module');
+const { ADMIN_USER_VIEW, ADMIN_FINANCE_VIEW, ADMIN_PRODUCTS_VIEW } = require('../../config/consts');
 
 
 // / BUILDINGS
@@ -87,16 +89,19 @@ router.get("/delete-building/:building_id", async (req, res) => {
 // render dashboard for admins
 async function renderDashboard(req, res, message, error_message, view) {
     try {
-        view = typeof (view) == 'undefined' ? 'products' : view
+        view = typeof (view) == 'undefined' ? ADMIN_PRODUCTS_VIEW : view
         // check view to call different JSONS
         _data = {}
-        if (view == 'products') {
+        if (view == ADMIN_PRODUCTS_VIEW) {
             _data = { buildings: [], sizes: [] }
             _data.buildings = await listBuildings();  // get buildings list
             _data.sizes = await getSizes();  // get sizes list
-        } else if (view == 'users') { // TODO dipslay all needed data from users
+        } else if (view == ADMIN_USER_VIEW) { // TODO dipslay all needed data from users
             _data = { worker_areas: [] }
             _data.worker_areas = await listWorkerAreas();  // get worker areas list
+        } else if (view == ADMIN_FINANCE_VIEW) {
+            _data = { expenses_type: [] }
+            _data.expenses_type = await getAllExpenseType();
         }
         // load buildings for subview
         res.render('users/admin/admin-view', { name: req.session.user.id, data: _data, message: message, error_message: error_message, view: view })

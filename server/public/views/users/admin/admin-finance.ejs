@@ -1,3 +1,81 @@
 <!-- views/admin-users.ejs -->
-<h2>Finance Panel</h2>
+<section>
+    <div>
+        <h2>Panel de Financiero</h2>
+        <div class="alert alert-info" role="alert">
+            <strong>info</strong> Aca podras manejar todo lo relacionado con las finanzas del negocio
+        </div>
+    </div>
+
+    <!-- BUILDINGS END -->
+    <!-- Horizontal split line -->
+    <div class="row">
+        <div class="col">
+            <hr class="split-line">
+        </div>
+    </div>
+
+    <div class="mb-5">
+        <h2 class="mb-2">Gastos</h2>
+        <div class="container mb-5">
+            <!-- EXPENSES -->
+            <div class="row">
+                <!-- div to create a new expense -->
+                <div class="col-md-6">
+                    <h3>Nuevo gasto</h3>
+                    <form action="/admin/finance/insert/expense" method="POST">
+                        <div class="form-group">
+                            <label for="expense_ammount">Expense Amount:</label>
+                            <input type="number" step="0.01" min="0" class="form-control" id="expense_ammount"
+                                name="expense_ammount" aria-describedby="expense_ammount"
+                                placeholder="Enter expense amount" required>
+                            <small for="expense_ammount">Ingresa la cantidad en quetzales que se ha gastado</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="expenseType">Tipo de gasto</label>
+                            <select class="form-control" id="expenseType" name="expense_type">
+                                <!-- iterate over expenses_type variable ejs -->
+                                <option selected disabled>-- SELECCIONAR --</option>
+                                <% _data.expenses_type.forEach(_expense_type=> { %>
+                                    <option value="<%=_expense_type.id%>">
+                                        <%=_expense_type.name%>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                            <small>Selecciona el tipo de gasto que vas a registrar</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Registrar Gasto</button>
+                        <a name="" id="" class="btn btn-info" href="/admin/finance/list-all/expense"
+                            role="button">Listar gastos</a>
+                    </form>
+                </div>
+                <!-- div to create a new expense type -->
+                <div class="col-md-6">
+                    <h3>Nuevo Tipo de Gasto</h3>
+                    <form action="/admin/finance/insert/expense-type" method="POST">
+                        <div class="form-group">
+                            <label for="expense_type">Tipo de gasto</label>
+                            <input type="text" class="form-control" name="expense_type" id="expense_type"
+                                aria-describedby="expense_type_small" placeholder="Gasto xxx" required>
+                            <small id="expense_type_small" class="form-text text-muted">Ingresa el nombre del nuevo tipo
+                                de gasto</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Registrar tipo de gasto</button>
+                        <a name="" id="" class="btn btn-info" href="/admin/finance/list-all/expense-type"
+                            role="button">Listar tipos de gasto</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Horizontal split line -->
+    <div class="row">
+        <div class="col">
+            <hr class="split-line">
+        </div>
+    </div>
+
+</section>
 <!-- Add your content for the Users panel here -->
