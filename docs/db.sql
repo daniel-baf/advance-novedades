@@ -70,7 +70,7 @@ DROP TABLE IF EXISTS `Expense` ;
 CREATE TABLE IF NOT EXISTS `Expense` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `ammount` DOUBLE NOT NULL,
-  `date` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `date` DATE NOT NULL DEFAULT NOW(),
   `Worker_id` VARCHAR(10) NOT NULL,
   `Expense_Type_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `Order` (
   `is_special` TINYINT(4) NOT NULL DEFAULT 0,
   `phone` VARCHAR(10) NOT NULL,
   `name` VARCHAR(45) NULL DEFAULT NULL,
-  `date` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `date` DATE NOT NULL DEFAULT NOW(),
   `Order_Status_id` VARCHAR(20) NOT NULL DEFAULT 'REGISTRADO',
   PRIMARY KEY (`id`),
   INDEX `fk_Orders_Order_Status1_idx` (`Order_Status_id` ASC) VISIBLE,
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `Bill` (
   `name` VARCHAR(45) NULL DEFAULT NULL,
   `NIT` VARCHAR(15) NOT NULL DEFAULT 'CF',
   `total` DOUBLE(9,2) NOT NULL DEFAULT 1.00,
-  `date` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `date` DATE NOT NULL DEFAULT NOW(),
   `Order_id` INT(11) NULL DEFAULT NULL,
   `Worker_id` VARCHAR(10) NOT NULL,
   PRIMARY KEY (`id`),
@@ -393,12 +393,11 @@ DELIMITER ;
 -- procedure insertWorkerAndGetId
 -- -----------------------------------------------------
 
-USE `novedades`;
 DROP procedure IF EXISTS `insertWorkerAndGetId`;
 
 DELIMITER $$
 USE `novedades`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insertWorkerAndGetId`(IN p_password VARCHAR(45),IN p_name VARCHAR(45),IN p_Worker_Area_id VARCHAR(15), IN p_Worker_allowed INT,OUT p_generated_id VARCHAR(10))
+CREATE DEFINER = CURRENT_USER PROCEDURE `insertWorkerAndGetId`(IN p_password VARCHAR(45),IN p_name VARCHAR(45),IN p_Worker_Area_id VARCHAR(15), IN p_Worker_allowed INT,OUT p_generated_id VARCHAR(10))
 BEGIN
     DECLARE prefix VARCHAR(5);
     
@@ -420,6 +419,37 @@ BEGIN
                          WHERE Worker_Area_id = p_Worker_Area_id);
     -- Perform the INSERT operation
     INSERT INTO Worker (password, name, Worker_Area_id, id, allowed) VALUES (p_password, p_name, p_Worker_Area_id, p_generated_id, p_Worker_allowed);
+END$$
+
+DELIMITER ;
+
+DROP procedure IF EXISTS `filter_expenses_dinamically`;
+
+DELIMITER $$
+
+CREATE DEFINER = CURRENT_USER PROCEDURE `filter_expenses_dinamically` (IN start_date DATE, IN finish_date DATE)
+BEGIN
+    IF (start_date IS NULL AND finish_date IS NULL) THEN
+        SELECT e.id, e.ammount, e.date, et.id AS `expense_type_id`, et.name AS `expense_type_name`, w.id AS `worker_id`, w.name AS `worker_name`
+			FROM Expense AS e INNER JOIN Expense_Type AS et	ON e.Expense_Type_id = et.id
+			INNER JOIN Worker AS w ON e.Worker_id = w.id
+				ORDER BY e.`date` ASC;
+    ELSEIF (start_date IS NOT NULL AND finish_date IS NULL) THEN
+       SELECT e.id, e.ammount, e.date, et.id AS `expense_type_id`, et.name AS `expense_type_name`, w.id AS `worker_id`, w.name AS `worker_name`
+			FROM Expense AS e INNER JOIN Expense_Type AS et	ON e.Expense_Type_id = et.id
+			INNER JOIN Worker AS w ON e.Worker_id = w.id
+				WHERE `date` >= start_date ORDER BY `date` ASC;
+    ELSEIF (start_date IS NULL AND finish_date IS NOT NULL) THEN
+        SELECT e.id, e.ammount, e.date, et.id AS `expense_type_id`, et.name AS `expense_type_name`, w.id AS `worker_id`, w.name AS `worker_name`
+			FROM Expense AS e INNER JOIN Expense_Type AS et	ON e.Expense_Type_id = et.id
+			INNER JOIN Worker AS w ON e.Worker_id = w.id
+				WHERE `date` <= finish_date ORDER BY `date` ASC;
+    ELSE
+        SELECT e.id, e.ammount, e.date, et.id AS `expense_type_id`, et.name AS `expense_type_name`, w.id AS `worker_id`, w.name AS `worker_name`
+			FROM Expense AS e INNER JOIN Expense_Type AS et	ON e.Expense_Type_id = et.id
+			INNER JOIN Worker AS w ON e.Worker_id = w.id
+				WHERE `date` BETWEEN start_date AND finish_date ORDER BY `date` ASC;
+    END IF;
 END$$
 
 DELIMITER ;

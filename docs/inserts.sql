@@ -76,8 +76,8 @@ INSERT INTO `Bill_Detail` (`unitary_price`, `cuantity`, `Bill_id`, `Inventory_Pl
 
 -- EXPENSES
 INSERT INTO `Expense_Type` (`name`) VALUES ('SALARIOS'), ('Mobiliario y Equipo'), ('Herramientas'),('Alquileres'),('Gastos Varios');
-INSERT INTO `Expense` (`ammount`, `Worker_id`, `Expense_Type_id`) VALUES (123.12, 'ADM1', 1), (155.12, 'ADM1', 2), (182.12, 'ADM1', 3);
+INSERT INTO `Expense` (`ammount`, `Worker_id`, `Expense_Type_id`, `date`) VALUES (123.12, 'ADM1', 1, NOW()), (155.12, 'ADM1', 2, '2020-12-21'), (182.12, 'ADM1', 3, '2023-01-02');
 
 
-
+CALL filter_expenses_dinamically('2020-02-02', '2022-01-01');
 

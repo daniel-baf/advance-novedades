@@ -12,7 +12,7 @@
             <h3>Edificios</h3>
             <div class="row">
                 <div class="col-md-6">
-                    <h4>Nuevo edificio</h4>
+                    <h4 class="center-text">Nuevo edificio</h4>
                     <p>Ingrese el nombre y la ubicacion del edificio</p>
                     <form action="/admin/insert-building" method="POST">
                         <div class="form-group">
@@ -33,7 +33,7 @@
                     </form>
                 </div>
                 <div class="col-md-6">
-                    <h4>Listado de edificios</h4>
+                    <h4 class="center-text">Listado de edificios</h4>
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-action active">EDIFICIOS</a>
                         <% buildings.forEach(building=> { %>
@@ -60,21 +60,21 @@
         <!-- end horizontal split line -->
         <!-- PLEDGES INIT  -->
         <div>
-            <h3>Prendas</h3>
+            <h3 class="center-text">Prendas</h3>
             <p class="subtitle">Aca podra ver todo lo relacionado con las prendas</p>
             <div class="row">
                 <div class="col-md-4">
-                    <h4> Prenda</h4>
+                    <h4 class="center-text"> Prenda</h4>
                     <a name="load-pledges-btn" id="load-pledges-btn" class="btn btn-outline-primary w-100"
                         href="/admin/load-pledges" role="button">listar</a>
                 </div>
                 <div class="col-md-4">
-                    <h4> Inventario</h4>
+                    <h4 class="center-text"> Inventario</h4>
                     <a name="load-inventory-btn" id="load-inventory-btn" class="btn btn-outline-primary w-100"
                         href="/admin/load-inventory" role="button">listar</a>
                 </div>
                 <div class="col-md-4">
-                    <h4> Stock </h4>
+                    <h4 class="center-text"> Stock </h4>
                     <a name="load-products-link" id="load-products-link" class="btn btn-outline-primary w-100"
                         href="/admin/load-products" role="button">listar</a>
                 </div>
@@ -89,7 +89,7 @@
         </div>
 
         <div>
-            <h4>Creacion de prendas</h4>
+            <h4 class="center-text"> Creación de prendas</h4>
             <p class="subtitle">Crea una nueva prenda y asigna precios por tallas</p>
             <div>
                 <form action="/admin/load-products/create" id="pledge-create-form">

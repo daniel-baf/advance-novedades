@@ -107,6 +107,7 @@ async function renderDashboard(req, res, message, error_message, view) {
         res.render('users/admin/admin-view', { name: req.session.user.id, data: _data, message: message, error_message: error_message, view: view })
         // res.status(200).json({ name: req.session.user.id, data: _data, message: message, error_message: error_message, view: view })
     } catch (error) {
+        // TODO check page 500 render
         res.render('500', { error_message: 'Ooops, a error just ocurred ' + error })
     }
 }
