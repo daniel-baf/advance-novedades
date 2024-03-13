@@ -13,10 +13,15 @@ async function getExpensesType() {
     return _fetched_data;
 }
 
+// render the expense type view
+function renderExpenseTypeView(req, res, message, error) {
+    res.render("users/admin/finance/expense-type-list", { message: message, error_message: error, name: req.session.user.id });
+}
+
 // displays a view with all expense type and allow it to edit it
 router.get("/finance/list-all/expense-type", async (req, res) => {
     let _expenses_type = await getExpensesType();
-    res.status(200).json(_expenses_type)
+    renderExpenseTypeView(req, res, '', '', _expenses_type);
 });
 
 // display a view with all expenses and allow it to edit it or delete it

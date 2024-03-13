@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin View</title>
+    <!-- Include Bootstrap CSS from CDN -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <!-- Add your additional CSS styles here if needed -->
+</head>
+
+<nav>
+    <%- include("../../../partials/nav.ejs")%>
+</nav>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- ASIDE -->
+            <div>
+                <%- include("../../../partials/admin-aside") %>
+            </div>
+            <!-- Main content area -->
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                <div>
+                    <%- include("../../../partials/messages.ejs", {message: message, error_message: error_message})%>
+                </div>
+                <div>
+                    <div>
+                        <h1>Listado de tipos de Gasto</h1>
+                        <p>Aca puedes eliminar, editar y ver todos los tipos de gasto que tienes.</p>
+                        <!-- DISPLAY VALUES FROM DB DYNAMICALLY -->
+                    </div>
+                    <!-- MODALS section -->
+                    <div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+
+<footer>
+    <%- include("../../../partials/footer.ejs")%>
+</footer>
+
+</html>
+
+<script src="/js/bootstrap.js"></script>
