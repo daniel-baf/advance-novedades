@@ -243,9 +243,9 @@ CREATE TABLE IF NOT EXISTS `Bill_Detail` (
   `Inventory_Size_id` VARCHAR(4) NOT NULL,
   `Extra_id` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `Bill_id_UNIQUE` (`Bill_id` ASC) VISIBLE,
-  UNIQUE INDEX `Inventory_Pledge_id_UNIQUE` (`Inventory_Pledge_id` ASC) VISIBLE,
-  UNIQUE INDEX `Inventory_Size_id_UNIQUE` (`Inventory_Size_id` ASC) VISIBLE,
+  INDEX `Bill_id_UNIQUE` (`Bill_id` ASC) VISIBLE,
+  INDEX `Inventory_Pledge_id_UNIQUE` (`Inventory_Pledge_id` ASC) VISIBLE,
+  INDEX `Inventory_Size_id_UNIQUE` (`Inventory_Size_id` ASC) VISIBLE,
   INDEX `fk_Bill_has_Inventory_Inventory1_idx` (`Inventory_Pledge_id` ASC, `Inventory_Size_id` ASC) VISIBLE,
   INDEX `fk_Bill_has_Inventory_Bill1_idx` (`Bill_id` ASC) VISIBLE,
   INDEX `fk_Bill_Detail_Extra1_idx` (`Extra_id` ASC) VISIBLE,
@@ -454,12 +454,52 @@ END$$
 
 DELIMITER ;
 
+DELIMITER //
+
+CREATE DEFINER = CURRENT_USER PROCEDURE generate_sample_bills()
+BEGIN
+  DECLARE num INT DEFAULT 0; -- no. of bills inserted
+  DECLARE random_date DATE; -- variable to store random date
+  DECLARE num_products, product_count, random_pledge_id, bill_id, tmp_product_count INT;
+  DECLARE random_size_id VARCHAR(4);
+  DECLARE random_price DECIMAL(10,2);  -- price variable
+  DECLARE total DECIMAL(10,2) DEFAULT 0;  -- initialize total to 0
+
+  WHILE num < 100 DO
+    SET random_date = CURRENT_DATE - INTERVAL FLOOR(RAND() * (4*365)) DAY; 
+    INSERT INTO `Bill` (`total`, `date`, `Worker_id`) VALUES (total, random_date, 'SLLS1');
+    SET bill_id = LAST_INSERT_ID();
+    SET num = num + 1;
+
+    SET num_products = FLOOR(RAND() * 4) + 1;
+
+    SET product_count = 1;
+    WHILE product_count <= num_products DO
+      SET random_pledge_id = (SELECT id FROM Pledge ORDER BY RAND() LIMIT 1);
+      SET random_size_id = (SELECT id FROM Size ORDER BY RAND() LIMIT 1);
+      SET random_price = (SELECT price FROM Inventory WHERE Pledge_id = random_pledge_id AND Size_id = random_size_id);
+      SET tmp_product_count = FLOOR(RAND() * 3) + 1;
+
+      INSERT INTO `Bill_Detail` (`unitary_price`, `cuantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`) 
+      VALUES (random_price, tmp_product_count, bill_id, random_pledge_id, random_size_id);
+
+      SET total = total + (random_price * tmp_product_count);
+      SET product_count = product_count + 1;
+    END WHILE;
+
+    UPDATE `Bill` SET `total` = total WHERE (`id` = bill_id);
+  END WHILE;
+END //
+
+DELIMITER ;
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
-DROP USER IF EXISTS 'novedades-client'@'%';
-CREATE USER 'novedades-client'@'%' IDENTIFIED BY 'GehYwLt7Yvn99I4';
-GRANT ALL PRIVILEGES ON `novedades`.* TO 'novedades-client'@'%';
+
+DROP USER IF EXISTS 'novedades-client''%';
+CREATE USER 'novedades-client''%' IDENTIFIED BY 'GehYwLt7Yvn99I4';
+GRANT ALL PRIVILEGES ON `novedades`.* TO 'novedades-client''%';
 FLUSH PRIVILEGES;

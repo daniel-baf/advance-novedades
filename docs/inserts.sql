@@ -79,5 +79,7 @@ INSERT INTO `Expense_Type` (`name`) VALUES ('SALARIOS'), ('Mobiliario y Equipo')
 INSERT INTO `Expense` (`ammount`, `Worker_id`, `Expense_Type_id`, `date`) VALUES (123.12, 'ADM1', 1, NOW()), (155.12, 'ADM1', 2, '2020-12-21'), (182.12, 'ADM1', 3, '2023-01-02');
 
 
-CALL filter_expenses_dinamically('2020-02-02', '2022-01-01');
+-- CALL filter_expenses_dinamically('2020-02-02', '2022-01-01');
 
+-- Call the stored procedure with desired start and end date (e.g., '2024-01-01', '2024-03-17')
+CALL generate_sample_bills();
