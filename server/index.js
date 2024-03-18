@@ -36,7 +36,7 @@ const mockSessionMiddleware = (req, res, next) => {
     // Set up a mock session object with user information
     req.session.user = {
       id: "PRD1", // Replace with the actual user ID
-      role: ROLES.PRODUCTION.NAME, // Replace with the actual user role
+      role: ROLES.PRODUCTION, // Replace with the actual user role
       username: "REMOVE ME ON PRODUCTION", // Replace with the actual username
       // Add any other user information needed for testing
     };
