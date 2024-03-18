@@ -50,19 +50,42 @@ const ADMIN_USER_VIEW = "users"
 const ADMIN_PRODUCTS_VIEW = "products"
 const ADMIN_FINANCE_VIEW = "finance"
 
+
+// REPORTS
+const MOST_SOLD_PRODUCTS_REPORT_QUERY = "SELECT Inventory_Pledge_id AS `pledge_id`, (SELECT `name` FROM Pledge WHERE id = `pledge_id`) AS `pledge_name`, Inventory_Size_id AS `size_id`, COUNT(*) AS `total` FROM Bill_Detail GROUP BY Inventory_Pledge_id, Inventory_Size_id ORDER BY total DESC, `pledge_id` ASC LIMIT 20;"
+const MOST_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY = "SELECT bd.Inventory_Pledge_id AS `pledge_id`, (SELECT `name` FROM Pledge WHERE id = `pledge_id`) AS `pledge_name`, bd.Inventory_Size_id AS `size_id`, COUNT(*) AS `total` FROM Bill_Detail AS bd LEFT JOIN Bill as b ON b.id = bd.Bill_id WHERE b.`date` BETWEEN ? AND ? GROUP BY Inventory_Pledge_id, Inventory_Size_id ORDER BY total DESC, `pledge_id` ASC LIMIT 20;";
+const LESS_SOLD_PRODUCTS_REPORT_QUERY = "SELECT Inventory_Pledge_id AS `pledge_id`, (SELECT `name` FROM Pledge WHERE id = `pledge_id`) AS `pledge_name`, Inventory_Size_id AS `size_id`, COUNT(*) AS `total` FROM Bill_Detail GROUP BY Inventory_Pledge_id, Inventory_Size_id ORDER BY total ASC, `pledge_id` ASC LIMIT 20;"
+const LESS_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY = "SELECT bd.Inventory_Pledge_id AS `pledge_id`, (SELECT `name` FROM Pledge WHERE id = `pledge_id`) AS `pledge_name`, bd.Inventory_Size_id AS `size_id`, COUNT(*) AS `total` FROM Bill_Detail AS bd LEFT JOIN Bill as b ON b.id = bd.Bill_id WHERE b.`date` BETWEEN ? AND ? GROUP BY Inventory_Pledge_id, Inventory_Size_id ORDER BY total ASC, `pledge_id` ASC LIMIT 20;";
+const EARNINGS_REPORT_QUERY = "SELECT id, NIT, total, date, Worker_id FROM novedades.Bill ORDER BY `date` DESC;"
+const EARNINGS_FILTER_DATES_REPORT_QUERY = "SELECT id, NIT, total, date, Worker_id FROM novedades.Bill WHERE date BETWEEN ? AND ? ORDER BY `date` DESC ;"
+const EXPENSE_REPORT_QUERY = "SELECT * FROM novedades.Expense ORDER BY date DESC;"
+const EXPENSE_FILTER_DATES_REPORT_QUERY = "SELECT * FROM novedades.Expense WHERE date BETWEEN ? AND ? ORDER BY date DESC;"
+const BUILDING_SELECT_REPORT_QUERY = "SELECT * FROM Building;"
+
 // REPORTS TYPES
 const REPORT_TYPES = {
-    // PRODUCTS: "PRODUCTOS",
-    // SIZES: "TALLAS",
-    // BUILDINGS: "EDIFICIOS",
-    // USERS: "USUARIOS",
-    // GENERAL_STATUS: "RESUMEN GENERAL",
+    // finance
+    EXPENSES: "GASTOS",
+    EARNINGS: "GANANCIAS",
     MOST_SOLD_PRODUCTS: "PRODUCTOS MAS VENDIDOS",
-    // LESS_SOLD_PRODUCTS: "PREODUCTOS MENOS VENDIDOS",
-    // EARNINGS: "GANANCIAS",
-    // EXPENSES: "GASTOS",
+    LESS_SOLD_PRODUCTS: "PRODUCTOS MENOS VENDIDOS",
     // NET_PROFIT: "UTILIDADES (GANANCIAS - GASTOS)",
+    // administation
+    BUILDINGS: "EDIFICIOS",
+    PLEDGES: "PRODUCTOS",
+    USERS: "USUARIOS",  // reuse code
+    // clothes
+    SIZES: "TALLAS",
+    // GENERAL_STATUS: "RESUMEN GENERAL",
 };
+
+// ROLES
+const ROLES = {
+    ADMIN: {TAG: "ADM", NAME: "ADMIN"},
+    PRODUCTION: {TAG: "PRD", NAME: "PRODUCTION"},
+    SELLS: {TAG: "SLLS", NAME: "SELLS"},
+    UNKNOWN: {TAG: "UNK", NAME: "UNKNOWN"}
+}
 
 
 module.exports = {
@@ -84,5 +107,8 @@ module.exports = {
     // ADMIN VIEWS
     ADMIN_USER_VIEW, ADMIN_PRODUCTS_VIEW, ADMIN_FINANCE_VIEW,
     // REPORT TYPES
-    REPORT_TYPES
+    REPORT_TYPES, MOST_SOLD_PRODUCTS_REPORT_QUERY, LESS_SOLD_PRODUCTS_REPORT_QUERY, EARNINGS_REPORT_QUERY, EXPENSE_REPORT_QUERY, BUILDING_SELECT_REPORT_QUERY,
+    MOST_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY, LESS_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY, EARNINGS_FILTER_DATES_REPORT_QUERY, EXPENSE_FILTER_DATES_REPORT_QUERY,
+    // ROLES
+    ROLES
 }

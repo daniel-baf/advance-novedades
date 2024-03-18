@@ -30,7 +30,8 @@ const mockSessionMiddleware = (req, res, next) => {
     if (process.env.NODE_ENV === 'DEVELOPMENT') {
         // Set up a mock session object with user information
         req.session.user = {
-            id: 'ADM1', // Replace with the actual user ID
+            id: 'PRD1', // Replace with the actual user ID
+            role: 'production', // Replace with the actual user role
             username: 'REMOVE ME ON PRODUCTION', // Replace with the actual username
             // Add any other user information needed for testing
         }
@@ -48,6 +49,7 @@ app.use(mockSessionMiddleware);
 app.use(require(path.join(__dirname, 'src/routes/', 'user.routes')));
 app.use(morgan('dev'))
 app.use('/admin', require(path.join(__dirname, 'src/routes/', 'admin.routes')));
+app.use('/production', require(path.join(__dirname, 'src/routes/', 'production.routes')));
 
 // views
 app.set('view engine', 'ejs')

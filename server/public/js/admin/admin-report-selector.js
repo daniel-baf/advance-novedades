@@ -5,7 +5,7 @@ $(document).ready(function () {
         fetchData().then(result => {
             // add elements fetched to FORM
             for (let reportType in result.reports) {
-                $('#reportType').append(`<option value="${reportType}">${result.reports[reportType]}</option>`);
+                $('#reportType').append(`<option value="${result.reports[reportType]}">${result.reports[reportType]}</option>`); // BACKEND USES THE KEY TO GET THE VALUE
             }
         }).catch(error => {
             alert(error);
@@ -13,7 +13,7 @@ $(document).ready(function () {
     });
 
     // get data from DB without reloading DOM
-    function fetchData(pledge_id, pledge_size) {
+    function fetchData() {
         return new Promise(async (resolve, reject) => {
             const url = `/admin/report/search/report-types/`;
             try {

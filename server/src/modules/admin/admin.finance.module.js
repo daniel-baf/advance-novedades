@@ -1,6 +1,7 @@
 const path = require('path');
 const { GET_ALL_EXPENSE_TYPE_QUERY, EXPENSE_TYPE_INSERT_QUERY, EXPENSE_INSERT_QUERY, EXPENSE_TYPE_READ_ID_QUERY, EXPENSE_TYPE_UPDATE_QUERY, EXPENSE_TYPE_DELETE_QUERY,
-    EXPENSE_SELECT_PROCEDURE, EXPENSE_DELETE_QUERY, EXPENSE_UPDATE_QUERY, EXPENSE_SELECT_ID_QUERY } = require('../../config/consts');
+    EXPENSE_SELECT_PROCEDURE, EXPENSE_DELETE_QUERY, EXPENSE_UPDATE_QUERY, EXPENSE_SELECT_ID_QUERY, ROLES } = require('../../config/consts');
+const { swapDatesIfPossible } = require('../utils/dates.utils.module');
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
 // format a date
@@ -49,7 +50,7 @@ function insertExpenseType(_expense_name = '', _worker_id = '') {
         // check if user is invalid
         if (!_worker_id) reject('No es un usuario valido el que ha insertado el gasto')
         // check if a no admin is trying to insert the expense
-        if (!_worker_id.includes("ADM")) reject("No estas autorizado para ejecutar esta operacion")
+        if (!_worker_id.includes(ROLES.ADMIN.TAG)) reject("No estas autorizado para ejecutar esta operacion")
         // valid operation, proced to insert
         db_connection.query(EXPENSE_TYPE_INSERT_QUERY, [_expense_name], (error, result) => {
             if (error) {
@@ -110,7 +111,7 @@ function insertExpense(_ammount = 0, _worker_id = '', _expense_type = '') {
         // check if user is invalid
         if (!_worker_id) reject('No es un usuario valido el que ha insertado el gasto')
         // check if a no admin is trying to insert the expense
-        if (!_worker_id.includes("ADM")) reject("No estas autorizado para ejecutar esta operacion")
+        if (!_worker_id.includes(ROLES.ADMIN.TAG)) reject("No estas autorizado para ejecutar esta operacion")
         // valid operation, proced to insert
         let _date = new Date();         // configure date to current date
         _ammount = Number.parseFloat(_ammount) // cast to double
@@ -126,17 +127,10 @@ function insertExpense(_ammount = 0, _worker_id = '', _expense_type = '') {
 
 // list all expenses on DB
 function listExpensesByFilter(_init_date = null, _end_date = null) {
-    // cast '' to NULL
-    // check wich date is higher or lower to send it 
-    if ((!_init_date && !_end_date) && !(_init_date instanceof Date) || !(_end_date instanceof Date)) {
-        // swap if _end_date < _init_date
-        let _tmp_date = _init_date;
-        _init_date = _init_date < _end_date ? _init_date : _end_date;
-        _end_date = _init_date === _tmp_date ? _end_date : _tmp_date;
-    }
-    // change possible values of NaN, undefined... to NULL
-    _init_date = _init_date === '' || _init_date === undefined ? null : _init_date;
-    _end_date = _end_date === '' || _end_date === undefined ? null : _end_date;
+    // get dates 
+    let _dates = swapDatesIfPossible(_init_date, _end_date);
+    _init_date = _dates.init_date;
+    _end_date = _dates.end_date;
     // call procedure to get dinamically data
     return new Promise((resolve, reject) => {
         // call procedure
@@ -182,7 +176,7 @@ function updateExpense(_id, _ammount, _worker_id, _expense_type, _date) {
     return new Promise((resolve, reject) => {
         if (!_worker_id || !_expense_type || !_id || !_ammount || !_date) reject("Datos invalidos") // Reject if invalid worker_id
         if (_ammount < 0) reject("No puedes ingresar valores menores a 0") // Reject if invalid ammount
-        if (!_worker_id.includes("ADM")) reject("No estas autorizado para ejecutar esta operacion") // Reject if invalid user
+        if (!_worker_id.includes(ROLES.ADMIN.TAG)) reject("No estas autorizado para ejecutar esta operacion") // Reject if invalid user
         // valid operation, proced to insert
         db_connection.query(EXPENSE_UPDATE_QUERY, [_ammount, _expense_type, _date, _id], (error, result) => {
             if (error) reject("No se ha podido actualizar el gasto")
