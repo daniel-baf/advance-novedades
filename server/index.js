@@ -50,6 +50,7 @@ const mockSessionMiddleware = (req, res, next) => {
 app.use(mockSessionMiddleware);
 
 // Routes`
+<<<<<<< HEAD
 app.use(require(path.join(__dirname, "src/routes/", "user.routes")));
 app.use(morgan("dev"));
 app.use("/admin", require(path.join(__dirname, "src/routes/", "admin.routes")));
@@ -57,6 +58,12 @@ app.use(
   "/production",
   require(path.join(__dirname, "src/routes/", "production.routes"))
 );
+=======
+app.use(require(path.join(__dirname, 'src/routes/', 'user.routes')));
+app.use(morgan('dev'))
+app.use('/admin', require(path.join(__dirname, 'src/routes/', 'admin.routes')));
+app.use('/production', require(path.join(__dirname, 'src/routes/', 'production.routes')));
+>>>>>>> 91dc794f99bb9a00e7a1c050c8df84a00d57c17c
 
 // views
 app.set("view engine", "ejs");
