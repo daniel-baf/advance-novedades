@@ -1,4 +1,4 @@
-h2 {
+h1, h2 {
     text-align: center;
     margin-top: 2rem;
 }
@@ -7,7 +7,19 @@ h2 {
     text-align: center;
 }
 
-h3, h4 {
+.center-text {
+    text-align: center;
+}
+
+.right-text {
+    text-align: right;
+}
+
+h3 {
     margin-top: 2rem;
     text-align: center;
+}
+
+h4 {
+    margin-top: 2rem;
 }

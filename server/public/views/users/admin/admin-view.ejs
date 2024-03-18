@@ -27,45 +27,53 @@
                 <div>
                     <%- include("../../partials/messages.ejs", {message: message, error_message: error_message})%>
                 </div>
-                <!-- Admin Products Panel -->
                 <div>
-                    <% if (view=='products' ) { %>
+                    <% if (view==='products' ) { %>
+                        <!-- Admin Products Panel -->
                         <div id="adminProducts" class="hide-me-panel">
                             <%- include("admin-products", { buildings: data.buildings })%>
                         </div>
-                        <% } %>
-                </div>
-                <!-- Admin Users Panel -->
-                <div>
-                    <% if (view=='users' ) { %>
-                        <div id="adminUsers" class="hide-me-panel">
-                            <%- include("admin-users")%>
+                        <div>
+                            <% } else if (view==='users' ) {%>
+                                <!-- Admin Users Panel -->
+                                <div id="adminUsers" class="hide-me-panel">
+                                    <%- include("admin-users")%>
+                                </div>
                         </div>
-                        <% } %>
-                </div>
-                <!-- Admin Finance Panel -->
-                <div>
-                    <% if (view=='finance' ) { %>
-                        <div id="adminFinance" class="hide-me-panel">
-                            <%- include("admin-finance")%>
+                        <div>
+                            <% } else if (view=='finance' ) {%>
+                                <!-- Admin Finance Panel -->
+                                <div id="adminFinance" class="hide-me-panel">
+                                    <%- include("admin-finance")%>
+                                </div>
                         </div>
-                        <% } %>
-                </div>
-                <div>
-                    <!-- INVALID VIEW PARAMETER -->
-                    <% if (view!='products' && view!='users' && view!='finance' ) { %>
-                        <div id="adminInvalid" class="hide-me-panel">
-                            <h2>Panel de administrador</h2>
-                            <div class="alert alert-info" role="alert">
-                                <strong>info</strong> Estas accediendo a una pestaña no valida, selecciona una opcion
-                                del menu para continuar
-                            </div>
-                            <p>Selecciona una opción del menú para continuar</p>
+                        <div>
+                            <% } else if (view=='reports' ) { %>
+                                <!-- Admin Finance Panel -->
+                                <div id="adminReports" class="hide-me-panel">
+                                    <%- include("./reports/admin-reports-selector")%>
+                                </div>
                         </div>
-                        <% } %>
+                        <div>
+                            <% } else {%>
+                                <!-- INVALID VIEW PARAMETER -->
+                                <div id="adminInvalid" class="hide-me-panel">
+                                    <h2>Panel de administrador</h2>
+                                    <div class="alert alert-info" role="alert">
+                                        <strong>info</strong> Estas accediendo a una pestaña no valida,
+                                        selecciona
+                                        una
+                                        opcion
+                                        del menu para continuar
+                                    </div>
+                                    <p>Selecciona una opción del menú para continuar</p>
+                                </div>
+                                <% } %>
+                        </div>
                 </div>
-            </main>
         </div>
+        </main>
+    </div>
     </div>
 </body>
 
