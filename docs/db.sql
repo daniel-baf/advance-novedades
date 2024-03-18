@@ -486,8 +486,8 @@ BEGIN
       SET total = total + (random_price * tmp_product_count);
       SET product_count = product_count + 1;
     END WHILE;
-
-    UPDATE `Bill` SET `total` = total WHERE (`id` = bill_id);
+	UPDATE `Bill` SET `total` = total WHERE (`id` = bill_id);
+    SET total = 0;
   END WHILE;
 END //
 
