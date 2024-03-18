@@ -74,3 +74,12 @@ INSERT INTO `Bill` (`name`, `NIT`, `total`, `date`, `Worker_id`, `Order_id`) VAL
 INSERT INTO `Extra` (`detail`, `price`) VALUES ('Bordar el nombre Juanito Perez', '20');
 INSERT INTO `Bill_Detail` (`unitary_price`, `cuantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `Extra_id`) VALUES ('80', '3', '3', '2', '8', '1');
 
+-- EXPENSES
+INSERT INTO `Expense_Type` (`name`) VALUES ('SALARIOS'), ('Mobiliario y Equipo'), ('Herramientas'),('Alquileres'),('Gastos Varios');
+INSERT INTO `Expense` (`ammount`, `Worker_id`, `Expense_Type_id`, `date`) VALUES (123.12, 'ADM1', 1, NOW()), (155.12, 'ADM1', 2, '2020-12-21'), (182.12, 'ADM1', 3, '2023-01-02');
+
+
+-- CALL filter_expenses_dinamically('2020-02-02', '2022-01-01');
+
+-- Call the stored procedure with desired start and end date (e.g., '2024-01-01', '2024-03-17')
+CALL generate_sample_bills();

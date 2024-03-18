@@ -33,10 +33,60 @@ const BUILDING_UPDATE_QUERY = "UPDATE Building SET name = ?, direction = ? WHERE
 const BUILDING_SEARCH_ID_QUERY = "SELECT * FROM Building WHERE id = ?;"
 const BUILDING_DELETE_QUERY = "DELETE FROM Building WHERE (id = ?);"
 const BUILDING_SELECT_EXCLUDE_DIR = "SELECT id, name FROM Building;"
-
+// EXPENSE
+const GET_ALL_EXPENSE_TYPE_QUERY = "SELECT id, name FROM Expense_Type ORDER BY id ASC;"
+const EXPENSE_TYPE_INSERT_QUERY = "INSERT INTO Expense_Type (`name`) VALUES (?)" // insert a single expense type
+const EXPENSE_TYPE_READ_ID_QUERY = "SELECT id, name FROM Expense_Type WHERE id = ?;" // read a single expense type
+const EXPENSE_TYPE_UPDATE_QUERY = "UPDATE `Expense_Type` SET `name` = ? WHERE (`id` = ?);"
+const EXPENSE_TYPE_DELETE_QUERY = "DELETE FROM `Expense_Type` WHERE (`id` = ?);"
+const EXPENSE_INSERT_QUERY = "INSERT INTO `Expense` (`ammount`, `date`, `Worker_id`, `Expense_Type_id`) VALUES (?, ?, ?, ?);"
+const EXPENSE_SELECT_PROCEDURE = "CALL filter_expenses_dinamically(?,?);"
+const EXPENSE_DELETE_QUERY = "DELETE FROM `Expense` WHERE (`id` = ?);"
+const EXPENSE_UPDATE_QUERY = "UPDATE `Expense` SET `ammount` = ?, `Expense_Type_id` = ?, date = ? WHERE (`id` = ?);"
+const EXPENSE_SELECT_ID_QUERY = "SELECT e.id, e.ammount, e.date, et.id AS `expense_type_id`, et.name AS `expense_type_name`, w.id AS `worker_id`, w.name AS `worker_name` FROM Expense AS e INNER JOIN Expense_Type AS et	ON e.Expense_Type_id = et.id INNER JOIN Worker AS w ON e.Worker_id = w.id WHERE e.id = ?;"
 
 // ADMIN DASHBOARD VIEWS
-const USERS_VIEW = "users"
+const ADMIN_USER_VIEW = "users"
+const ADMIN_PRODUCTS_VIEW = "products"
+const ADMIN_FINANCE_VIEW = "finance"
+
+
+// REPORTS
+const MOST_SOLD_PRODUCTS_REPORT_QUERY = "SELECT Inventory_Pledge_id AS `pledge_id`, (SELECT `name` FROM Pledge WHERE id = `pledge_id`) AS `pledge_name`, Inventory_Size_id AS `size_id`, COUNT(*) AS `total` FROM Bill_Detail GROUP BY Inventory_Pledge_id, Inventory_Size_id ORDER BY total DESC, `pledge_id` ASC LIMIT 20;"
+const MOST_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY = "SELECT bd.Inventory_Pledge_id AS `pledge_id`, (SELECT `name` FROM Pledge WHERE id = `pledge_id`) AS `pledge_name`, bd.Inventory_Size_id AS `size_id`, COUNT(*) AS `total` FROM Bill_Detail AS bd LEFT JOIN Bill as b ON b.id = bd.Bill_id WHERE b.`date` BETWEEN ? AND ? GROUP BY Inventory_Pledge_id, Inventory_Size_id ORDER BY total DESC, `pledge_id` ASC LIMIT 20;";
+const LESS_SOLD_PRODUCTS_REPORT_QUERY = "SELECT Inventory_Pledge_id AS `pledge_id`, (SELECT `name` FROM Pledge WHERE id = `pledge_id`) AS `pledge_name`, Inventory_Size_id AS `size_id`, COUNT(*) AS `total` FROM Bill_Detail GROUP BY Inventory_Pledge_id, Inventory_Size_id ORDER BY total ASC, `pledge_id` ASC LIMIT 20;"
+const LESS_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY = "SELECT bd.Inventory_Pledge_id AS `pledge_id`, (SELECT `name` FROM Pledge WHERE id = `pledge_id`) AS `pledge_name`, bd.Inventory_Size_id AS `size_id`, COUNT(*) AS `total` FROM Bill_Detail AS bd LEFT JOIN Bill as b ON b.id = bd.Bill_id WHERE b.`date` BETWEEN ? AND ? GROUP BY Inventory_Pledge_id, Inventory_Size_id ORDER BY total ASC, `pledge_id` ASC LIMIT 20;";
+const EARNINGS_REPORT_QUERY = "SELECT id, NIT, total, date, Worker_id FROM novedades.Bill ORDER BY `date` DESC;"
+const EARNINGS_FILTER_DATES_REPORT_QUERY = "SELECT id, NIT, total, date, Worker_id FROM novedades.Bill WHERE date BETWEEN ? AND ? ORDER BY `date` DESC ;"
+const EXPENSE_REPORT_QUERY = "SELECT * FROM novedades.Expense ORDER BY date DESC;"
+const EXPENSE_FILTER_DATES_REPORT_QUERY = "SELECT * FROM novedades.Expense WHERE date BETWEEN ? AND ? ORDER BY date DESC;"
+const BUILDING_SELECT_REPORT_QUERY = "SELECT * FROM Building;"
+
+// REPORTS TYPES
+const REPORT_TYPES = {
+    // finance
+    EXPENSES: "GASTOS",
+    EARNINGS: "GANANCIAS",
+    MOST_SOLD_PRODUCTS: "PRODUCTOS MAS VENDIDOS",
+    LESS_SOLD_PRODUCTS: "PRODUCTOS MENOS VENDIDOS",
+    // NET_PROFIT: "UTILIDADES (GANANCIAS - GASTOS)",
+    // administation
+    BUILDINGS: "EDIFICIOS",
+    PLEDGES: "PRODUCTOS",
+    USERS: "USUARIOS",  // reuse code
+    // clothes
+    SIZES: "TALLAS",
+    // GENERAL_STATUS: "RESUMEN GENERAL",
+};
+
+// ROLES
+const ROLES = {
+    ADMIN: {TAG: "ADM", NAME: "ADMIN"},
+    PRODUCTION: {TAG: "PRD", NAME: "PRODUCTION"},
+    SELLS: {TAG: "SLLS", NAME: "SELLS"},
+    UNKNOWN: {TAG: "UNK", NAME: "UNKNOWN"}
+}
+
 
 module.exports = {
     // buildings
@@ -51,6 +101,14 @@ module.exports = {
     // users
     USER_WORKER_AREA_SELECT_QUERY, USER_SELECT_BY_PASS_ID_QUERY, USER_SELECT_BY_ID_NO_PASS_QUERY, USER_SELECT_ALL_NO_PASS_QUERY,
     USER_REMOVE_ACCESS_QUERY, USER_GRANT_ACCESS_QUERY, USER_DELETE_QUERY, USER_UPDATE_QUERY, USER_INSERT_QUERY, USER_UPDATE_NO_PASS_QUERY,
+    // EXPENSES
+    GET_ALL_EXPENSE_TYPE_QUERY, EXPENSE_TYPE_INSERT_QUERY, EXPENSE_INSERT_QUERY, EXPENSE_TYPE_READ_ID_QUERY, EXPENSE_TYPE_UPDATE_QUERY,
+    EXPENSE_TYPE_DELETE_QUERY, EXPENSE_SELECT_PROCEDURE, EXPENSE_DELETE_QUERY, EXPENSE_UPDATE_QUERY, EXPENSE_SELECT_ID_QUERY,
     // ADMIN VIEWS
-    USERS_VIEW
+    ADMIN_USER_VIEW, ADMIN_PRODUCTS_VIEW, ADMIN_FINANCE_VIEW,
+    // REPORT TYPES
+    REPORT_TYPES, MOST_SOLD_PRODUCTS_REPORT_QUERY, LESS_SOLD_PRODUCTS_REPORT_QUERY, EARNINGS_REPORT_QUERY, EXPENSE_REPORT_QUERY, BUILDING_SELECT_REPORT_QUERY,
+    MOST_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY, LESS_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY, EARNINGS_FILTER_DATES_REPORT_QUERY, EXPENSE_FILTER_DATES_REPORT_QUERY,
+    // ROLES
+    ROLES
 }
