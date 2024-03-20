@@ -1,63 +1,215 @@
-<link rel="stylesheet" href="/css/bootstrap.min.css" />
+<!DOCTYPE html>
+<html lang="ES">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Vista de vendedor</title>
+    <!-- Include Bootstrap CSS from CDN -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <!-- Add your additional CSS styles here if needed -->
+    <link rel="stylesheet" href="/css/admin/admin-view.css" />
+  </head>
 
-<section class="container mt-5">
-  <!-- DIV TO SEARCH OR FILTER -->
-  <div>
-    <h1>Buscador de productos</h1>
-    <p>Busca productos para agregarlos al carrito de compras</p>
+  <nav><%- include("../../../partials/nav.ejs")%></nav>
 
-    <div class="justify-content-center">
-      <form action="/sells/cart/search-item">
-        <div class="row justify-content-center">
-          <!-- Search Type Dropdown -->
-          <div class="col-lg-3">
-            <div class="form-group">
-              <label for="searchType">Tipo Busqueda</label>
-              <select class="form-control" name="searchType" id="searchType">
-                <option value="id" selected>ID</option>
-                <option value="name">Nombre</option>
-              </select>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div><%- include("../../../partials/asides/sells-aside") %></div>
+
+        <!-- Main content area -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 mt-5">
+          <div>
+            <h1>Buscador de productos</h1>
+            <p>Busca productos para agregarlos al carrito de compras</p>
+            <div>
+              <%- include("../../../partials/messages.ejs", {message: message,
+              error_message: error_message})%>
             </div>
           </div>
-          <!-- Search Input and Button -->
-          <div class="col-lg-9">
-            <div class="form-group">
-              <label for="searchInput">Buscador</label>
-              <div class="input-group mb-3">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Search items..."
-                  aria-label="Search items"
-                  aria-describedby="button-addon2"
-                  id="searchInput"
-                  name="searchInput"
-                />
-                <div class="input-group-append">
+          <section class="container mt-2">
+            <!-- DIV TO SEARCH OR FILTER -->
+            <div>
+              <div class="justify-content-center">
+                <form action="/sells/stock/search" method="POST">
+                  <div class="row justify-content-center">
+                    <!-- Search Type Dropdown -->
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label for="searchType">Tipo Busqueda</label>
+                        <select
+                          class="form-control"
+                          name="searchType"
+                          id="searchType"
+                          required
+                        >
+                          <!-- FOR filterTypes TO SEARCH FROM BACKEND -->
+                          <option selected disabled>-- SELECCIONAR --</option>
+                          <% for (let filterType in filterTypes) { %>
+                          <option value="<%=filterTypes[filterType]%>">
+                            <%=filterTypes[filterType]%>
+                          </option>
+                          <% } %>
+                        </select>
+                      </div>
+                    </div>
+                    <!-- Search Input and Button -->
+                    <div class="col-lg-9">
+                      <div class="form-group">
+                        <label for="searchId">Buscador</label>
+                        <div class="input-group mb-3">
+                          <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Buscar productos..."
+                            aria-label="Buscar productos"
+                            aria-describedby="button-addon2"
+                            id="searchId"
+                            name="searchId"
+                          />
+                          <div class="input-group-append">
+                            <button
+                              class="btn btn-outline-info"
+                              type="submit"
+                              id="button-addon2"
+                            >
+                              Buscar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                <div
+                  class="alert alert-warning alert-dismissible fade show"
+                  role="alert"
+                >
                   <button
-                    class="btn btn-outline-info"
-                    type="submit"
-                    id="button-addon2"
+                    type="button"
+                    class="close"
+                    data-dismiss="alert"
+                    aria-label="Close"
                   >
-                    Buscar
+                    <span aria-hidden="true">&times;</span>
                   </button>
+                  Tu tienda actual es:
+                  <strong><%=building%></strong>
                 </div>
+
+                <script>
+                  $(".alert").alert();
+                </script>
               </div>
             </div>
+          </section>
+          <!-- SPLIT LINE -->
+          <!-- Horizontal split line -->
+          <div class="row">
+            <div class="col">
+              <hr class="split-line" />
+            </div>
           </div>
-        </div>
-      </form>
+          <!-- DIV TO DISPLAY RESULT IN TABLE -->
+          <div>
+            <div class="alert alert-info" role="alert">
+              <h4 class="alert-heading">Productos encontrados</h4>
+              <p>Aca veras todos los productos encontrados segun tu busqueda</p>
+              <p class="mb-0">
+                Deja la busqueda vacia si quieres que se busquen todos los
+                productos pertenecientes a tu tienda actual
+              </p>
+            </div>
+            <div class="table-responsive pl-5 pr-5">
+              <table class="table">
+                <thead class="table-secondary">
+                  <tr>
+                    <th>Codigo</th>
+                    <th>NOMBRE</th>
+                    <th>TALLA</th>
+                    <th>EXISTENCIA</th>
+                    <th>Precio</th>
+                    <th>AGREGAR</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- FOR DATA DISPLAY VALUES -->
+                  <% data.forEach((item) => { %>
+                  <tr>
+                    <th scope="row"><%=item.pledge_id%></th>
+                    <td><%=item.pledge_name%></td>
+                    <td><%=item.size%></td>
+                    <td><%=item.stock%></td>
+                    <td>Q<%= Number(item.price).toFixed(2) %></td>
+                    <td>
+                      <form
+                        class="form-inline"
+                        class=".add-item-cart-form"
+                        method="GET"
+                        action="/sells/cart/add"
+                      >
+                        <!-- HIDDEN DATA -->
+                        <div>
+                          <input
+                            type="number"
+                            class="form-control"
+                            name="pledge_id"
+                            id="pledge_id"
+                            value="<%=item.pledge_id%>"
+                            hidden
+                          />
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="pledge_size"
+                            id="pledge_size"
+                            value="<%=item.size%>"
+                            hidden
+                          />
+                        </div>
+                        <div class="input-group">
+                          <input
+                            type="number"
+                            step="1"
+                            min="1"
+                            class="form-control w-40"
+                            placeholder="0"
+                            aria-label="0"
+                            aria-describedby="button-addon2"
+                            id="quantity"
+                            name="quantity"
+                            required
+                          />
+                          <!-- TODO check max = stock and center text input -->
+                          <div class="input-group-append">
+                            <button
+                              class="btn btn-outline-info"
+                              type="submit"
+                              id="button-addon2"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
-  </div>
-  <!-- SPLIT LINE -->
-  <!-- Horizontal split line -->
-  <div class="row">
-    <div class="col">
-      <hr class="split-line" />
-    </div>
-  </div>
-  <!-- DIV TO DISPLAY RESULT IN TABLE -->
-  <div>
-    <!-- TABLE TO DIPSLAY VALUES FROM DB -->
-  </div>
-</section>
+  </body>
+
+  <footer><%- include("../../../partials/footer.ejs")%></footer>
+</html>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="/js/bootstrap.js"></script>
+<!-- Your custom JavaScript to handle panel visibility -->

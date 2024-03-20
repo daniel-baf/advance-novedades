@@ -35,18 +35,6 @@ function getBuildings() {
 // Generate JSON with products and all custom data
 async function generateProductsJSON(_buildings, _pledges) {
     try {
-        // Define a function to get stock availability
-        async function getStockByBuildingAndPledge(_pledge_id, _building_id) {
-            return new Promise((resolve, reject) => {
-                db_connection.query(STOCK_SELECT_QUERY, [_building_id, _pledge_id], (error, result) => {
-                    if (error) {
-                        reject("Unable to get stock availability: " + error);
-                    } else {
-                        resolve(result);
-                    }
-                });
-            });
-        }
 
         // Map pledges to an array of promises for fetching stock availability
         const pledgePromises = _pledges.map(async _pledge => {
@@ -127,4 +115,17 @@ async function getSizes() {
     });
 }
 
-module.exports = { loadProducts, getBuildings, getSizes, findStockByPK, updateStock }
+// Define a function to get stock availability
+async function getStockByBuildingAndPledge(_pledge_id, _building_id) {
+    return new Promise((resolve, reject) => {
+        db_connection.query(STOCK_SELECT_QUERY, [_building_id, _pledge_id], (error, result) => {
+            if (error) {
+                reject("Unable to get stock availability: " + error);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+module.exports = { loadProducts, getBuildings, getSizes, findStockByPK, updateStock, getStockByBuildingAndPledge }

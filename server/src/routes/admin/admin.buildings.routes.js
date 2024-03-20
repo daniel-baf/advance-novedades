@@ -5,6 +5,7 @@ const { listWorkerAreas } = require('../../modules/admin/admin.users.module');
 const { getSizes } = require('../../modules/admin/admin.products.module');
 const { getAllExpenseType } = require('../../modules/admin/admin.finance.module');
 const { ADMIN_USER_VIEW, ADMIN_FINANCE_VIEW, ADMIN_PRODUCTS_VIEW } = require('../../config/consts');
+const { render500Page } = require('../../modules/utils/renders.common.utils.module');
 
 
 // / BUILDINGS
@@ -24,7 +25,7 @@ router.post("/insert-building", async (req, res) => {
             renderDashboard(req, res, '', _response[1]);
         }
     } catch (error) {
-        res.render('500', { error_message: 'Ooops, a error just ocurred ' + error })
+        render500Page(res, "Ooops, an unexpected error just ocurred " + error);
     }
 });
 
@@ -40,7 +41,7 @@ router.get("/edit-building/:building_id", async (req, res) => {
             throw new Error("No se ha podido encontrar el edificio con id " + building_id + " ERROR " + error);
         }
     } catch (error) {
-        res.render('500', { error_message: 'Ooops, a error just ocurred ' + error })
+        render500Page(res, "Ha ocurrido un error inesperado al recuperar datos para editar el edificio " + error);
     }
 })
 
@@ -61,7 +62,7 @@ router.post("/update-building", async (req, res) => {
             renderDashboard(req, res, '', _response[1].message);
         }
     } catch (error) {
-        res.render('500', { error_message: 'Ooops, a error just ocurred ' + error })
+        render500Page(res, "Ha ocurrido un error al intentar aplicar los cambios en el edificio " + error);
     }
 })
 
@@ -107,8 +108,7 @@ async function renderDashboard(req, res, message, error_message, view) {
         res.render('users/admin/admin-view', { name: req.session.user.id, data: _data, message: message, error_message: error_message, view: view })
         // res.status(200).json({ name: req.session.user.id, data: _data, message: message, error_message: error_message, view: view })
     } catch (error) {
-        // TODO check page 500 render
-        res.render('500', { error_message: 'Ooops, a error just ocurred ' + error })
+        render500Page(res, "Error en la sesion " + error)
     }
 }
 

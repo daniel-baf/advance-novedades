@@ -75,6 +75,8 @@ async function deletePledge(pledge_id) {
 async function insertPledge(pledge_name) {
     // insert pledge
     try {
+        // pledge name to uppercase
+        pledge_name = pledge_name.toUpperCase();
         let pledge_id = await new Promise((resolve, reject) => {
             db_connection.query(PLEDGE_INSERT_QUERY, [pledge_name], (error, result) => {
                 if (error) {

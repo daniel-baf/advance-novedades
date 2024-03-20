@@ -62,6 +62,13 @@ const EXPENSE_REPORT_QUERY = "SELECT * FROM novedades.Expense ORDER BY date DESC
 const EXPENSE_FILTER_DATES_REPORT_QUERY = "SELECT * FROM novedades.Expense WHERE date BETWEEN ? AND ? ORDER BY date DESC;"
 const BUILDING_SELECT_REPORT_QUERY = "SELECT * FROM Building;"
 
+// SELLS
+const STOCK_FILTER_BY_PLEDGE_ID_AND_BUILDING_QUERY = "SELECT s.Inventory_Pledge_id AS `pledge_id`, s.Inventory_Size_id AS `size`, s.stock, (SELECT name FROM Pledge AS p WHERE p.id = s.Inventory_Pledge_id) AS `pledge_name`, (SELECT i.price FROM Inventory AS i WHERE i.Pledge_id = s.Inventory_Pledge_id AND i.Size_id = s.Inventory_Size_id) AS `price` FROM Stock AS s WHERE Building_id = ? AND Inventory_Pledge_id = ?;"
+const STOCK_FILTER_BY_PLEDGE_NAME_AND_BUILDING_QUERY = "SELECT s.Inventory_Pledge_id AS `pledge_id`, s.Inventory_Size_id AS `size`, s.stock, p.`name` AS `pledge_name`, (SELECT i.price FROM Inventory AS i WHERE i.Pledge_id = s.Inventory_Pledge_id AND i.Size_id = s.Inventory_Size_id) AS `price` FROM Stock as s	INNER JOIN Pledge as p ON p.id = s.Inventory_Pledge_id WHERE p.name LIKE ? AND s.Building_id = ?;" // LIKE -> USE % ?
+const STOCK_FILTER_BY_PLEDGE_SIZE_AND_BUILDING_QUERY = "SELECT s.Inventory_Pledge_id AS `pledge_id`, s.Inventory_Size_id AS `size`, s.stock, (SELECT name FROM Pledge AS p WHERE p.id = s.Inventory_Pledge_id) AS `pledge_name`, (SELECT i.price FROM Inventory AS i WHERE i.Pledge_id = s.Inventory_Pledge_id AND i.Size_id = s.Inventory_Size_id) AS `price` FROM Stock AS s WHERE Building_id = ? AND Inventory_Size_id = ?;"
+const STOCK_FILTER_BY_BUILDING_QUERY = "SELECT s.Inventory_Pledge_id AS `pledge_id`, s.Inventory_Size_id AS `size`, s.stock, (SELECT name FROM Pledge AS p WHERE p.id = s.Inventory_Pledge_id) AS `pledge_name`, (SELECT i.price FROM Inventory AS i WHERE i.Pledge_id = s.Inventory_Pledge_id AND i.Size_id = s.Inventory_Size_id) AS `price` FROM Stock AS s WHERE Building_id = ?"
+
+
 // REPORTS TYPES
 const REPORT_TYPES = {
     // finance
@@ -81,10 +88,18 @@ const REPORT_TYPES = {
 
 // ROLES
 const ROLES = {
-    ADMIN: {TAG: "ADM", NAME: "ADMIN"},
-    PRODUCTION: {TAG: "PRD", NAME: "PRODUCTION"},
-    SELLS: {TAG: "SLLS", NAME: "SELLS"},
-    UNKNOWN: {TAG: "UNK", NAME: "UNKNOWN"}
+    ADMIN: { TAG: "ADM", NAME: "ADMIN" },
+    PRODUCTION: { TAG: "PRD", NAME: "PRODUCTION" },
+    SELLS: { TAG: "SLLS", NAME: "SELLS" },
+    UNKNOWN: { TAG: "UNK", NAME: "UNKNOWN" }
+}
+
+// CART
+// SEARCH TYPES
+const CART_SEARCH_TYPES = {
+    ID: "CODIGO",
+    NAME: "NOMBRE",
+    SIZE: "TALLA",
 }
 
 
@@ -109,6 +124,9 @@ module.exports = {
     // REPORT TYPES
     REPORT_TYPES, MOST_SOLD_PRODUCTS_REPORT_QUERY, LESS_SOLD_PRODUCTS_REPORT_QUERY, EARNINGS_REPORT_QUERY, EXPENSE_REPORT_QUERY, BUILDING_SELECT_REPORT_QUERY,
     MOST_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY, LESS_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY, EARNINGS_FILTER_DATES_REPORT_QUERY, EXPENSE_FILTER_DATES_REPORT_QUERY,
-    // ROLES
-    ROLES
+    // ROLES + SHOPPING CART
+    ROLES, CART_SEARCH_TYPES,
+    // STOCK
+    STOCK_FILTER_BY_PLEDGE_ID_AND_BUILDING_QUERY, STOCK_FILTER_BY_PLEDGE_NAME_AND_BUILDING_QUERY, STOCK_FILTER_BY_PLEDGE_SIZE_AND_BUILDING_QUERY,
+    STOCK_FILTER_BY_BUILDING_QUERY
 }

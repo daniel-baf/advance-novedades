@@ -6,6 +6,7 @@ const path = require("path");
 
 // common render
 const { renderLoginPage } = require("../modules/utils/renders.common.utils.module")
+const { searchBuilding } = require("../modules/admin/admin.building.module");
 
 const { USER_SELECT_BY_PASS_ID_QUERY, ROLES } = require("../config/consts");
 const db_connection = require(path.join(
@@ -74,7 +75,6 @@ router.post("/signin", async (req, res) => {
   try {
     // encrypt password
     let { id, password, current_building } = req.body; // retreive data
-    console.log(current_building);
     password = encrypt(password); // encrypt data to avoid decrypting access
     // check if selected location is valid
     if (current_building === null || current_building === undefined || current_building === '') {
@@ -97,7 +97,8 @@ router.post("/signin", async (req, res) => {
     }
     // valid login, create session
     req.session.user = _user_session;
-    req.session.user.location = Number(current_building);
+    // fetch data from building and set location
+    req.session.user.location = await searchBuilding(Number(current_building));
     switch (_user_session.role.NAME) {
       case ROLES.ADMIN.NAME:
         return res.redirect(302, "/admin/dashboard/products"); // render admi dashboard

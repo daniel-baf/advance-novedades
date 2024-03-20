@@ -33,7 +33,6 @@ async function renderProductStockList(req, res, message, error_message) {
         // res.status(200).json({ data: _data, name: req.session.user.id, message: message, error_message: error_message });
         res.render("users/admin/products/list-products", { data: _data, name: req.session.user.id, message: message, error_message: error_message });
     } catch (error) {
-        // res.render('500', { error_message: 'Ooops, a error just ocurred ' + error })
         renderLoginPage(req, res, '', 'No hemos podidio encontrar el/los productos y stocks valido');
     }
 }
@@ -46,7 +45,6 @@ router.get("/load-products/edit-product/:building_id/:pledge_id/:size_id", async
         _fetched_data = await findStockByPK(building_id, pledge_id, size_id)
         return res.status(200).json({ data: _fetched_data, ids: { pledge_id: pledge_id, building_id: building_id, size_id: size_id } })
     } catch (error) {
-        // return res.status(500).json({ message: "No se pudo ejecutar la operacion " + error })
         renderLoginPage(req, res, '', 'No hemos podidio editar los productos');
     }
 });

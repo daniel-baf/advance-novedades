@@ -38,7 +38,7 @@ const mockSessionMiddleware = (req, res, next) => {
       id: "SLLS1", // Replace with the actual user ID
       role: ROLES.SELLS, // Replace with the actual user role
       username: "REMOVE ME ON PRODUCTION", // Replace with the actual username
-      location: 2
+      location: { id: 2, name: "TESTING BUILDING" }, // Replace with the actual location
       // Add any other user information needed for testing
     };
   }
