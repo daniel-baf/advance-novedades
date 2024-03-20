@@ -12,26 +12,6 @@ DROP SCHEMA IF EXISTS `novedades` ;
 CREATE SCHEMA IF NOT EXISTS `novedades` ;
 USE `novedades` ;
 
-CREATE TABLE IF NOT EXISTS `Order` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `total` DOUBLE(7,2) NOT NULL DEFAULT 1.00,
-  `is_special` TINYINT(4) NOT NULL DEFAULT 0,
-  `phone` VARCHAR(10) NOT NULL,
-  `name` VARCHAR(45) NULL DEFAULT NULL,
-  `date` DATE NOT NULL DEFAULT NOW(),
-  `Order_Status_id` VARCHAR(20) NOT NULL DEFAULT 'REGISTRADO',
-  PRIMARY KEY (`id`),
-  INDEX `fk_Orders_Order_Status1_idx` (`Order_Status_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Orders_Order_Status1`
-    FOREIGN KEY (`Order_Status_id`)
-    REFERENCES `Order_Status` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
-
-
 -- -----------------------------------------------------
 -- Table `Worker_Area`
 -- -----------------------------------------------------
@@ -111,12 +91,12 @@ ENGINE = InnoDB;
 USE `novedades` ;
 
 -- -----------------------------------------------------
--- Table `Size`
+-- Table `Order_Status`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Size` ;
+DROP TABLE IF EXISTS `Order_Status` ;
 
-CREATE TABLE IF NOT EXISTS `Size` (
-  `id` VARCHAR(4) NOT NULL,
+CREATE TABLE IF NOT EXISTS `Order_Status` (
+  `id` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -364,22 +344,6 @@ COLLATE = utf8mb4_unicode_ci;
 
 
 -- -----------------------------------------------------
--- Table `Building`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `Building` ;
-
-CREATE TABLE IF NOT EXISTS `Building` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `direction` VARCHAR(85) NOT NULL DEFAULT 'city',
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `name` (`name` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
-
-
--- -----------------------------------------------------
 -- Table `Order_Detail`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `Order_Detail` ;
@@ -424,27 +388,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-CREATE TABLE IF NOT EXISTS `Stock` (
-  `Building_id` INT(11) NOT NULL,
-  `Inventory_Pledge_id` INT(11) NOT NULL,
-  `Inventory_Size_id` VARCHAR(4) NOT NULL,
-  `stock` INT(11) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`Building_id`, `Inventory_Pledge_id`, `Inventory_Size_id`),
-  INDEX `fk_Building_has_Inventory_Inventory1_idx` (`Inventory_Pledge_id` ASC, `Inventory_Size_id` ASC) VISIBLE,
-  INDEX `fk_Building_has_Inventory_Building1_idx` (`Building_id` ASC) VISIBLE,
-  CONSTRAINT `fk_Building_has_Inventory_Building1`
-    FOREIGN KEY (`Building_id`)
-    REFERENCES `Building` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE,
-  CONSTRAINT `fk_Building_has_Inventory_Inventory1`
-    FOREIGN KEY (`Inventory_Pledge_id` , `Inventory_Size_id`)
-    REFERENCES `Inventory` (`Pledge_id` , `Size_id`)
-    ON DELETE NO ACTION
-    ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
 
 -- -----------------------------------------------------
 -- procedure insertWorkerAndGetId
