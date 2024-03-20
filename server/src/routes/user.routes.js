@@ -5,7 +5,7 @@ const router = express.Router();
 const path = require("path");
 
 // common render
-const {renderLoginPage} = require("../modules/utils/renders.common.utils.module")
+const { renderLoginPage } = require("../modules/utils/renders.common.utils.module")
 
 const { USER_SELECT_BY_PASS_ID_QUERY, ROLES } = require("../config/consts");
 const db_connection = require(path.join(
@@ -73,8 +73,14 @@ async function getUserForSession(id, password) {
 router.post("/signin", async (req, res) => {
   try {
     // encrypt password
-    let { id, password } = req.body; // retreive data
+    let { id, password, current_building } = req.body; // retreive data
+    console.log(current_building);
     password = encrypt(password); // encrypt data to avoid decrypting access
+    // check if selected location is valid
+    if (current_building === null || current_building === undefined || current_building === '') {
+      renderLoginPage(req, res, undefined, "No se ha seleccionado un edificio valido");
+      return;
+    }
     // execute query and search for data
     _user_session = await getUserForSession(id, password);
     // check if role is UNKNOWN
@@ -91,6 +97,7 @@ router.post("/signin", async (req, res) => {
     }
     // valid login, create session
     req.session.user = _user_session;
+    req.session.user.location = Number(current_building);
     switch (_user_session.role.NAME) {
       case ROLES.ADMIN.NAME:
         return res.redirect(302, "/admin/dashboard/products"); // render admi dashboard
