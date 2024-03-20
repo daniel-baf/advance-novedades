@@ -28,3 +28,6 @@ table {
     max-width: 86%;
 }
 
+.fixed-width {
+    width: 60px; /* Adjust the width as needed */
+}

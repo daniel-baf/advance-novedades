@@ -127,74 +127,36 @@
               <table class="table">
                 <thead class="table-secondary">
                   <tr>
-                    <th>Codigo</th>
-                    <th>NOMBRE</th>
-                    <th>TALLA</th>
-                    <th>EXISTENCIA</th>
-                    <th>Precio</th>
-                    <th>AGREGAR</th>
+                    <th class="id-column center-text">Codigo</th>
+                    <th class="name-column center-text">NOMBRE</th>
+                    <th class="center-text">TALLA</th>
+                    <th class="center-text">EXISTENCIA</th>
+                    <th class="center-text">Precio</th>
+                    <th class="actions-column center-text">ACCION</th>
                   </tr>
                 </thead>
                 <tbody>
                   <!-- FOR DATA DISPLAY VALUES -->
                   <% data.forEach((item) => { %>
                   <tr>
-                    <th scope="row"><%=item.pledge_id%></th>
+                    <th scope="row" class="center-text id-column">
+                      <%=item.pledge_id%>
+                    </th>
                     <td><%=item.pledge_name%></td>
-                    <td><%=item.size%></td>
-                    <td><%=item.stock%></td>
-                    <td>Q<%= Number(item.price).toFixed(2) %></td>
+                    <td class="center-text"><%=item.size%></td>
+                    <td class="center-text"><%=item.stock%></td>
+                    <td class="text-right">
+                      Q<%= Number(item.price).toFixed(2) %>
+                    </td>
                     <td>
-                      <form
-                        class="form-inline"
-                        class=".add-item-cart-form"
-                        method="GET"
-                        action="/sells/cart/add"
+                      <a
+                        name=""
+                        id=""
+                        class="btn btn-outline-info"
+                        href="#"
+                        role="button"
+                        >Agregar</a
                       >
-                        <!-- HIDDEN DATA -->
-                        <div>
-                          <input
-                            type="number"
-                            class="form-control"
-                            name="pledge_id"
-                            id="pledge_id"
-                            value="<%=item.pledge_id%>"
-                            hidden
-                          />
-                          <input
-                            type="text"
-                            class="form-control"
-                            name="pledge_size"
-                            id="pledge_size"
-                            value="<%=item.size%>"
-                            hidden
-                          />
-                        </div>
-                        <div class="input-group">
-                          <input
-                            type="number"
-                            step="1"
-                            min="1"
-                            class="form-control w-40"
-                            placeholder="0"
-                            aria-label="0"
-                            aria-describedby="button-addon2"
-                            id="quantity"
-                            name="quantity"
-                            required
-                          />
-                          <!-- TODO check max = stock and center text input -->
-                          <div class="input-group-append">
-                            <button
-                              class="btn btn-outline-info"
-                              type="submit"
-                              id="button-addon2"
-                            >
-                              +
-                            </button>
-                          </div>
-                        </div>
-                      </form>
                     </td>
                   </tr>
                   <% }); %>

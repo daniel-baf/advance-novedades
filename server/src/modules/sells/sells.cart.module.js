@@ -2,8 +2,10 @@ const path = require('path');
 const { findStockByPK } = require('../admin/admin.products.module');
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
+// add item to cart
+// structure of DICT: { pledge_id: 1, pledge_size: 'S', quantity: 1, extras: { price: x, note: '' } }
 function addItemToCart(req, res) {
-    let { pledge_id, pledge_size, quantity } = req.query;
+    let { pledge_id, pledge_size, quantity, extras: { } } = req.query;
     return new Promise((resolve, reject) => {
         // // check valid inputs
         if (pledge_id === undefined || pledge_size === undefined || quantity === undefined) {

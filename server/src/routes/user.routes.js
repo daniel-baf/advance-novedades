@@ -98,7 +98,13 @@ router.post("/signin", async (req, res) => {
     // valid login, create session
     req.session.user = _user_session;
     // fetch data from building and set location
-    req.session.user.location = await searchBuilding(Number(current_building));
+    let _building_db = await searchBuilding(Number(current_building));
+    if (!_building_db[0]) {
+      // building not found
+      renderLoginPage(req, res, undefined, "No se ha encontrado el edificio seleccionado");
+      return;
+    }
+    req.session.user.location = _building_db[1];
     switch (_user_session.role.NAME) {
       case ROLES.ADMIN.NAME:
         return res.redirect(302, "/admin/dashboard/products"); // render admi dashboard
