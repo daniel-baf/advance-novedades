@@ -1,0 +1,63 @@
+<link rel="stylesheet" href="/css/bootstrap.min.css" />
+
+<section class="container mt-5">
+  <!-- DIV TO SEARCH OR FILTER -->
+  <div>
+    <h1>Buscador de productos</h1>
+    <p>Busca productos para agregarlos al carrito de compras</p>
+
+    <div class="justify-content-center">
+      <form action="/sells/cart/search-item">
+        <div class="row justify-content-center">
+          <!-- Search Type Dropdown -->
+          <div class="col-lg-3">
+            <div class="form-group">
+              <label for="searchType">Tipo Busqueda</label>
+              <select class="form-control" name="searchType" id="searchType">
+                <option value="id" selected>ID</option>
+                <option value="name">Nombre</option>
+              </select>
+            </div>
+          </div>
+          <!-- Search Input and Button -->
+          <div class="col-lg-9">
+            <div class="form-group">
+              <label for="searchInput">Buscador</label>
+              <div class="input-group mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Search items..."
+                  aria-label="Search items"
+                  aria-describedby="button-addon2"
+                  id="searchInput"
+                  name="searchInput"
+                />
+                <div class="input-group-append">
+                  <button
+                    class="btn btn-outline-info"
+                    type="submit"
+                    id="button-addon2"
+                  >
+                    Buscar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- SPLIT LINE -->
+  <!-- Horizontal split line -->
+  <div class="row">
+    <div class="col">
+      <hr class="split-line" />
+    </div>
+  </div>
+  <!-- DIV TO DISPLAY RESULT IN TABLE -->
+  <div>
+    <!-- TABLE TO DIPSLAY VALUES FROM DB -->
+  </div>
+</section>

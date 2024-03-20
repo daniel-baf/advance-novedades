@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const { ROLES } = require("../config/consts");
+const { renderLoginPage } = require("../modules/utils/renders.common.utils.module");
 
 // MIDDLWARES TO CHECK IF CURRENT USER BELONGS TO PRODUCTION
 router.use((req, res, next) => {
@@ -15,10 +16,7 @@ router.use((req, res, next) => {
             });
         }
     } catch (error) {
-        res.render("login", {
-            error_message: "La sesion ha expirado",
-            message: "",
-        });
+        renderLoginPage(req, res, "", "La sesion ha expirado");
     }
 });
 
@@ -26,6 +24,16 @@ router.use((req, res, next) => {
 // render main view of dashboard, with a view parameter display just x parameteres
 router.get("/dashboard/", (req, res) => {
     renderSellsDashboard(req, res);
+});
+
+// TMP testing page to create a new sell
+router.get("/cart/items/", (req, res) => {
+    res.render("users/sells/cart/add-item-cart", {
+        name: req.session.user.id,
+        message: "",
+        error_message: "",
+    });
+
 });
 
 function renderSellsDashboard(req, res, message, error_message) {

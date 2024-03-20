@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const { ROLES } = require("../config/consts");
+const { renderLoginPage } = require("../modules/utils/renders.common.utils.module");
 
 // MIDDLWARES TO CHECK IF CURRENT USER BELONGS TO PRODUCTION
 router.use((req, res, next) => {
@@ -15,10 +16,7 @@ router.use((req, res, next) => {
       });
     }
   } catch (error) {
-    res.render("login", {
-      error_message: "La sesion ha expirado",
-      message: "",
-    });
+    renderLoginPage(req, res, "", "La sesion ha expirado");
   }
 });
 

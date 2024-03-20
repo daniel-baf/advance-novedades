@@ -4,6 +4,9 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 
+// common render
+const {renderLoginPage} = require("../modules/utils/renders.common.utils.module")
+
 const { USER_SELECT_BY_PASS_ID_QUERY, ROLES } = require("../config/consts");
 const db_connection = require(path.join(
   __dirname,
@@ -31,11 +34,6 @@ router.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect(302, "/login");
 });
-
-// multiuse function to render login page
-function renderLoginPage(req, res, message = "", error_message = "") {
-  res.render("login", { message: message, error_message: error_message });
-}
 
 // searches for a user and generates a session user
 async function getUserForSession(id, password) {

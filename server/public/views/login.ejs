@@ -39,6 +39,22 @@
               required
             />
           </div>
+          <!-- SELECT CURRENT STORE -->
+          <div class="form-group">
+            <label for="current_building">Ubicación</label>
+            <select
+              class="custom-select"
+              name="current_building"
+              id="current_building"
+              required
+            >
+              <option selected disabled>-- SELECCIONAR --</option>
+              <!-- FOR TRHOUGH buldings -->
+              <% buildings.forEach((building) => { %>
+              <option value="<%= building.id %>"><%= building.name %></option>
+              <% }); %>
+            </select>
+          </div>
           <button type="submit" class="btn btn-primary btn-block">
             Iniciar Sesion
           </button>
