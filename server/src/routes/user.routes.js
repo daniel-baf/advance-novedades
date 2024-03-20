@@ -4,11 +4,7 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 
-const {
-  USER_SELECT_BY_PASS_ID_QUERY,
-  USER_SELECT_BY_ID_QUERY,
-  ROLES,
-} = require("../config/consts");
+const { USER_SELECT_BY_PASS_ID_QUERY, ROLES } = require("../config/consts");
 const db_connection = require(path.join(
   __dirname,
   "../modules/database/db-connection"
