@@ -10,7 +10,7 @@ function isNullOrUndefined(value) {
 // structure of DICT: { pledge_id: 1, pledge_size: 'S', quantity: 1, extras: { price: x, note: '' } }
 async function addItemToCart(req, res) {
     try {
-        let { pledge_id, pledge_size, quantity, extras_price, extras_note, addExtras } = req.body;
+        let { pledge_id, pledge_size, quantity, extras_price, extras_note, addExtras, pledge_name } = req.body;
         pledge_id = Number(pledge_id);
         quantity = Number(quantity);
         addExtras = isNullOrUndefined(addExtras) ? false : true; // check if undefined -> false -> Boolean
@@ -27,7 +27,7 @@ async function addItemToCart(req, res) {
         if (addExtras && json_tmp.extras_note === '') { // valid note
             return { error: true, message: 'La nota de los extras no puede estar vacia' };
         }
-        if (isNullOrUndefined(json_tmp.pledge_id) || isNullOrUndefined(json_tmp.pledge_size) || isNullOrUndefined(json_tmp.quantity)) { // valid parameters
+        if (isNullOrUndefined(json_tmp.pledge_id) || isNullOrUndefined(json_tmp.pledge_size) || isNullOrUndefined(json_tmp.quantity) || isNullOrUndefined(pledge_name)) { // valid parameters
             return { error: true, message: 'Los valores para agregar al carrito no son validos' };
         }
         // check if product exists
@@ -47,7 +47,7 @@ async function addItemToCart(req, res) {
             }
         }
         // new json to push
-        let new_item_json = { pledge_id: json_tmp.pledge_id, pledge_size: json_tmp.pledge_size, quantity: json_tmp.quantity, extras: json_tmp.extras };
+        let new_item_json = { pledge_id: json_tmp.pledge_id, pledge_name: pledge_name, pledge_size: json_tmp.pledge_size, quantity: json_tmp.quantity, extras: json_tmp.extras };
         // check if stock is 0 or lower than quantity
         if (_db_products.stock < json_tmp.quantity || _db_products.stock == 0) {
             return { error: true, message: 'No hay suficiente stock para el producto que solicitaste' };
