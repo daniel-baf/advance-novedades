@@ -139,24 +139,35 @@
                   <!-- FOR DATA DISPLAY VALUES -->
                   <% data.forEach((item) => { %>
                   <tr>
-                    <th scope="row" class="center-text id-column">
+                    <th
+                      id="tr_pledge_id_<%=item.pledge_id%>_<%=item.size%>"
+                      scope="row"
+                      class="center-text id-column"
+                    >
                       <%=item.pledge_id%>
                     </th>
-                    <td><%=item.pledge_name%></td>
-                    <td class="center-text"><%=item.size%></td>
+                    <td id="tr_pledge_name_<%=item.pledge_id%>_<%=item.size%>">
+                      <%=item.pledge_name%>
+                    </td>
+                    <td
+                      id="tr_pledge_size_<%=item.pledge_id%>_<%=item.size%>"
+                      class="center-text"
+                    >
+                      <%=item.size%>
+                    </td>
                     <td class="center-text"><%=item.stock%></td>
                     <td class="text-right">
                       Q<%= Number(item.price).toFixed(2) %>
                     </td>
                     <td>
-                      <a
-                        name=""
-                        id=""
-                        class="btn btn-outline-info"
-                        href="#"
-                        role="button"
-                        >Agregar</a
+                      <button
+                        name="openModalBtn"
+                        id="openModalBtn"
+                        class="btn btn-outline-info btn-block display-modal"
+                        data-modal-data="<%=item.pledge_id%>_<%=item.size%>"
                       >
+                        Agregar
+                      </button>
                     </td>
                   </tr>
                   <% }); %>
@@ -167,6 +178,167 @@
         </main>
       </div>
     </div>
+    <!-- MODALS -->
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Agregar al carrito
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form action="/sells/cart/add/" method="post" id="addToCartForm">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="pledge_id">Codigo</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      name="pledge_id"
+                      id="pledge_id"
+                      aria-describedby="pledge_id_small"
+                      placeholder="Codigo producto"
+                      readonly
+                      required
+                    />
+                    <small id="pledge_id_small" class="form-text text-muted"
+                      >Codigo del producto (no editable)</small
+                    >
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="pledge_size">Talla</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="pledge_size"
+                      id="pledge_size"
+                      aria-describedby="pledge_size_small"
+                      placeholder="Talla xxx"
+                      readonly
+                      required
+                    />
+                    <small id="pledge_size_small" class="form-text text-muted"
+                      >Talla del producto (no editable)</small
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="pledge_name">Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="pledge_name"
+                  id="pledge_name"
+                  aria-describedby="pledge_name_small"
+                  placeholder="Producto xxx"
+                  readonly
+                  required
+                />
+                <small id="pledge_name_small" class="form-text text-muted"
+                  >Nombre del producto (no editable)</small
+                >
+              </div>
+              <div class="form-group">
+                <label for="quantity">Cantidad</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="quantity"
+                  id="quantity"
+                  aria-describedby="quantity_small"
+                  placeholder="1"
+                  required
+                  step="1"
+                  min="1"
+                />
+                <small id="quantity_small" class="form-text text-muted"
+                  >Cantidad a agregar a carrito</small
+                >
+              </div>
+              <!-- OPTIONAL EXTRA ATTRIBUTES -->
+              <div>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="addExtras"
+                      id="addExtras"
+                      value="checkedValue"
+                    />
+                    Agregar extras
+                  </label>
+                </div>
+                <div class="row" id="extrasInputsForm" hidden>
+                  <div class="col-md-8">
+                    <div class="form-group">
+                      <label for="extras_note">Notas</label>
+                      <textarea
+                        class="form-control"
+                        name="extras_note"
+                        id="extras_note"
+                        rows="5"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label for="extras_price">Precio</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        name="extras_price"
+                        id="extras_price"
+                        min="0"
+                        step="0.01"
+                        aria-describedby="extras_price_small"
+                        placeholder="Q10.00"
+                      />
+                      <small
+                        id="extras_price_small"
+                        class="form-text text-muted"
+                        >Precio para el extra/(s)</small
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" form="addToCartForm">
+              Agregar</button
+            ><button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 
   <footer><%- include("../../../partials/footer.ejs")%></footer>
@@ -175,3 +347,4 @@
 <!-- Bootstrap JS and dependencies -->
 <script src="/js/bootstrap.js"></script>
 <!-- Your custom JavaScript to handle panel visibility -->
+<script src="/js/sells/stock-search.js"></script>

@@ -12,10 +12,7 @@ const { ROLES } = require("./src/config/consts");
 const app = express(); // app uses express
 app.use(cors()); // implement CORS flags for browsers
 app.use(express.urlencoded({ extended: true }), express.json()); // JSON implement
-app.use(
-  "/css",
-  express.static(path.join(__dirname, "/node_modules/bootstrap/dist/css"))
-);
+app.use("/css", express.static(path.join(__dirname, "/node_modules/bootstrap/dist/css")));
 app.use(express.static(__dirname + "/public")); // static files
 
 app.use(
@@ -24,7 +21,8 @@ app.use(
     saveUninitialized: false,
     resave: false,
     user: {},
-    cart: {},
+    cart: [],
+    shopping_cart: [],
   })
 );
 
@@ -41,6 +39,7 @@ const mockSessionMiddleware = (req, res, next) => {
       location: { id: 2, name: "TESTING BUILDING" }, // Replace with the actual location
       // Add any other user information needed for testing
     };
+    req.session.cart = [];
   }
   next();
 };

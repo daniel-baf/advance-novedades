@@ -12,6 +12,7 @@ const { renderLoginPage } = require('../../modules/utils/renders.common.utils.mo
 // render items list for current session
 function renderItemsSearched(req, res, message, error_message, data = []) {
     try {
+        // initialize cart
         res.render("users/sells/cart/add-item-cart", {
             name: req.session.user.id,
             message: message,
@@ -27,16 +28,20 @@ function renderItemsSearched(req, res, message, error_message, data = []) {
 
 // TMP testing page to create a new sell
 router.get("/stock/search/", (req, res) => {
-    renderItemsSearched(req, res, "", "");
+    // display all values by default
+    searchStockByParameter('', "", req.session.user.location.id).then((data) => {
+        renderItemsSearched(req, res, "", "", data);
+    });
 });
 
 // search items in cart
-router.post("/stock/search/", (req, res) => {
+router.post("/stock/search/", async (req, res) => {
     try {
         let { searchType, searchId } = req.body;
         // fetch promisse to get data from stock
         searchStockByParameter(searchType, searchId, req.session.user.location.id).then((data) => {
             renderItemsSearched(req, res, "Busqueda completada", "", data);
+            return data;
         }).catch((error) => {
             renderItemsSearched(req, res, "", error);
         });
@@ -46,7 +51,11 @@ router.post("/stock/search/", (req, res) => {
 });
 
 // add item to cart
-router.get("/cart/add/", (req, res) => {
+router.post("/cart/add/", (req, res) => {
+    if (req.session.shopping_cart == undefined) {
+        req.session.shopping_cart = [];
+    }
+
     try {
         addItemToCart(req, res).then((result) => {
             renderItemsSearched(req, res, result, "");
@@ -56,6 +65,30 @@ router.get("/cart/add/", (req, res) => {
     } catch (error) {
         renderLoginPage(req, res, '', error)
     }
+
+
+    // try {
+    //     // wait for cart adding
+    //     let status = await addItemToCart(req, res).then((result) => {
+    //         return result;
+    //     });
+
+    //     res.status(200).json(status);
+    // // wait for data to display
+    // let _data = await searchStockByParameter(CART_SEARCH_TYPES.ID, req.query.pledge_id, req.session.user.location.id).then((data) => {
+    //     return data;
+    // });
+    // // check if error
+    // console.log(req.session.cart);
+    // if (!status.error) {
+    //     // render page with message and data
+    //     renderItemsSearched(req, res, status.message, "", _data);
+    // } else {
+    //     renderItemsSearched(req, res, "", status.message, _data);
+    // }
+    // } catch (error) {
+    //     renderLoginPage(req, res, '', error)
+    // }
 });
 
 

@@ -50,4 +50,29 @@ $(document).ready(function () {
             }
         });
     }
+
+    // Add click event listener to the button
+    $(".display-modal").click((e) => {
+        let recover_id = e.currentTarget.getAttribute('data-modal-data');
+        // get values from $("#pledge_id_{recover_id}")
+        let pledge_id = $(`#tr_pledge_id_${recover_id}`).text().trim();
+        let pledge_name = $(`#tr_pledge_name_${recover_id}`).text().trim();
+        let pledge_size = $(`#tr_pledge_size_${recover_id}`).text().trim();
+
+        // set values to modal
+        $('#pledge_id').val(Number(pledge_id));
+        $('#pledge_name').val(pledge_name);
+        $('#pledge_size').val(pledge_size);
+
+        $('#exampleModal').modal('show');
+    });
+
+    // display extras on click
+    $("#addExtras").change((e) => {
+        // toggle hidden visibility to div id extrasInputsForm
+        $('#extrasInputsForm').prop('hidden', !e.target.checked);
+        // set required to input extras_note and extras_price, delete required if hidden
+        $('#extras_note').prop('required', e.target.checked);
+        $('#extras_price').prop('required', e.target.checked);
+    });
 });
