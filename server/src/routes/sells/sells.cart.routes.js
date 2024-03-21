@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 const router = express.Router();
 
 const { CART_SEARCH_TYPES } = require("../../config/consts");
@@ -51,44 +50,33 @@ router.post("/stock/search/", async (req, res) => {
 });
 
 // add item to cart
-router.post("/cart/add/", (req, res) => {
+router.post("/cart/add/", async (req, res) => {
+    // recover deleted cart
     if (req.session.shopping_cart == undefined) {
         req.session.shopping_cart = [];
     }
 
-    try {
-        addItemToCart(req, res).then((result) => {
-            renderItemsSearched(req, res, result, "");
-        }).catch((error) => {
-            renderItemsSearched(req, res, "", error);
-        });
-    } catch (error) {
-        renderLoginPage(req, res, '', error)
-    }
+    let data = await searchStockByParameter(CART_SEARCH_TYPES.ID, req.body.pledge_id, req.session.user.location.id).then((data) => {
+        return data;
+    }).catch((error) => {
+        renderItemsSearched(req, res, "", error);
+        return;
+    });
 
-
-    // try {
-    //     // wait for cart adding
-    //     let status = await addItemToCart(req, res).then((result) => {
-    //         return result;
-    //     });
-
-    //     res.status(200).json(status);
-    // // wait for data to display
-    // let _data = await searchStockByParameter(CART_SEARCH_TYPES.ID, req.query.pledge_id, req.session.user.location.id).then((data) => {
-    //     return data;
-    // });
-    // // check if error
-    // console.log(req.session.cart);
-    // if (!status.error) {
-    //     // render page with message and data
-    //     renderItemsSearched(req, res, status.message, "", _data);
-    // } else {
-    //     renderItemsSearched(req, res, "", status.message, _data);
-    // }
-    // } catch (error) {
-    //     renderLoginPage(req, res, '', error)
-    // }
+    // async call to add to cart
+    await addItemToCart(req, res).then((result) => {
+        if (result.error) {
+            throw new Error(result.message);
+        }
+        return result.message;
+    }).then(message => {
+        console.log(req.session.shopping_cart);
+        renderItemsSearched(req, res, message, '', data)
+        return;
+    }).catch((error) => {
+        renderItemsSearched(req, res, "", error, data);
+        return;
+    });
 });
 
 

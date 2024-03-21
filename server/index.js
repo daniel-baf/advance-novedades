@@ -39,7 +39,6 @@ const mockSessionMiddleware = (req, res, next) => {
       location: { id: 2, name: "TESTING BUILDING" }, // Replace with the actual location
       // Add any other user information needed for testing
     };
-    req.session.cart = [];
   }
   next();
 };
