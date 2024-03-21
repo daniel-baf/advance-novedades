@@ -58,11 +58,13 @@ $(document).ready(function () {
         let pledge_id = $(`#tr_pledge_id_${recover_id}`).text().trim();
         let pledge_name = $(`#tr_pledge_name_${recover_id}`).text().trim();
         let pledge_size = $(`#tr_pledge_size_${recover_id}`).text().trim();
+        let pledge_price = $(`#tr_pledge_price_${recover_id}`).text().trim();
 
         // set values to modal
         $('#pledge_id').val(Number(pledge_id));
         $('#pledge_name').val(pledge_name);
         $('#pledge_size').val(pledge_size);
+        $('#pledge_price').val(pledge_price);
 
         $('#exampleModal').modal('show');
     });

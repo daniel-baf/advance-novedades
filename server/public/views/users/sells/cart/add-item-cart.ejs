@@ -131,8 +131,8 @@
                     <th class="name-column center-text">NOMBRE</th>
                     <th class="center-text">TALLA</th>
                     <th class="center-text">EXISTENCIA</th>
-                    <th class="center-text">Precio</th>
-                    <th class="actions-column center-text">ACCION</th>
+                    <th class="center-text">PRECIO (GTQ)</th>
+                    <th class="actions-column center-text">ACCIONES</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -156,18 +156,25 @@
                       <%=item.size%>
                     </td>
                     <td class="center-text"><%=item.stock%></td>
-                    <td class="text-right">
-                      Q<%= Number(item.price).toFixed(2) %>
+                    <td
+                      class="text-right"
+                      id="tr_pledge_price_<%=item.pledge_id%>_<%=item.size%>"
+                    >
+                      <%= Number(item.price).toFixed(2) %>
                     </td>
                     <td>
-                      <button
-                        name="openModalBtn"
-                        id="openModalBtn"
-                        class="btn btn-outline-info btn-block display-modal"
-                        data-modal-data="<%=item.pledge_id%>_<%=item.size%>"
-                      >
-                        Agregar
-                      </button>
+                      <div class="row d-felx justify-content-center">
+                        <div class="col-sm-5">
+                          <button
+                            name="openModalBtn"
+                            id="openModalBtn"
+                            class="btn btn-outline-info btn display-modal"
+                            data-modal-data="<%=item.pledge_id%>_<%=item.size%>"
+                          >
+                            <i class="fa-solid fa-plus"></i>
+                          </button>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                   <% }); %>
@@ -258,22 +265,44 @@
                   >Nombre del producto (no editable)</small
                 >
               </div>
-              <div class="form-group">
-                <label for="quantity">Cantidad</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  name="quantity"
-                  id="quantity"
-                  aria-describedby="quantity_small"
-                  placeholder="1"
-                  required
-                  step="1"
-                  min="1"
-                />
-                <small id="quantity_small" class="form-text text-muted"
-                  >Cantidad a agregar a carrito</small
-                >
+              <div class="row d-felx justify-content-around">
+                <div class="col-md-5">
+                  <div class="form-group">
+                    <label for="pledge_price">Precio (GTQ)</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      name="pledge_price"
+                      id="pledge_price"
+                      aria-describedby="pledge_price_small"
+                      placeholder="Q##.##"
+                      readonly
+                      required
+                    />
+                    <small id="pledge_price_small" class="form-text text-muted"
+                      >Precio en quetzales del producto</small
+                    >
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="quantity">Cantidad</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      name="quantity"
+                      id="quantity"
+                      aria-describedby="quantity_small"
+                      placeholder="1"
+                      required
+                      step="1"
+                      min="1"
+                    />
+                    <small id="quantity_small" class="form-text text-muted"
+                      >Cantidad a agregar a carrito</small
+                    >
+                  </div>
+                </div>
               </div>
               <!-- OPTIONAL EXTRA ATTRIBUTES -->
               <div>
@@ -348,3 +377,7 @@
 <script src="/js/bootstrap.js"></script>
 <!-- Your custom JavaScript to handle panel visibility -->
 <script src="/js/sells/stock-search.js"></script>
+<script
+  src="https://kit.fontawesome.com/c3025f5f48.js"
+  crossorigin="anonymous"
+></script>

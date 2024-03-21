@@ -3,23 +3,28 @@ const router = express.Router();
 
 const { CART_SEARCH_TYPES } = require("../../config/consts");
 const { searchStockByParameter } = require('../../modules/sells/sells.stock.module');
-const { addItemToCart } = require('../../modules/sells/sells.cart.module');
+const { addItemToCart, editCart, deleteFromCart, decareaseFromCart, increaseFromCart } = require('../../modules/sells/sells.cart.module');
 
-const { renderLoginPage } = require('../../modules/utils/renders.common.utils.module');
+const { renderLoginPage, render500Page } = require('../../modules/utils/renders.common.utils.module');
+
+function renderShoppingCart(req, res, message = "", error_message = "") {
+    try {
+        // check if cart is empty
+        if (req.session.shopping_cart == undefined) {
+            req.session.shopping_cart = [];
+        }
+        res.render("users/sells/cart/shoping-cart-list.ejs", { name: req.session.user.id, message: message, error_message: error_message, shopping_cart: req.session.shopping_cart })
+    } catch (error) {
+        renderLoginPage(req, res, '', "No hemos podido recuperarnos de un error, " + error.message)
+    }
+}
 
 // functions
 // render items list for current session
 function renderItemsSearched(req, res, message, error_message, data = []) {
     try {
         // initialize cart
-        res.render("users/sells/cart/add-item-cart", {
-            name: req.session.user.id,
-            message: message,
-            error_message: error_message,
-            filterTypes: CART_SEARCH_TYPES,
-            data: data,
-            building: req.session.user.location.name
-        });
+        res.render("users/sells/cart/add-item-cart", { name: req.session.user.id, message: message, error_message: error_message, filterTypes: CART_SEARCH_TYPES, data: data, building: req.session.user.location.name });
     } catch (error) {
         render500Page(res, "No hemos podidio recuperar tu sesion. " + error);
     }
@@ -70,7 +75,6 @@ router.post("/cart/add/", async (req, res) => {
         }
         return result.message;
     }).then(message => {
-        console.log(req.session.shopping_cart);
         renderItemsSearched(req, res, message, '', data)
         return;
     }).catch((error) => {
@@ -79,6 +83,79 @@ router.post("/cart/add/", async (req, res) => {
     });
 });
 
+// render a main page with the cart
+router.get("/cart/list/", (req, res) => {
+    renderShoppingCart(req, res);
+})
+
+// update a element from cart
+router.get("/cart/edit/:pledge_id/:pledge_size", (req, res) => {
+    try {
+        // recover data
+        let { pledge_id, pledge_size } = req.params;
+        let { extras_note, extras_price, quantity } = req.query;
+        let json_objct = { pledge_id: Number(pledge_id), pledge_size, quantity: Number(quantity), extras: { extras_note, extras_price: Number(extras_price) } }
+        res.status(200).json(editCart(json_objct, req.session))
+    } catch (error) {
+        render500Page(res, "No hemos podido recuperarnos de un error inesperado " + error.message);
+    }
+});
+
+// remove a item from cart
+router.get("/cart/remove/:pledge_id/:pledge_size/:with_extras", (req, res) => {
+    try {
+        let { pledge_id, pledge_size, with_extras } = req.params;
+        let response = deleteFromCart(Number(pledge_id), pledge_size, with_extras === 'true', req.session);
+        // check response status
+        if (response.error) {
+            renderShoppingCart(req, res, "", response.message);
+        } else {
+            renderShoppingCart(req, res, response.message, "");
+        }
+    } catch (error) {
+        render500Page(res, "No hemos podido continuar con las operaciones del carro de compras " + error.message);
+    }
+});
+
+// decrease by 1 a element from cart, if 0 -> delete
+router.get("/cart/decrease-one/:pledge_id/:pledge_size/:with_extras", (req, res) => {
+    try {
+        let { pledge_id, pledge_size, with_extras } = req.params;
+        let response = decareaseFromCart(Number(pledge_id), pledge_size, with_extras === 'true', req.session);
+        // check response status
+        if (response.error) {
+            renderShoppingCart(req, res, "", response.message);
+        } else {
+            renderShoppingCart(req, res, response.message, "");
+        }
+    } catch (error) {
+        render500Page(res, "No hemos podido continuar con las operaciones del carro de compras " + error.message);
+    }
+});
+
+// decrease by 1 a element from cart, if 0 -> delete
+router.get("/cart/increase-one/:pledge_id/:pledge_size/:with_extras", async (req, res) => {
+    try {
+        let { pledge_id, pledge_size, with_extras } = req.params;
+        with_extras = with_extras === 'true';
+        let response;
+        if (with_extras) {
+            let { extras_note, extras_price } = req.query;
+            response = await increaseFromCart(Number(pledge_id), pledge_size, req.session, { extras_note, extras_price: Number(extras_price) });
+        } else {
+            response = await increaseFromCart(Number(pledge_id), pledge_size, req.session);
+        }
+
+        // check response status
+        if (response.error) {
+            renderShoppingCart(req, res, "", response.message);
+        } else {
+            renderShoppingCart(req, res, response.message, "");
+        }
+    } catch (error) {
+        render500Page(res, "No hemos podido continuar con las operaciones del carro de compras " + error.message);
+    }
+});
 
 
 

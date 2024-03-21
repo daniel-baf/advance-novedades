@@ -23,6 +23,7 @@ app.use(
     user: {},
     cart: [],
     shopping_cart: [],
+    reloaded: false // JUST FOR PRODUCTION, TODO REMOVE LATER
   })
 );
 
@@ -39,6 +40,35 @@ const mockSessionMiddleware = (req, res, next) => {
       location: { id: 2, name: "TESTING BUILDING" }, // Replace with the actual location
       // Add any other user information needed for testing
     };
+    if (!req.session.reloaded) {
+      req.session.shopping_cart = req.session.shopping_cart = [
+        {
+          pledge_id: 1,
+          pledge_name: 'CHUMPA DE DIARIO ADVANCE',
+          pledge_size: '10',
+          pledge_price: 180.00,
+          quantity: 2,
+          extras: {}
+        },
+        {
+          pledge_id: 2,
+          pledge_name: 'CAMISA POLO ADVANCE',
+          pledge_size: '16',
+          pledge_price: 120.00,
+          quantity: 2,
+          extras: {}
+        },
+        {
+          pledge_id: 1,
+          pledge_name: 'CHUMPA DE DIARIO ADVANCE',
+          pledge_size: '14',
+          pledge_price: 200.00,
+          quantity: 1,
+          extras: { extras_price: 10, extras_note: 'Bordar: Daniel Bautista' }
+        }
+      ];
+      req.session.reloaded = true;
+    }
   }
   next();
 };
