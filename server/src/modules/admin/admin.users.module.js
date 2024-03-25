@@ -89,8 +89,8 @@ function searchUserById(id) {
     });
 }
 
-// unallow a user to access the system, send current session and objective id
-// add autoriize = TRUE if grant access, false if remove access
+// disallow a user to access the system, send current session and objective id
+// add authorize = TRUE if grant access, false if remove access
 async function toggleAuthorizationToUser(id, session, authorize) {
     try {
         // check invalid dta
@@ -142,7 +142,7 @@ async function deleteUserById(id) {
     }
 };
 
-// update user function, user contains structue from DB
+// update user function, user contains structure from DB
 async function updateUser(user, edit_password = false) {
     try {
         if (!user) { // undefined...
@@ -157,7 +157,7 @@ async function updateUser(user, edit_password = false) {
         // encrypt and create password if updated
         if (edit_password) {
             user.password = encrypt(user.password); // encrypt password
-            _pool.unshift(user.password); // append password to beggingnig
+            _pool.unshift(user.password); // append password to beginning
         }
         let fetched_data = await new Promise((resolve, reject) => {
             db_connection.query(_query, _pool, (error, result) => {

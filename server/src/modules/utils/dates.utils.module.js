@@ -2,7 +2,7 @@
 function swapDatesIfPossible(_init_date, _end_date) {
     try {
         // cast '' to NULL
-        // check wich date is higher or lower to send it 
+        // check which date is higher or lower to send it 
         if ((!_init_date && !_end_date) && !(_init_date instanceof Date) || !(_end_date instanceof Date)) {
             // swap if _end_date < _init_date
             let _tmp_date = _init_date;

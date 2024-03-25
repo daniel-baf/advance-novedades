@@ -40,17 +40,14 @@ const EXPENSE_TYPE_READ_ID_QUERY = "SELECT id, name FROM Expense_Type WHERE id =
 const EXPENSE_TYPE_UPDATE_QUERY = "UPDATE `Expense_Type` SET `name` = ? WHERE (`id` = ?);"
 const EXPENSE_TYPE_DELETE_QUERY = "DELETE FROM `Expense_Type` WHERE (`id` = ?);"
 const EXPENSE_INSERT_QUERY = "INSERT INTO `Expense` (`ammount`, `date`, `Worker_id`, `Expense_Type_id`) VALUES (?, ?, ?, ?);"
-const EXPENSE_SELECT_PROCEDURE = "CALL filter_expenses_dinamically(?,?);"
+const EXPENSE_SELECT_PROCEDURE = "CALL filter_expenses_dynamically(?,?);"
 const EXPENSE_DELETE_QUERY = "DELETE FROM `Expense` WHERE (`id` = ?);"
 const EXPENSE_UPDATE_QUERY = "UPDATE `Expense` SET `ammount` = ?, `Expense_Type_id` = ?, date = ? WHERE (`id` = ?);"
 const EXPENSE_SELECT_ID_QUERY = "SELECT e.id, e.ammount, e.date, et.id AS `expense_type_id`, et.name AS `expense_type_name`, w.id AS `worker_id`, w.name AS `worker_name` FROM Expense AS e INNER JOIN Expense_Type AS et	ON e.Expense_Type_id = et.id INNER JOIN Worker AS w ON e.Worker_id = w.id WHERE e.id = ?;"
-
 // ADMIN DASHBOARD VIEWS
 const ADMIN_USER_VIEW = "users"
 const ADMIN_PRODUCTS_VIEW = "products"
 const ADMIN_FINANCE_VIEW = "finance"
-
-
 // REPORTS
 const MOST_SOLD_PRODUCTS_REPORT_QUERY = "SELECT Inventory_Pledge_id AS `pledge_id`, (SELECT `name` FROM Pledge WHERE id = `pledge_id`) AS `pledge_name`, Inventory_Size_id AS `size_id`, COUNT(*) AS `total` FROM Bill_Detail GROUP BY Inventory_Pledge_id, Inventory_Size_id ORDER BY total DESC, `pledge_id` ASC LIMIT 20;"
 const MOST_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY = "SELECT bd.Inventory_Pledge_id AS `pledge_id`, (SELECT `name` FROM Pledge WHERE id = `pledge_id`) AS `pledge_name`, bd.Inventory_Size_id AS `size_id`, COUNT(*) AS `total` FROM Bill_Detail AS bd LEFT JOIN Bill as b ON b.id = bd.Bill_id WHERE b.`date` BETWEEN ? AND ? GROUP BY Inventory_Pledge_id, Inventory_Size_id ORDER BY total DESC, `pledge_id` ASC LIMIT 20;";
@@ -61,13 +58,18 @@ const EARNINGS_FILTER_DATES_REPORT_QUERY = "SELECT id, NIT, total, date, Worker_
 const EXPENSE_REPORT_QUERY = "SELECT * FROM novedades.Expense ORDER BY date DESC;"
 const EXPENSE_FILTER_DATES_REPORT_QUERY = "SELECT * FROM novedades.Expense WHERE date BETWEEN ? AND ? ORDER BY date DESC;"
 const BUILDING_SELECT_REPORT_QUERY = "SELECT * FROM Building;"
-
 // SELLS
 const STOCK_FILTER_BY_PLEDGE_ID_AND_BUILDING_QUERY = "SELECT s.Inventory_Pledge_id AS `pledge_id`, s.Inventory_Size_id AS `size`, s.stock, (SELECT name FROM Pledge AS p WHERE p.id = s.Inventory_Pledge_id) AS `pledge_name`, (SELECT i.price FROM Inventory AS i WHERE i.Pledge_id = s.Inventory_Pledge_id AND i.Size_id = s.Inventory_Size_id) AS `price` FROM Stock AS s WHERE Building_id = ? AND Inventory_Pledge_id = ?;"
 const STOCK_FILTER_BY_PLEDGE_NAME_AND_BUILDING_QUERY = "SELECT s.Inventory_Pledge_id AS `pledge_id`, s.Inventory_Size_id AS `size`, s.stock, p.`name` AS `pledge_name`, (SELECT i.price FROM Inventory AS i WHERE i.Pledge_id = s.Inventory_Pledge_id AND i.Size_id = s.Inventory_Size_id) AS `price` FROM Stock as s	INNER JOIN Pledge as p ON p.id = s.Inventory_Pledge_id WHERE p.name LIKE ? AND s.Building_id = ?;" // LIKE -> USE % ?
 const STOCK_FILTER_BY_PLEDGE_SIZE_AND_BUILDING_QUERY = "SELECT s.Inventory_Pledge_id AS `pledge_id`, s.Inventory_Size_id AS `size`, s.stock, (SELECT name FROM Pledge AS p WHERE p.id = s.Inventory_Pledge_id) AS `pledge_name`, (SELECT i.price FROM Inventory AS i WHERE i.Pledge_id = s.Inventory_Pledge_id AND i.Size_id = s.Inventory_Size_id) AS `price` FROM Stock AS s WHERE Building_id = ? AND Inventory_Size_id = ?;"
 const STOCK_FILTER_BY_BUILDING_QUERY = "SELECT s.Inventory_Pledge_id AS `pledge_id`, s.Inventory_Size_id AS `size`, s.stock, (SELECT name FROM Pledge AS p WHERE p.id = s.Inventory_Pledge_id) AS `pledge_name`, (SELECT i.price FROM Inventory AS i WHERE i.Pledge_id = s.Inventory_Pledge_id AND i.Size_id = s.Inventory_Size_id) AS `price` FROM Stock AS s WHERE Building_id = ?"
-
+// CLIENTS
+const CLIENTS_SEARCH_QUERY = "SELECT * FROM Client WHERE NIT = ?;"
+const CLIENTS_SEARCH_BY_NIT_QUERY = "SELECT * FROM Client WHERE NIT = ?;"
+const CLIENTS_LIST_ALL_QUERY = "SELECT * FROM Client;"
+const CLIENTS_DELETE_QUERY = "DELETE FROM Client WHERE NIT = ?;"
+const CLIENTS_UPDATE_QUERY = "UPDATE Client SET name = ?, address = ?, phone_number = ? WHERE NIT = ?;"
+const CLIENTS_INSERT_QUERY = "INSERT INTO Client (NIT, name, address, phone_number) VALUES (?, ?, ?, ?);"
 
 // REPORTS TYPES
 const REPORT_TYPES = {
@@ -77,7 +79,7 @@ const REPORT_TYPES = {
     MOST_SOLD_PRODUCTS: "PRODUCTOS MAS VENDIDOS",
     LESS_SOLD_PRODUCTS: "PRODUCTOS MENOS VENDIDOS",
     // NET_PROFIT: "UTILIDADES (GANANCIAS - GASTOS)",
-    // administation
+    // administration
     BUILDINGS: "EDIFICIOS",
     PLEDGES: "PRODUCTOS",
     USERS: "USUARIOS",  // reuse code
@@ -97,7 +99,7 @@ const ROLES = {
 // CART
 // SEARCH TYPES
 const CART_SEARCH_TYPES = {
-    ID: "CODIGO",
+    ID: "CÓDIGO",
     NAME: "NOMBRE",
     SIZE: "TALLA",
 }
@@ -128,5 +130,7 @@ module.exports = {
     ROLES, CART_SEARCH_TYPES,
     // STOCK
     STOCK_FILTER_BY_PLEDGE_ID_AND_BUILDING_QUERY, STOCK_FILTER_BY_PLEDGE_NAME_AND_BUILDING_QUERY, STOCK_FILTER_BY_PLEDGE_SIZE_AND_BUILDING_QUERY,
-    STOCK_FILTER_BY_BUILDING_QUERY
+    STOCK_FILTER_BY_BUILDING_QUERY,
+    // CLIENTS
+    CLIENTS_SEARCH_QUERY, CLIENTS_SEARCH_BY_NIT_QUERY, CLIENTS_LIST_ALL_QUERY, CLIENTS_DELETE_QUERY, CLIENTS_UPDATE_QUERY, CLIENTS_INSERT_QUERY
 }

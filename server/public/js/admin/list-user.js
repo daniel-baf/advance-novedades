@@ -45,11 +45,11 @@ $(document).ready(function () {
         $('#edit-Working_Area_id').val(user_data.user.Worker_Area_id);
     });
 
-    // allow password edit by acccess id edit-update-password
+    // allow password edit by access id edit-update-password
     $('#edit-update-password').on('click', function () {
         // toggle prop disabled on password input
         $('#edit-password').prop('readonly', !$('#edit-password').prop('readonly'));
-        // togglle password text from ('*************'); to empty on toggle
+        // toggle password text from ('*************'); to empty on toggle
         $('#edit-password').val($('#edit-password').val() == '*************' ? '' : '*************');
     });
 });

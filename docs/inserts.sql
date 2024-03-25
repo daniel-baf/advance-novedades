@@ -1,5 +1,8 @@
 USE novedades;
 
+-- CLIENTES default user CF
+INSERT INTO `novedades`.`Client` (`NIT`, `name`, `phone_number`) VALUES ('CF', 'CONSUMIDOR FINAL', '00000000'), ('12312312', 'PEPE EL POLLO', '12345678');
+
 -- WORKERS: default password 'a'
 INSERT INTO `Worker_Area` VALUES ('ADMIN', 'ADMINISTRADOR'), ('SELLS', 'VENTAS'), ('PRODUCTION', 'OPERARIO');
 CALL insertWorkerAndGetId('0GGOy6X/t2XHqNKgYdfsWw==', 'testing admin', 'ADMIN', TRUE, @generated_id);
@@ -62,14 +65,13 @@ INSERT INTO `Order` (`total`, `is_special`, `phone`, `name`, `Order_Status_id`, 
 INSERT INTO `Order_Detail` (`Order_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `cuantity`, `Order_Status_id`, `anotation`) VALUES ('1', '2', '8', '3', 'DELIVERED', 'Bordar el nombre Fino Filipino');
 
 
-
 -- BILLS / RECEIPES
 -- 1 CHUMPA DE DIARIO ADVANCE 10 (180) + 2 CAMISA POLO ADVANCE 12 (100)
 INSERT INTO `Bill` (`total`, `date`, `Worker_id`) VALUES (380.00, CURDATE(), 'SLLS1');
 -- 1 PANTS FISICA ADVANCE XL (400) 
-INSERT INTO `Bill` (`name`, `NIT`, `total`, `date`, `Worker_id`) VALUES ('Pochoclo', CONCAT('', FLOOR(10000000 + RAND() * (99999999 - 10000000 + 1))), 400.00, DATE('2022-01-01') + INTERVAL FLOOR(RAND() * (DATEDIFF('2023-12-31', '2022-01-01') + 1)) DAY, 'SLLS1');
+INSERT INTO `Bill` (`Client_NIT`, `total`, `date`, `Worker_id`) VALUES ('12312312', 400.00, DATE('2022-01-01') + INTERVAL FLOOR(RAND() * (DATEDIFF('2023-12-31', '2022-01-01') + 1)) DAY, 'SLLS1');
 -- 1 Order FOR ORDER 1 (300)
-INSERT INTO `Bill` (`name`, `NIT`, `total`, `date`, `Worker_id`, `Order_id`) VALUES ('Pochoclo', CONCAT('', FLOOR(10000000 + RAND() * (99999999 - 10000000 + 1))), 260, CURDATE(), 'SLLS1', 1);
+INSERT INTO `Bill` (`Client_NIT`, `total`, `date`, `Worker_id`, `Order_id`) VALUES ('12312312', 260, CURDATE(), 'SLLS1', 1);
 -- NOTE: may i switch FK for 1:1 at Extra and Order Detail?
 INSERT INTO `Extra` (`detail`, `price`) VALUES ('Bordar el nombre Juanito Perez', '20');
 INSERT INTO `Bill_Detail` (`unitary_price`, `cuantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `Extra_id`) VALUES ('80', '3', '3', '2', '8', '1');
@@ -79,7 +81,7 @@ INSERT INTO `Expense_Type` (`name`) VALUES ('SALARIOS'), ('Mobiliario y Equipo')
 INSERT INTO `Expense` (`ammount`, `Worker_id`, `Expense_Type_id`, `date`) VALUES (123.12, 'ADM1', 1, NOW()), (155.12, 'ADM1', 2, '2020-12-21'), (182.12, 'ADM1', 3, '2023-01-02');
 
 
--- CALL filter_expenses_dinamically('2020-02-02', '2022-01-01');
+-- CALL filter_expenses_dynamically('2020-02-02', '2022-01-01');
 
 -- Call the stored procedure with desired start and end date (e.g., '2024-01-01', '2024-03-17')
 CALL generate_sample_bills();

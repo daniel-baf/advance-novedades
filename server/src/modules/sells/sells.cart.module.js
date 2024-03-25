@@ -43,7 +43,7 @@ async function addItemCartSubMethod(session, pledge_id, pledge_size, quantity, e
             return { error: true, message: 'El precio de la prenda no puede ser negativo' };
         }
         if (addExtras && json_tmp.extras_note === '') { // valid note
-            return { error: true, message: 'La nota de los extras no puede estar vacia' };
+            return { error: true, message: 'La nota de los extras no puede estar vacía' };
         }
         if (isNullOrUndefined(json_tmp.pledge_id) || isNullOrUndefined(json_tmp.pledge_size) || isNullOrUndefined(json_tmp.quantity) || isNullOrUndefined(pledge_name)) { // valid parameters
             return { error: true, message: 'Los valores para agregar al carrito no son validos' };
@@ -65,10 +65,10 @@ async function addItemCartSubMethod(session, pledge_id, pledge_size, quantity, e
         } else {
             // update cart
             // check if stock is 0 or lower than quantity
-            let _json_bakcup = session.shopping_cart[index].quantity;
+            let _json_backup = session.shopping_cart[index].quantity;
             session.shopping_cart[index].quantity = session.shopping_cart[index].quantity + new_item_json.quantity;
             if (_db_products.stock < session.shopping_cart[index].quantity) {
-                session.shopping_cart[index].quantity = _json_bakcup;
+                session.shopping_cart[index].quantity = _json_backup;
                 return { error: true, message: 'No hay suficiente stock para el producto que solicitaste' };
             }
             return { error: false, message: 'Producto actualizado en el carrito' };
@@ -90,11 +90,11 @@ async function addItemToCart(req, res) {
 // that one to check id of array cart
 function deleteFromCart(pledge_id, pledge_size, with_extras, session) {
     try {
-        let json_objct = { pledge_id, pledge_size, extras: {} };
+        let json_object = { pledge_id, pledge_size, extras: {} };
         if (with_extras) {
-            json_objct.extras = { extras_price: 0, extras_note: '' };
+            json_object.extras = { extras_price: 0, extras_note: '' };
         }
-        let index = findIndexCart(json_objct, session);
+        let index = findIndexCart(json_object, session);
         if (index == -1) {
             return { error: true, message: 'No hemos podido encontrar el producto en el carrito' };
         }
@@ -106,17 +106,17 @@ function deleteFromCart(pledge_id, pledge_size, with_extras, session) {
 }
 
 // -- to quantity
-function decareaseFromCart(pledge_id, pledge_size, with_extras, session) {
+function decreaseFromCart(pledge_id, pledge_size, with_extras, session) {
     try {
-        let json_objct = { pledge_id, pledge_size, extras: {} };
+        let json_object = { pledge_id, pledge_size, extras: {} };
         if (with_extras) {
-            json_objct.extras = { extras_price: 0, extras_note: '' };
+            json_object.extras = { extras_price: 0, extras_note: '' };
         }
-        let index = findIndexCart(json_objct, session);
+        let index = findIndexCart(json_object, session);
         if (index == -1) {
             return { error: true, message: 'No hemos podido encontrar el producto en el carrito' };
         }
-        if (session.shopping_cart[index].quantity <= 1) { // if current cuantity is 1, delete it
+        if (session.shopping_cart[index].quantity <= 1) { // if current quantity is 1, delete it
             return deleteFromCart(pledge_id, pledge_size, with_extras, session);
         } else {
             session.shopping_cart[index].quantity = session.shopping_cart[index].quantity - 1;
@@ -131,28 +131,28 @@ function decareaseFromCart(pledge_id, pledge_size, with_extras, session) {
 // ++ to quantity
 async function increaseFromCart(pledge_id, pledge_size, session, extras = {}) {
     try {
-        let json_objct = { pledge_id, pledge_size, extras: extras };
-        let index = findIndexCart(json_objct, session);
+        let json_object = { pledge_id, pledge_size, extras: extras };
+        let index = findIndexCart(json_object, session);
         if (index == -1) {
             return { error: true, message: 'No hemos podido encontrar el producto en el carrito' };
         }
         // make a backup of current quantity
-        let _json_bakcup = session.shopping_cart[index];
+        let _json_backup = session.shopping_cart[index];
         // remove and insert new value
-        json_objct = {
-            pledge_id, pledge_name: _json_bakcup.pledge_name, pledge_size,
-            pledge_price: _json_bakcup.pledge_price, quantity: _json_bakcup.quantity,
-            extras: _json_bakcup.extras
+        json_object = {
+            pledge_id, pledge_name: _json_backup.pledge_name, pledge_size,
+            pledge_price: _json_backup.pledge_price, quantity: _json_backup.quantity,
+            extras: _json_backup.extras
         };
-        json_objct.quantity = json_objct.quantity + 1;
-        // check if nuew value is lower than stock
-        let _db_products = await findStockByPK(session.user.location.id, json_objct.pledge_id, json_objct.pledge_size).then(db_product => {
+        json_object.quantity = json_object.quantity + 1;
+        // check if new value is lower than stock
+        let _db_products = await findStockByPK(session.user.location.id, json_object.pledge_id, json_object.pledge_size).then(db_product => {
             return db_product;
         });
-        if (_db_products.stock < json_objct.quantity) {
+        if (_db_products.stock < json_object.quantity) {
             return { error: true, message: 'No hay suficiente stock para el producto que solicitaste' };
         } else {
-            session.shopping_cart[index] = json_objct;
+            session.shopping_cart[index] = json_object;
             return { error: false, message: 'Producto del carrito editado' };
         }
     } catch (error) {
@@ -162,20 +162,38 @@ async function increaseFromCart(pledge_id, pledge_size, session, extras = {}) {
 
 
 // function to edit cart
-function editCart(json_objct, session) {
+async function editCart(json_object, session) {
     try {
-        // check if json_boject contains extras
+        if (json_object.quantity < 0) {
+            return { error: true, message: "Stock no puede ser negativo" }
+        }
+        // check if json_object contains extras
         // update just the quantity
-        let index = findIndexCart(json_objct, session);
-        let backup = session.shopping_cart[index];
+        let index = findIndexCart(json_object, session);
+        if (index === -1) {
+            return { error: true, message: "El carrito no existía en el carrito de compras" }
+        }
+        // let backup = session.shopping_cart[index];
+        // look out for the product stock
+        let _db_product = await findStockByPK(session.user.location.id, json_object.pledge_id, json_object.pledge_size).then(db_product => {
+            return db_product;
+        });
+        // compare stock with how much i have and hm they want
+        if (_db_product.stock < (json_object.quantity)) {
+            return { error: true, message: "No hay suficiente stock" }
+        }
         // delete and insert new value
-        session.shopping_cart.splice(index, 1);
-        let { pledge_id, pledge_size, quantity, extras } = json_objct;
-        // update quantity
-        let addExtras = isNullOrUndefined(extras.extras_price) && isNullOrUndefined(extras.extras_note);
-        return addItemCartSubMethod(session, pledge_id, pledge_size, quantity, extras.extras_price, extras.extras_note, addExtras, backup.pledge_name, backup.pledge_price);
+        console.log(_db_product);
+        console.log(session.shopping_cart);
+        console.log(json_object);
+        session.shopping_cart[index].quantity = json_object.quantity;
+        if (Object.keys(session.shopping_cart[index].extras).length != 0) {
+            session.shopping_cart[index].extras = json_object.extras;
+        }
+
+        return { error: false, message: "Se ha agregado al carrito" }
     } catch (error) {
         return { error: true, message: 'No hemos podido recuperarnos de un error inesperado ' + error.message };
     }
 }
-module.exports = { addItemToCart, editCart, deleteFromCart, decareaseFromCart, increaseFromCart }
+module.exports = { addItemToCart, editCart, deleteFromCart, decreaseFromCart, increaseFromCart }

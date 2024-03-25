@@ -12,7 +12,7 @@
     <div class="container mt-5">
       <div class="col-md-6 offset-md-3">
         <a href="/login">
-          <h1 class="text-center mb-4">Inicio de Sesion | Las Novedades</h1>
+          <h1 class="text-center mb-4">Inicio de Sesión | Las Novedades</h1>
         </a>
         <div>
           <%- include("partials/messages.ejs", { message: message,
@@ -49,14 +49,14 @@
               required
             >
               <option selected disabled>-- SELECCIONAR --</option>
-              <!-- FOR TRHOUGH buldings -->
+              <!-- FOR THROUGH buddings -->
               <% buildings.forEach((building) => { %>
               <option value="<%= building.id %>"><%= building.name %></option>
               <% }); %>
             </select>
           </div>
           <button type="submit" class="btn btn-primary btn-block">
-            Iniciar Sesion
+            Iniciar Sesión
           </button>
         </form>
       </div>

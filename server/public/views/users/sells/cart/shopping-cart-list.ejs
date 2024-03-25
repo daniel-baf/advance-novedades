@@ -24,7 +24,7 @@
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 mt-5">
           <div>
             <h1>Carrito de compra</h1>
-            <p>
+            <p class="text-center">
               Edita el listado para la factura antes de pasar al siguiente paso
             </p>
             <div>
@@ -67,7 +67,7 @@
                         value="<%=_bag_item.quantity%>"
                         required
                       />
-                      <button type="submit" class="btn btn-primary btn-flat">
+                      <button type="submit" class="btn btn-primary">
                         Actualizar
                       </button>
                     </div>
@@ -115,25 +115,25 @@
                 </div>
                 <div class="col-md-5">
                   <a
-                    class="btn btn-success mr-2"
+                    class="btn btn-success"
                     role="button"
                     href="/sells/cart/increase-one/<%=_bag_item.pledge_id%>/<%=_bag_item.pledge_size%>/<%=!(Object.keys(_bag_item.extras).length === 0)%>"
                   >
-                    <i class="fas fa-plus"></i>Agregar
+                    + 1
                   </a>
                   <a
                     class="btn btn-warning"
                     role="button"
                     href="/sells/cart/decrease-one/<%=_bag_item.pledge_id%>/<%=_bag_item.pledge_size%>/<%=!(Object.keys(_bag_item.extras).length === 0)%>"
                   >
-                    <i class="fas fa-minus"></i> Quitar
+                    - 1
                   </a>
                   <a
-                    class="btn btn-danger mr-2"
+                    class="btn btn-danger"
                     role="button"
                     href="/sells/cart/remove/<%=_bag_item.pledge_id%>/<%=_bag_item.pledge_size%>/<%=!(Object.keys(_bag_item.extras).length === 0)%>"
                   >
-                    <i class="fas fa-trash-alt"></i> Borrar
+                    Borrar
                   </a>
                 </div>
               </div>
@@ -153,12 +153,12 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th class="text-center">NOMBRE</th>
-                  <th class="text-center">TALLA</th>
-                  <th class="text-center">CANTIDAD</th>
-                  <th class="text-center">PRECIO UNITARIO</th>
-                  <th class="text-center">PRECIO EXTRAS</th>
-                  <th class="text-center">SUBTOTAL</th>
+                  <th class="text-uppercase text-center">NOMBRE</th>
+                  <th class="text-uppercase text-center">TALLA</th>
+                  <th class="text-uppercase text-center">CANTIDAD</th>
+                  <th class="text-uppercase text-center">PRECIO UNITARIO</th>
+                  <th class="text-uppercase text-center">PRECIO EXTRAS</th>
+                  <th class="text-uppercase text-center">SUBTOTAL</th>
                 </tr>
               </thead>
               <tbody>
@@ -246,19 +246,19 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="pledge_id">Codigo</label>
+                    <label for="pledge_id">Código</label>
                     <input
                       type="number"
                       class="form-control"
                       name="pledge_id"
                       id="pledge_id"
                       aria-describedby="pledge_id_small"
-                      placeholder="Codigo producto"
+                      placeholder="Código producto"
                       readonly
                       required
                     />
                     <small id="pledge_id_small" class="form-text text-muted"
-                      >Codigo del producto (no editable)</small
+                      >Código del producto (no editable)</small
                     >
                   </div>
                 </div>

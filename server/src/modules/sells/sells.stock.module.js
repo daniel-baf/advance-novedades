@@ -2,13 +2,13 @@ const path = require('path');
 const { CART_SEARCH_TYPES, STOCK_FILTER_BY_PLEDGE_ID_AND_BUILDING_QUERY, STOCK_FILTER_BY_PLEDGE_NAME_AND_BUILDING_QUERY, STOCK_FILTER_BY_PLEDGE_SIZE_AND_BUILDING_QUERY, STOCK_FILTER_BY_BUILDING_QUERY } = require('../../config/consts');
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
-// generic funtion to send typeof query, and search id, to return custom promise
+// generic function to send typeof query, and search id, to return custom promise
 function searchStockByParameter(searchType, searchId, building) {
     // check if searchId is null -> return all rows from current building stock
     if (searchId == '' || searchId == undefined || searchType == undefined) {
         return searchStockByBuilding(building);
     }
-    // check serachType in switch case
+    // check searchType in switch case
     switch (searchType) {
         case CART_SEARCH_TYPES.ID:
             return searchStockById(Number(searchId), Number(building));
@@ -17,7 +17,7 @@ function searchStockByParameter(searchType, searchId, building) {
         case CART_SEARCH_TYPES.SIZE:
             return searchStockBySize(searchId, Number(building));
         default:
-            throw new Error("Tipo de busqueda invalido");
+            throw new Error("Tipo de búsqueda invalido");
     }
 }
 

@@ -11,7 +11,7 @@ $(document).ready(function () {
                 $('#editExpenseModal').modal('show');
                 // Fill modal fields with object response
                 $('#expense_id').val(response.expense.id); // set id
-                $('#expense_ammount').val(response.expense.ammount); // set ammount
+                $('#expense_ammount').val(response.expense.ammount); // set amount
                 // set date from fetched data
                 // Set date from fetched data
                 $('#expense_date').val(response.expense.date.substring(0, 10)); // Extract YYYY-MM-DD from the fetched date

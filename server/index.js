@@ -63,7 +63,7 @@ const mockSessionMiddleware = (req, res, next) => {
           pledge_name: 'CHUMPA DE DIARIO ADVANCE',
           pledge_size: '14',
           pledge_price: 200.00,
-          quantity: 1,
+          quantity: 4,
           extras: { extras_price: 10, extras_note: 'Bordar: Daniel Bautista' }
         }
       ];

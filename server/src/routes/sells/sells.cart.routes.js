@@ -3,7 +3,7 @@ const router = express.Router();
 
 const { CART_SEARCH_TYPES } = require("../../config/consts");
 const { searchStockByParameter } = require('../../modules/sells/sells.stock.module');
-const { addItemToCart, editCart, deleteFromCart, decareaseFromCart, increaseFromCart } = require('../../modules/sells/sells.cart.module');
+const { addItemToCart, editCart, deleteFromCart, decreaseFromCart, increaseFromCart } = require('../../modules/sells/sells.cart.module');
 
 const { renderLoginPage, render500Page } = require('../../modules/utils/renders.common.utils.module');
 
@@ -13,7 +13,7 @@ function renderShoppingCart(req, res, message = "", error_message = "") {
         if (req.session.shopping_cart == undefined) {
             req.session.shopping_cart = [];
         }
-        res.render("users/sells/cart/shoping-cart-list.ejs", { name: req.session.user.id, message: message, error_message: error_message, shopping_cart: req.session.shopping_cart })
+        res.render("users/sells/cart/shopping-cart-list.ejs", { name: req.session.user.id, message: message, error_message: error_message, shopping_cart: req.session.shopping_cart })
     } catch (error) {
         renderLoginPage(req, res, '', "No hemos podido recuperarnos de un error, " + error.message)
     }
@@ -26,7 +26,7 @@ function renderItemsSearched(req, res, message, error_message, data = []) {
         // initialize cart
         res.render("users/sells/cart/add-item-cart", { name: req.session.user.id, message: message, error_message: error_message, filterTypes: CART_SEARCH_TYPES, data: data, building: req.session.user.location.name });
     } catch (error) {
-        render500Page(res, "No hemos podidio recuperar tu sesion. " + error);
+        render500Page(res, "No hemos podido recuperar tu sesión. " + error);
     }
 }
 
@@ -42,9 +42,9 @@ router.get("/stock/search/", (req, res) => {
 router.post("/stock/search/", async (req, res) => {
     try {
         let { searchType, searchId } = req.body;
-        // fetch promisse to get data from stock
+        // fetch promises to get data from stock
         searchStockByParameter(searchType, searchId, req.session.user.location.id).then((data) => {
-            renderItemsSearched(req, res, "Busqueda completada", "", data);
+            renderItemsSearched(req, res, "Búsqueda completada", "", data);
             return data;
         }).catch((error) => {
             renderItemsSearched(req, res, "", error);
@@ -89,13 +89,20 @@ router.get("/cart/list/", (req, res) => {
 })
 
 // update a element from cart
-router.get("/cart/edit/:pledge_id/:pledge_size", (req, res) => {
+router.get("/cart/edit/:pledge_id/:pledge_size", async (req, res) => {
     try {
-        // recover data
         let { pledge_id, pledge_size } = req.params;
         let { extras_note, extras_price, quantity } = req.query;
-        let json_objct = { pledge_id: Number(pledge_id), pledge_size, quantity: Number(quantity), extras: { extras_note, extras_price: Number(extras_price) } }
-        res.status(200).json(editCart(json_objct, req.session))
+        let json_object = { pledge_id: Number(pledge_id), pledge_size, quantity: Number(quantity), extras: {} }
+        if (extras_note != undefined && extras_price != undefined) {
+            json_object.extras = { extras_note, extras_price: Number(extras_price) }
+        }
+        let response = await editCart(json_object, req.session)
+        if (response.error) {
+            renderShoppingCart(req, res, '', response.message)
+        } else {
+            renderShoppingCart(req, res, response.message, '')
+        }
     } catch (error) {
         render500Page(res, "No hemos podido recuperarnos de un error inesperado " + error.message);
     }
@@ -121,7 +128,7 @@ router.get("/cart/remove/:pledge_id/:pledge_size/:with_extras", (req, res) => {
 router.get("/cart/decrease-one/:pledge_id/:pledge_size/:with_extras", (req, res) => {
     try {
         let { pledge_id, pledge_size, with_extras } = req.params;
-        let response = decareaseFromCart(Number(pledge_id), pledge_size, with_extras === 'true', req.session);
+        let response = decreaseFromCart(Number(pledge_id), pledge_size, with_extras === 'true', req.session);
         // check response status
         if (response.error) {
             renderShoppingCart(req, res, "", response.message);

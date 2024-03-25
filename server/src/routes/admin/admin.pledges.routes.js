@@ -15,7 +15,7 @@ async function renderPledgesList(req, res, message = '', error_message = '') {
     res.render("users/admin/products/list-pledges", { name: req.session.user.id, message: message, error_message: error_message, data: db_data });
 }
 
-// seraches on DB for pledge by id and return JSON as async function
+// searches on DB for pledge by id and return JSON as async function
 router.get("/load-pledges/search/:id", async (req, res) => {
     let pledge_id = req.params.id;
     db_data = await getPledgeById(pledge_id);
@@ -31,7 +31,7 @@ router.post("/load-pledges/update/", async (req, res) => {
     try {
         let { Pledge_id, Pledge_name } = req.body;
         if (Pledge_name == '' || Pledge_name == undefined) {
-            renderPledgesList(req, res, '', 'El nombre no puede estar vacio');
+            renderPledgesList(req, res, '', 'El nombre no puede estar vacío');
             return; // exit method if invalid
         }
         // valid operation GOTO db
@@ -52,7 +52,7 @@ router.get("/load-pledges/delete/:id", async (req, res) => {
         let pledge_id = req.params.id;
         // check for valid inputs
         if (pledge_id == '' || pledge_id == undefined) {
-            renderPledgesList(req, res, '', 'Valores ingresados invalidos');
+            renderPledgesList(req, res, '', 'Valores ingresados inválidos');
             return; // exit method if invalid
         }
         // valid operation GOTO db
@@ -67,7 +67,7 @@ router.get("/load-pledges/delete/:id", async (req, res) => {
     }
 });
 
-// create a new pledge and utomatically insert inventory to DB using transactions
+// create a new pledge and automatically insert inventory to DB using transactions
 router.post("/load-pledges/create/", async (req, res) => {
     try {
         let { name, sizes } = req.body;

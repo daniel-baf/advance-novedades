@@ -14,7 +14,7 @@ $(document).ready(function () {
             let form = $(this);
             // deserialize data and restructure for JSON operations
             let _data = { name: "", sizes: [] }
-            _data.name = form.find('input[name="new_peldge_name"]').val();
+            _data.name = form.find('input[name="new_pledge_name"]').val();
             // get all checked checkboxes
             form.find('input[type="checkbox"]:checked').each(function () {
                 let key = $(this).val();
@@ -26,7 +26,7 @@ $(document).ready(function () {
             _response = await postData(_data);
             alert(_response.message);
         } catch (error) {
-            alert("Operacion fallida: Es posible que los valores ya existan");
+            alert("Operación fallida: Es posible que los valores ya existan");
         }
     });
 
@@ -43,7 +43,7 @@ $(document).ready(function () {
                     body: JSON.stringify(form_data)
                 });
                 if (!response.ok) {
-                    reject(`Operacion fallida${response.json().message}`);
+                    reject(`Operación fallida${response.json().message}`);
                 }
                 const data = await response.json();
                 resolve(data);

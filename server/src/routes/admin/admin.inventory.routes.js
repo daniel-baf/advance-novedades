@@ -5,12 +5,12 @@ const { getAllInventory, deleteProductFromInventory, searchInventoryByPK, update
 const { renderLoginPage } = require('../../modules/utils/renders.common.utils.module');
 
 // INVENTORY ROUTES
-// display a view with all inventory (ej. prodcuts by sizes and allow edit or delete)
+// display a view with all inventory (ej. products by sizes and allow edit or delete)
 router.get("/load-inventory", (req, res) => {
     try {
         renderInventoryList(req, res)
     } catch (error) {
-        renderLoginPage(req, res, '', 'No hemos podidio cargar el inventario ' + error);
+        renderLoginPage(req, res, '', 'No hemos podido cargar el inventario ' + error);
     }
 })
 
@@ -18,11 +18,10 @@ router.get("/load-inventory", (req, res) => {
 async function renderInventoryList(req, res, message = '', error_message = '') {
     try {
         // get data from DB and generate custom JSON
-        db_iventory = await getAllInventory();
-        // res.status(200).json({ name: req.session.user.id, message: message, error_message: error_message, data: db_iventory });
-        res.render("users/admin/products/list-inventory", { name: req.session.user.id, message: message, error_message: error_message, data: db_iventory });
+        db_inventory = await getAllInventory();
+        res.render("users/admin/products/list-inventory", { name: req.session.user.id, message: message, error_message: error_message, data: db_inventory });
     } catch (error) {
-        renderLoginPage(req, res, '', 'No hemos podidio cargar el inventario ' + error);
+        renderLoginPage(req, res, '', 'No hemos podido cargar el inventario ' + error);
     }
 }
 
@@ -51,7 +50,7 @@ router.get("/load-inventory/search/:pledge_id/:pledge_size", async (req, res) =>
         }
         res.status(200).json(_fetched_data[1]);
     } catch (error) {
-        res.status(500).json({ error: 'Ooops, a error just ocurred ' + error })
+        res.status(500).json({ error: 'Oops, a error just ocurred ' + error })
     }
 });
 
@@ -65,7 +64,7 @@ router.post("/load-inventory/update/", async (req, res) => {
             renderInventoryList(req, res, '', _response[1]);
         }
     } catch (error) {
-        renderInventoryList(req, res, '', 'Ooops, a error just ocurred ' + error);
+        renderInventoryList(req, res, '', 'Oops, a error just ocurred ' + error);
     }
 });
 

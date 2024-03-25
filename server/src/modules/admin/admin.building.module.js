@@ -15,7 +15,7 @@ async function insertBuilding(building_name, building_direction) {
     try {
         // Check valid inputs
         if (building_name === '' || building_direction === '') {
-            return [false, 'Valores ingresados invalidos'];
+            return [false, 'Valores ingresados inválidos'];
         }
 
         // Perform the insert query
@@ -35,9 +35,9 @@ async function insertBuilding(building_name, building_direction) {
     }
 }
 
-// seraches building by id
+// searches building by id
 async function searchBuilding(building_id) {
-    // use promisses to send the result
+    // use promises to send the result
     try {
         const result = await new Promise((resolve, reject) => {
             db_connection.query(BUILDING_SEARCH_ID_QUERY, [building_id], (error, _result) => {
@@ -95,7 +95,7 @@ async function deleteBuilding(building_id) {
         })
         return [true, { message: "Se ha borrado el edificio con id " + building_id, col_modified: result }]
     } catch (error) {
-        return [false, "No se pudo borrar el dificio " + error]
+        return [false, "No se pudo borrar el edificio " + error]
     }
 }
 
