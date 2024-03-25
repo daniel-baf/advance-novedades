@@ -50,11 +50,11 @@ function insertExpenseType(_expense_name = '', _worker_id = '') {
         // check if user is invalid
         if (!_worker_id) reject('No es un usuario valido el que ha insertado el gasto')
         // check if a no admin is trying to insert the expense
-        if (!_worker_id.includes(ROLES.ADMIN.TAG)) reject("No estas autorizado para ejecutar esta operacion")
-        // valid operation, proced to insert
+        if (!_worker_id.includes(ROLES.ADMIN.TAG)) reject("No estas autorizado para ejecutar esta operación")
+        // valid operation, continue to insert
         db_connection.query(EXPENSE_TYPE_INSERT_QUERY, [_expense_name], (error, result) => {
             if (error) {
-                reject(`No se ha podidio insertar el tipo de gasto, ${error}`)
+                reject(`No se ha podido insertar el tipo de gasto, ${error}`)
             } else {
                 resolve(`Se ha insertado el tipo de gasto ${_expense_name.toLowerCase()}`)
             }
@@ -71,10 +71,10 @@ function updateExpenseType(_id = '', _name = '') {
         if (!_name) reject('No has ingresado un valor valido para el tipo de gasto')
         // cast id to int
         _id = Number.parseInt(_id);
-        // valid operation, proced to insert
+        // valid operation, proceed to insert
         db_connection.query(EXPENSE_TYPE_UPDATE_QUERY, [_name, _id], (error) => {
             if (error) {
-                reject(`No se ha podidio actualizar el tipo de gasto, ${error}`)
+                reject(`No se ha podido actualizar el tipo de gasto, ${error}`)
             } else {
                 resolve(`Se ha actualizado el tipo de gasto ${_name.toLowerCase()}`)
             }
@@ -89,7 +89,7 @@ function deleteExpenseType(_id = '') {
         if (!_id) reject('No has ingresado un valor valido para el tipo de gasto')
         // cast id to int
         _id = Number.parseInt(_id);
-        // valid operation, proced to insert
+        // valid operation, proceed to insert
         db_connection.query(EXPENSE_TYPE_DELETE_QUERY, [_id], (error, result) => {
             if (error) {
                 reject(`No puedes borrar valores que ya hayan sido usados en un registro de gastos`)
@@ -102,24 +102,24 @@ function deleteExpenseType(_id = '') {
 
 
 // insert into DB a new expense type
-function insertExpense(_ammount = 0, _worker_id = '', _expense_type = '') {
+function insertExpense(_amount = 0, _worker_id = '', _expense_type = '') {
     return new Promise((resolve, reject) => {
-        // check if ammount is > 0
-        if (_ammount < 0) reject('No puedes ingresar valores menores a 0')
+        // check if amount is > 0
+        if (_amount < 0) reject('No puedes ingresar valores menores a 0')
         // check if _expense_type is invalid
         if (!_expense_type) reject('No has ingresado un valor valido para el tipo de gasto')
         // check if user is invalid
         if (!_worker_id) reject('No es un usuario valido el que ha insertado el gasto')
         // check if a no admin is trying to insert the expense
-        if (!_worker_id.includes(ROLES.ADMIN.TAG)) reject("No estas autorizado para ejecutar esta operacion")
-        // valid operation, proced to insert
+        if (!_worker_id.includes(ROLES.ADMIN.TAG)) reject("No estas autorizado para ejecutar esta operación")
+        // valid operation, proceed to insert
         let _date = new Date();         // configure date to current date
-        _ammount = Number.parseFloat(_ammount) // cast to double
-        db_connection.query(EXPENSE_INSERT_QUERY, [_ammount, _date, _worker_id, _expense_type], (error) => {
+        _amount = Number.parseFloat(_amount) // cast to double
+        db_connection.query(EXPENSE_INSERT_QUERY, [_amount, _date, _worker_id, _expense_type], (error) => {
             if (error) {
-                reject(`No se ha podidio insertar gasto, ${error}`)
+                reject(`No se ha podido insertar gasto, ${error}`)
             } else {
-                resolve(`Se ha insertado el gasto de Q${_ammount} correctamente`)
+                resolve(`Se ha insertado el gasto de Q${_amount} correctamente`)
             }
         });
     });
@@ -131,7 +131,7 @@ function listExpensesByFilter(_init_date = null, _end_date = null) {
     let _dates = swapDatesIfPossible(_init_date, _end_date);
     _init_date = _dates.init_date;
     _end_date = _dates.end_date;
-    // call procedure to get dinamically data
+    // call procedure to get dynamically data
     return new Promise((resolve, reject) => {
         // call procedure
         db_connection.query(EXPENSE_SELECT_PROCEDURE, [_init_date, _end_date], (error, result) => {
@@ -163,7 +163,7 @@ function deleteExpenseById(_id) {
 // search a expense by ID
 function searchExpenseById(_id) {
     return new Promise((resolve, reject) => {
-        if (!_id) reject("Datos invalidos") // Reject if invalid id
+        if (!_id) reject("Datos inválidos") // Reject if invalid id
         db_connection.query(EXPENSE_SELECT_ID_QUERY, [_id], (error, result) => {
             if (error) reject("No se ha podido encontrar el gasto")
             else resolve(result[0])
@@ -172,13 +172,13 @@ function searchExpenseById(_id) {
 };
 
 // update a expense into DB log
-function updateExpense(_id, _ammount, _worker_id, _expense_type, _date) {
+function updateExpense(_id, _amount, _worker_id, _expense_type, _date) {
     return new Promise((resolve, reject) => {
-        if (!_worker_id || !_expense_type || !_id || !_ammount || !_date) reject("Datos invalidos") // Reject if invalid worker_id
-        if (_ammount < 0) reject("No puedes ingresar valores menores a 0") // Reject if invalid ammount
-        if (!_worker_id.includes(ROLES.ADMIN.TAG)) reject("No estas autorizado para ejecutar esta operacion") // Reject if invalid user
-        // valid operation, proced to insert
-        db_connection.query(EXPENSE_UPDATE_QUERY, [_ammount, _expense_type, _date, _id], (error, result) => {
+        if (!_worker_id || !_expense_type || !_id || !_amount || !_date) reject("Datos inválidos") // Reject if invalid worker_id
+        if (_amount < 0) reject("No puedes ingresar valores menores a 0") // Reject if invalid amount
+        if (!_worker_id.includes(ROLES.ADMIN.TAG)) reject("No estas autorizado para ejecutar esta operación") // Reject if invalid user
+        // valid operation, proceed to insert
+        db_connection.query(EXPENSE_UPDATE_QUERY, [_amount, _expense_type, _date, _id], (error, result) => {
             if (error) reject("No se ha podido actualizar el gasto")
             else resolve(`Se ha actualizado el gasto con el id ${_id} | Cambios realizados: ${result.affectedRows}`)
         });

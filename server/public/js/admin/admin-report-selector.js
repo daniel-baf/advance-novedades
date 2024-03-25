@@ -1,6 +1,6 @@
 // wait for DOM loaded
 $(document).ready(function () {
-    // funtion to fetch data for form
+    // function to fetch data for form
     $(() => {
         fetchData().then(result => {
             // add elements fetched to FORM

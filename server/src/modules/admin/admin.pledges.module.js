@@ -97,21 +97,21 @@ async function insertPledge(pledge_name) {
 async function createPledge(pledge_name, sizes) {
     try {
         let fetched_data = await new Promise((resolve, reject) => {
-            let aborted_transation = false;
+            let aborted_transaction = false;
             let message = "";
             db_connection.beginTransaction(async (error) => {
                 try {
-                    if (error) { throw Error("Transaccion imposible de iniciar") }  // invalid transaction
+                    if (error) { throw Error("Transacción imposible de iniciar") }  // invalid transaction
                     let _pledge_status = await insertPledge(pledge_name);
                     if (!_pledge_status[0]) { throw Error("No se pudo insertar la prenda") }  // invalid insert for pledge
                     let _inventory_status = await insertInventory(_pledge_status[1], sizes);
                     if (!_inventory_status[0]) { throw Error(_inventory_status[1]) }  // invalid insert for inventory
-                    message = "Se ha insertado la prenda con exito"
+                    message = "Se ha insertado la prenda con éxito"
                 } catch (error) {
-                    aborted_transation = true;
+                    aborted_transaction = true;
                     message = error;
                 } finally {
-                    if (aborted_transation) {
+                    if (aborted_transaction) {
                         db_connection.rollback();
                         reject([false, message]);
                     } else {

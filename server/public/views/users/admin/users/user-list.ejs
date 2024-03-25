@@ -1,181 +1,255 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<html lang="ES">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <title>Admin View</title>
     <!-- Include Bootstrap CSS from CDN -->
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <!-- Add your additional CSS styles here if needed -->
-    <link rel="stylesheet" href="/css/admin/admin-view.css">
-</head>
+    <link rel="stylesheet" href="/css/admin/admin-view.css" />
+  </head>
 
-<nav>
-    <%- include("../../../partials/nav.ejs")%>
-</nav>
+  <nav><%- include("../../../partials/nav.ejs")%></nav>
 
-<body>
+  <body>
     <div class="container-fluid">
-        <div class="row">
+      <div class="row">
+        <div><%- include("../../../partials/asides/admin-aside") %></div>
+
+        <!-- Main content area -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+          <!-- TITLE -->
+          <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+          >
+            <h1 class="center-text">Usuarios</h1>
+            <p>Listado de resultados encontrados</p>
+          </div>
+          <div>
             <div>
-                <%- include("../../../partials/asides/admin-aside") %>
+              <%- include("../../../partials/messages.ejs", {message: message,
+              error_message: error_message})%>
             </div>
-
-            <!-- Main content area -->
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-                <!-- TITLE -->
-                <div
-                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="center-text">Usuarios</h1>
-                    <p>Listado de resultados encontrados</p>
-                </div>
-                <div>
-                    <div>
-                        <%- include("../../../partials/messages.ejs", {message: message, error_message:
-                            error_message})%>
-                    </div>
-                    <div class="table-responsive">
-                        <!-- TABLE -->
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="center-text ">CODIGO</th>
-                                    <th class="center-text ">NOMBRE</th>
-                                    <th class="center-text ">AUTORIZADO</th>
-                                    <th class="center-text ">AREA</th>
-                                    <th class="center-text ">ACCIONES</th>
-                                </tr>
-                            </thead>
-                            <div>
-                                <tbody>
-                                    <% users.forEach(_user=> { %>
-                                        <tr>
-                                            <td class="center-text">
-                                                <%= _user.id %>
-                                            </td>
-                                            <td class="center-text">
-                                                <%= _user.name %>
-                                            </td>
-                                            <td class="center-text">
-                                                <%- _user.allowed ? 'Si' : 'No' %>
-                                            </td>
-                                            <td class="center-text">
-                                                <%= _user.Worker_Area_id %>
-                                            </td>
-                                            <td>
-                                                <div class="action-buttons row mx-2">
-                                                    <!-- Button trigger modal -->
-                                                    <a name="link-edit-user" class="btn btn-primary col mx-1 edit-btn"
-                                                        data-toggle="modal" data-target="#modelId"
-                                                        data-id="<%= _user.id %>" data-name="<%= _user.name %>"
-                                                        data-allowed="<%= _user.allowed %>"
-                                                        data-worker-area-id="<%= _user.Worker_Area_id %>"
-                                                        role="button">Editar</a>
-                                                    <!-- toggle text Autorizar and unaotorize if is allowed  -->
-                                                    <a name="link-edit-user"
-                                                        class="btn btn-outline-warning edit-btn col mx-1 "
-                                                        href="/admin/user/<%- !_user.allowed? 'auth': 'unauth' %>/<%=_user.id%>?current_view=<%= current_view %>"
-                                                        role="button"> <%- !_user.allowed? 'Autorizar' : 'Bloquear' %>
-                                                    </a>
-                                                    <a name="link-delete-user" class="btn btn-danger col mx-1"
-                                                        href="/admin/user/delete/<%=_user.id%>?current_view=<%= current_view %>"
-                                                        role="button">Borrar</a>
-
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <!-- Add more rows as needed -->
-                                        <% }) %>
-                                </tbody>
-                        </table>
-                    </div>
-                </div>
-            </main>
-        </div>
+            <div class="table-responsive">
+              <!-- TABLE -->
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="center-text">CÓDIGO</th>
+                    <th class="center-text">NOMBRE</th>
+                    <th class="center-text">AUTORIZADO</th>
+                    <th class="center-text">AREA</th>
+                    <th class="center-text">ACCIONES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% users.forEach(_user=> { %>
+                  <tr>
+                    <td class="center-text"><%= _user.id %></td>
+                    <td class="center-text"><%= _user.name %></td>
+                    <td class="center-text">
+                      <%- _user.allowed ? 'Si' : 'No' %>
+                    </td>
+                    <td class="center-text"><%= _user.Worker_Area_id %></td>
+                    <td>
+                      <div class="action-buttons row mx-2">
+                        <!-- Button trigger modal -->
+                        <a
+                          name="link-edit-user"
+                          class="btn btn-primary col mx-1 edit-btn"
+                          data-toggle="modal"
+                          data-target="#modelId"
+                          data-id="<%= _user.id %>"
+                          data-name="<%= _user.name %>"
+                          data-allowed="<%= _user.allowed %>"
+                          data-worker-area-id="<%= _user.Worker_Area_id %>"
+                          role="button"
+                          >Editar</a
+                        >
+                        <!-- toggle text Autorizar and unauthorize if is allowed  -->
+                        <a
+                          name="link-edit-user"
+                          class="btn btn-outline-warning edit-btn col mx-1"
+                          href="/admin/user/<%- !_user.allowed? 'auth': 'unauth' %>/<%=_user.id%>?current_view=<%= current_view %>"
+                          role="button"
+                        >
+                          <%- !_user.allowed? 'Autorizar' : 'Bloquear' %>
+                        </a>
+                        <a
+                          name="link-delete-user"
+                          class="btn btn-danger col mx-1"
+                          href="/admin/user/delete/<%=_user.id%>?current_view=<%= current_view %>"
+                          role="button"
+                          >Borrar</a
+                        >
+                      </div>
+                    </td>
+                  </tr>
+                  <!-- Add more rows as needed -->
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar Usuario</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+    <div
+      class="modal fade"
+      id="modelId"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="modelTitleId"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Editar Usuario</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid">
+              <form
+                method="POST"
+                action="/admin/user/update"
+                id="update-user-form"
+              >
+                <div class="form-group">
+                  <label for="edit-id">Código</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="id"
+                    id="edit-id"
+                    aria-describedby="id-small"
+                    placeholder="Código xxx"
+                    readonly
+                    required
+                  />
+                  <small id="id-small" class="form-text text-muted"
+                    >Id del usuario, no editable</small
+                  >
                 </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <form method="POST" action="/admin/user/update" id="update-user-form">
-                            <div class="form-group">
-                                <label for="edit-id">Codigo</label>
-                                <input type="text" class="form-control" name="id" id="edit-id"
-                                    aria-describedby="id-small" placeholder="Codigo xxx" readonly required>
-                                <small id="id-small" class="form-text text-muted">Id del usuario, no editable</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="edit-name">Nombre</label>
-                                <input type="text" class="form-control" name="name" id="edit-name"
-                                    aria-describedby="name-small" placeholder="Nombre de ejemplo" required>
-                                <small id="name-small" class="form-text text-muted">Nombre del usuario</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="edit-password">Contraseña</label>
-                                <input type="password" class="form-control" name="password" id="edit-password"
-                                    aria-describedby="password-small" placeholder="Contraseña ejemplo" readonly
-                                    required>
-                                <small id="password-small" class="form-text text-muted">Ingresa la contraseña del
-                                    usuario</small>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="current_view" id="current_view"
-                                    aria-describedby="current_view_small" placeholder="current view"
-                                    value="<%=current_view%>" hidden>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                            <input type="checkbox" class="form-check-input" name="allowed"
-                                                id="edit-allowed">
-                                            Autorizado
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                            <input type="checkbox" class="form-check-input" name="update_password"
-                                                id="edit-update-password">
-                                            Editar contraseña
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="edit-Working_Area_id">Area</label>
-                                        <select class="custom-select" name="Working_Area_id" id="edit-Working_Area_id"
-                                            required>
-                                            <option selected disabled>-- SELECCIONAR --</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                <div class="form-group">
+                  <label for="edit-name">Nombre</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="name"
+                    id="edit-name"
+                    aria-describedby="name-small"
+                    placeholder="Nombre de ejemplo"
+                    required
+                  />
+                  <small id="name-small" class="form-text text-muted"
+                    >Nombre del usuario</small
+                  >
+                </div>
+                <div class="form-group">
+                  <label for="edit-password">Contraseña</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    name="password"
+                    id="edit-password"
+                    aria-describedby="password-small"
+                    placeholder="Contraseña ejemplo"
+                    readonly
+                    required
+                  />
+                  <small id="password-small" class="form-text text-muted"
+                    >Ingresa la contraseña del usuario</small
+                  >
+                </div>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="current_view"
+                    id="current_view"
+                    aria-describedby="current_view_small"
+                    placeholder="current view"
+                    value="<%=current_view%>"
+                    hidden
+                  />
+                </div>
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          name="allowed"
+                          id="edit-allowed"
+                        />
+                        Autorizado
+                      </label>
                     </div>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          name="update_password"
+                          id="edit-update-password"
+                        />
+                        Editar contraseña
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="edit-Working_Area_id">Area</label>
+                      <select
+                        class="custom-select"
+                        name="Working_Area_id"
+                        id="edit-Working_Area_id"
+                        required
+                      >
+                        <option selected disabled>-- SELECCIONAR --</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-outline-warning" form="update-user-form">Guardar
-                        Cambios</button>
-                </div>
+              </form>
             </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cerrar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-outline-warning"
+              form="update-user-form"
+            >
+              Guardar Cambios
+            </button>
+          </div>
         </div>
+      </div>
     </div>
-</body>
+  </body>
 
-<footer>
-    <%- include("../../../partials/footer.ejs")%>
-</footer>
-
+  <footer><%- include("../../../partials/footer.ejs")%></footer>
 </html>
 
 <!-- Bootstrap JS and dependencies -->

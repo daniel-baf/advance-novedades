@@ -70,11 +70,11 @@ async function getUserForSession(id, password) {
     });
 }
 
-// login and directionate to different paths
+// login and redirect to different paths
 router.post("/signin", async (req, res) => {
   try {
     // encrypt password
-    let { id, password, current_building } = req.body; // retreive data
+    let { id, password, current_building } = req.body; // retrieve data
     password = encrypt(password); // encrypt data to avoid decrypting access
     // check if selected location is valid
     if (current_building === null || current_building === undefined || current_building === '') {
@@ -107,7 +107,7 @@ router.post("/signin", async (req, res) => {
     req.session.user.location = _building_db[1];
     switch (_user_session.role.NAME) {
       case ROLES.ADMIN.NAME:
-        return res.redirect(302, "/admin/dashboard/products"); // render admi dashboard
+        return res.redirect(302, "/admin/dashboard/products"); // render admin dashboard
       case ROLES.PRODUCTION.NAME:
         return res.redirect(302, "/production/dashboard"); // render production dashboard
       case ROLES.SELLS.NAME:
@@ -125,8 +125,8 @@ router.post("/signin", async (req, res) => {
 // get areas of work
 router.get("/user/get-areas", async (req, res) => {
   try {
-    let aread_db = await listWorkerAreas();
-    res.status(200).json({ areas: aread_db });
+    let areas_db = await listWorkerAreas();
+    res.status(200).json({ areas: areas_db });
   } catch (error) {
     res.status(500).json({
       error: "No se ha podido obtener las areas de trabajo, " + error,

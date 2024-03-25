@@ -5,7 +5,7 @@ const path = require("path");
 const { ROLES } = require("../config/consts");
 const { renderLoginPage, render500Page } = require("../modules/utils/renders.common.utils.module");
 
-// MIDDLWARES TO CHECK IF CURRENT USER BELONGS TO PRODUCTION
+// MIDDLEWARES TO CHECK IF CURRENT USER BELONGS TO PRODUCTION
 router.use((req, res, next) => {
   try {
     if (req.session.user.role.NAME === ROLES.PRODUCTION.NAME) {
@@ -14,12 +14,12 @@ router.use((req, res, next) => {
       render500Page(res, "No tienes permisos para acceder a esta sección");
     }
   } catch (error) {
-    renderLoginPage(req, res, "", "La sesion ha expirado");
+    renderLoginPage(req, res, "", "La sesión ha expirado");
   }
 });
 
 // routes
-// render main view of dashboard, with a view parameter display just x parameteres
+// render main view of dashboard, with a view parameter display just x parameters
 router.get("/dashboard/", (req, res) => {
   renderOperativeDashboard(req, res);
 });
@@ -32,7 +32,7 @@ function renderOperativeDashboard(req, res, message, error_message) {
       error_message: error_message,
     });
   } catch (error) {
-    render500Page(res, "No hemos podidio recuperar tu sesion. " + error);
+    render500Page(res, "No hemos podido recuperar tu sesión. " + error);
   }
 }
 

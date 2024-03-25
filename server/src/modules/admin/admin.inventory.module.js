@@ -14,7 +14,7 @@ async function deleteProductFromInventory(pledge_id, pledge_size) {
                 resolve(result)
             });
         });
-        return [true, "Producto eliminado con exito"]
+        return [true, "Producto eliminado con éxito"]
     } catch (error) {
         return [false, "Error eliminando producto: No se puede borrar un producto que ya ha sido usado en otros registros\nPara los productos " + pledge_id + " con talla " + pledge_size]
     }
@@ -34,14 +34,14 @@ async function updateProductFromInventory(pledge_id, pledge_size, new_price) {
                 resolve(result)
             });
         });
-        return [true, "Producto " + pledge_id + " con talla " + pledge_size + " actualizado con exito"]
+        return [true, "Producto " + pledge_id + " con talla " + pledge_size + " actualizado con éxito"]
     } catch (error) {
-        return [false, "No se pudo actualizar el inventario, valores invalidos"]
+        return [false, "No se pudo actualizar el inventario, valores inválidos"]
     }
 
 }
 
-// fetches all inventotyr (products and sizes) from DB and generates a custom JSON
+// fetches all inventory (products and sizes) from DB and generates a custom JSON
 async function getAllInventory() {
     let sorted_data = [] // data to display at ejs
     try {
@@ -54,7 +54,7 @@ async function getAllInventory() {
             });
         });
         db_inventory.forEach(_inventory_row => { // restructure array to a custom display
-            // check if sorted_data contanis a name of the _inventory_row.name
+            // check if sorted_data contains a name of the _inventory_row.name
             let _index = sorted_data.findIndex(_sorted_row => _sorted_row.name === _inventory_row.name);
             if (_index === -1) {
                 sorted_data.push({ name: _inventory_row.name, Pledge_id: _inventory_row.Pledge_id, products: [] });
@@ -91,7 +91,7 @@ async function searchInventoryByPK(pledge_id, pledge_size) {
 
 
 // insert into DB by pledge ID multiple sizes and prices
-// structru e sizes:prices = {size: '', price: n}
+// structure sizes:prices = {size: '', price: n}
 async function insertInventory(pledge_id, sizes_prices) {
     try {
         // gen SQL insert VALUES
@@ -110,7 +110,7 @@ async function insertInventory(pledge_id, sizes_prices) {
                 }
             });
         });
-        return [true, "Prenda " + pledge_id + " insertada con exito"];
+        return [true, "Prenda " + pledge_id + " insertada con éxito"];
     } catch (error) {
         return [false, "No se pudo insertar la prenda y sus tallas: " + error];
     }

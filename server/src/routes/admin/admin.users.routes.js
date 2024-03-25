@@ -28,7 +28,7 @@ async function searchUsersArrayMiddleFunction(search_all = true, id = '') {
     }
 }
 
-// req, res to get data, id to execute operation, and true or false to auth or unauth
+// req, res to get data, id to execute operation, and true or false to auth or remove authorization
 async function executeToggleGrants(req, res, authorize = false) {
     try {
         let { id } = req.params; // id to remove
@@ -48,7 +48,7 @@ async function executeToggleGrants(req, res, authorize = false) {
         }
     } catch (error) {
         // render dashboard and display error message if any
-        adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la busqueda de usuarios, " + error, ADMIN_USER_VIEW);
+        adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la búsqueda de usuarios, " + error, ADMIN_USER_VIEW);
     }
 }
 
@@ -76,13 +76,13 @@ router.get("/user/search", async (req, res) => {
         let db_user = await searchUsersArrayMiddleFunction(search_all = user === '', id = user);
         // check if db_user is empty array
         if (db_user.length == 0) {
-            adminBuildingRouter.renderDashboard(req, res, "No existe un usuario con el ID proporcinado", '', ADMIN_USER_VIEW);
+            adminBuildingRouter.renderDashboard(req, res, "No existe un usuario con el ID proporcionado", '', ADMIN_USER_VIEW);
             return;
         }
         // TODO valid user data, render a new view
         renderUserListPage(db_user, res, req, '', '', current_view = user);
     } catch (error) {
-        adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la busqueda de usuarios, " + error, ADMIN_USER_VIEW);
+        adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la búsqueda de usuarios, " + error, ADMIN_USER_VIEW);
     }
 });
 

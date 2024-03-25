@@ -39,7 +39,7 @@
                     <!-- Search Type Dropdown -->
                     <div class="col-lg-3">
                       <div class="form-group">
-                        <label for="searchType">Tipo Busqueda</label>
+                        <label for="searchType">Tipo de búsqueda</label>
                         <select
                           class="form-control"
                           name="searchType"
@@ -117,9 +117,9 @@
           <div>
             <div class="alert alert-info" role="alert">
               <h4 class="alert-heading">Productos encontrados</h4>
-              <p>Aca veras todos los productos encontrados segun tu busqueda</p>
+              <p>Aca veras todos los productos encontrados según tu búsqueda</p>
               <p class="mb-0">
-                Deja la busqueda vacia si quieres que se busquen todos los
+                Deja la búsqueda vacía si quieres que se busquen todos los
                 productos pertenecientes a tu tienda actual
               </p>
             </div>
@@ -127,7 +127,7 @@
               <table class="table">
                 <thead class="table-secondary">
                   <tr>
-                    <th class="id-column center-text">Codigo</th>
+                    <th class="id-column center-text">CÓDIGO</th>
                     <th class="name-column center-text">NOMBRE</th>
                     <th class="center-text">TALLA</th>
                     <th class="center-text">EXISTENCIA</th>
@@ -171,7 +171,7 @@
                             class="btn btn-outline-info btn display-modal"
                             data-modal-data="<%=item.pledge_id%>_<%=item.size%>"
                           >
-                            <i class="fa-solid fa-plus"></i>
+                            +
                           </button>
                         </div>
                       </div>
@@ -214,19 +214,19 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label for="pledge_id">Codigo</label>
+                    <label for="pledge_id">CÓDIGO</label>
                     <input
                       type="number"
                       class="form-control"
                       name="pledge_id"
                       id="pledge_id"
                       aria-describedby="pledge_id_small"
-                      placeholder="Codigo producto"
+                      placeholder="Código producto"
                       readonly
                       required
                     />
                     <small id="pledge_id_small" class="form-text text-muted"
-                      >Codigo del producto (no editable)</small
+                      >Código del producto (no editable)</small
                     >
                   </div>
                 </div>

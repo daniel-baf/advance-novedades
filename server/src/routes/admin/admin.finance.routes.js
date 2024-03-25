@@ -164,9 +164,9 @@ router.post("/finance/update/expense/", async (req, res) => {
         await updateExpense(expense_id, expense_ammount, req.session.user.id, expense_type, expense_date)
             .then(result => {
                 // render page with message
-                renderExpenseListView(req, res, result, '', null, null)  // TODO handle dates
+                renderExpenseListView(req, res, result, '', null, null)
             }).catch(error => {
-                renderExpenseListView(req, res, '', error, null, null) // TODO handle dates
+                renderExpenseListView(req, res, '', error, null, null)
             })
     } catch (error) {
         renderDashboard(req, res, '', error, ADMIN_FINANCE_VIEW);

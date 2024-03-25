@@ -1,7 +1,7 @@
 
 // A $( document ).ready() block.
 $(document).ready(function () {
-    //  ajax call to data to edit product
+    //  AJAX call to data to edit product
     $('.edit-link-ref').on('click', async function (event) {
         // Prevent the default action of the link
         event.preventDefault();
@@ -60,7 +60,7 @@ $(document).ready(function () {
     }
 });
 
-// toggles the div and displ;ay content
+// toggles the div and display content
 function toggleBuildings(productId) {
     var buildingsContainer = document.getElementById(productId + 'Buildings');
     var toggleButton = document.getElementById('toggleButton' + productId);

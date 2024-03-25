@@ -15,7 +15,7 @@ router.post("/insert-building", async (req, res) => {
         let { building_name, building_direction } = req.body;
         // check for valid inputs
         if (building_name === '') {
-            renderDashboard(req, res, '', 'Valores ingresados invalidos');
+            renderDashboard(req, res, '', 'Valores ingresados inválidos');
             return;
         }
         _response = await insertBuilding(building_name, building_direction);
@@ -25,7 +25,7 @@ router.post("/insert-building", async (req, res) => {
             renderDashboard(req, res, '', _response[1]);
         }
     } catch (error) {
-        render500Page(res, "Ooops, an unexpected error just ocurred " + error);
+        render500Page(res, "Oops, an unexpected error just ocurred " + error);
     }
 });
 
@@ -51,7 +51,7 @@ router.post("/update-building", async (req, res) => {
         let { building_id, building_name, building_direction } = req.body;
         // check for valid inputs
         if (building_id === '' || building_name === '') {
-            renderDashboard(req, res, '', 'Valores ingresados invalidos');
+            renderDashboard(req, res, '', 'Valores ingresados inválidos');
             return;
         }
         // forward request
@@ -72,7 +72,7 @@ router.get("/delete-building/:building_id", async (req, res) => {
         let building_id = req.params.building_id;
         // check valid input
         if (building_id === '') {
-            renderDashboard(req, res, '', 'Valores ingresados invalidos');
+            renderDashboard(req, res, '', 'Valores ingresados inválidos');
             return;
         }
         // get data
@@ -91,7 +91,7 @@ router.get("/delete-building/:building_id", async (req, res) => {
 async function renderDashboard(req, res, message, error_message, view) {
     try {
         view = typeof (view) == 'undefined' ? ADMIN_PRODUCTS_VIEW : view
-        // check view to call different JSONS
+        // check view to call different JSONs
         _data = {}
         if (view == ADMIN_PRODUCTS_VIEW) {
             _data = { buildings: [], sizes: [] }
@@ -104,11 +104,11 @@ async function renderDashboard(req, res, message, error_message, view) {
             _data = { expenses_type: [] }
             _data.expenses_type = await getAllExpenseType();
         }
-        // load buildings for subview
+        // load buildings for sub-view
         res.render('users/admin/admin-view', { name: req.session.user.id, data: _data, message: message, error_message: error_message, view: view })
         // res.status(200).json({ name: req.session.user.id, data: _data, message: message, error_message: error_message, view: view })
     } catch (error) {
-        render500Page(res, "Error en la sesion " + error)
+        render500Page(res, "Error en la sesión " + error)
     }
 }
 

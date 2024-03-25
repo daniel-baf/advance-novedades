@@ -20,7 +20,7 @@ function renderSellsDashboard(req, res, message, error_message) {
             error_message: error_message,
         });
     } catch (error) {
-        render500Page(res, "No hemos podidio recuperar tu sesion. " + error);
+        render500Page(res, "No hemos podido recuperar tu sesión. " + error);
     }
 }
 

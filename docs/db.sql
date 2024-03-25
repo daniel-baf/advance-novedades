@@ -1,9 +1,3 @@
--- MySQL Workbench Forward Engineering
-
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
 DROP SCHEMA IF EXISTS `novedades` ;
 
 -- -----------------------------------------------------
@@ -11,6 +5,19 @@ DROP SCHEMA IF EXISTS `novedades` ;
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `novedades` ;
 USE `novedades` ;
+
+-- -----------------------------------------------------
+-- TABLE Client
+-- -----------------------------------------------------
+
+
+CREATE TABLE `Client` (
+  `NIT` VARCHAR(10) NOT NULL DEFAULT 'CF',
+  `nombre` VARCHAR(60) NOT NULL DEFAULT 'CONSUMIDOR FINAL',
+  `direction` VARCHAR(100) NOT NULL DEFAULT 'ciudad',
+  PRIMARY KEY (`NIT`),
+  UNIQUE INDEX `NIT_UNIQUE` (`NIT` ASC) VISIBLE);
+
 
 -- -----------------------------------------------------
 -- Table `Worker_Area`
@@ -135,8 +142,7 @@ DROP TABLE IF EXISTS `Bill` ;
 
 CREATE TABLE IF NOT EXISTS `Bill` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NULL DEFAULT NULL,
-  `NIT` VARCHAR(15) NOT NULL DEFAULT 'CF',
+  `Client_NIT` VARCHAR(10) NOT NULL DEFAULT 'CF',
   `total` DOUBLE(9,2) NOT NULL DEFAULT 1.00,
   `date` DATE NOT NULL DEFAULT NOW(),
   `Order_id` INT(11) NULL DEFAULT NULL,
@@ -144,6 +150,11 @@ CREATE TABLE IF NOT EXISTS `Bill` (
   PRIMARY KEY (`id`),
   INDEX `fk_Bill_Order1_idx` (`Order_id` ASC) VISIBLE,
   INDEX `fk_Bill_Worker1_idx` (`Worker_id` ASC) VISIBLE,
+  CONSTRAINT `fk_Bill_Client`
+	FOREIGN KEY (`Client_NIT`)
+    REFERENCES `Client` (`NIT`)
+    ON DELETE NO ACTION
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Bill_Order1`
     FOREIGN KEY (`Order_id`)
     REFERENCES `Order` (`id`)
@@ -378,11 +389,12 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;
 
-DROP TRIGGER IF EXISTS `novedades`.`Expense_Type_BEFORE_INSERT`;
+
+DROP TRIGGER IF EXISTS `Expense_Type_BEFORE_INSERT`;
 
 DELIMITER $$
-USE `novedades`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `novedades`.`Expense_Type_BEFORE_INSERT` BEFORE INSERT ON `Expense_Type` FOR EACH ROW
+
+CREATE DEFINER = CURRENT_USER TRIGGER `Expense_Type_BEFORE_INSERT` BEFORE INSERT ON `Expense_Type` FOR EACH ROW
 BEGIN
 	SET NEW.name = UPPER(NEW.name);
 END$$
@@ -396,7 +408,7 @@ DELIMITER ;
 DROP procedure IF EXISTS `insertWorkerAndGetId`;
 
 DELIMITER $$
-USE `novedades`$$
+
 CREATE DEFINER = CURRENT_USER PROCEDURE `insertWorkerAndGetId`(IN p_password VARCHAR(45),IN p_name VARCHAR(45),IN p_Worker_Area_id VARCHAR(15), IN p_Worker_allowed INT,OUT p_generated_id VARCHAR(10))
 BEGIN
     DECLARE prefix VARCHAR(5);
@@ -492,11 +504,6 @@ BEGIN
 END //
 
 DELIMITER ;
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
 
 
 DROP USER IF EXISTS 'novedades-client''%';
