@@ -24,7 +24,7 @@ $(document).ready(function () {
             _response = await postData(_data);
             alert(_response.message);
         } catch (error) {
-            alert("Operacion fallida: Es posible que los valores ya existan");
+            alert("Operación fallida: Es posible que los valores ya existan");
         }
     });
 
@@ -41,7 +41,7 @@ $(document).ready(function () {
                     body: JSON.stringify(form_data)
                 });
                 if (!response.ok) {
-                    reject(`Operacion fallida${response.json().message}`);
+                    reject(`Operación fallida${response.json().message}`);
                 }
                 const data = await response.json();
                 resolve(data);

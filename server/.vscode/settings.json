@@ -4,6 +4,7 @@
         "bname",
         "consts",
         "encrypter",
+        "resave",
         "signin",
         "stockable"
     ]

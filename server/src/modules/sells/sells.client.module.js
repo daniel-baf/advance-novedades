@@ -53,8 +53,6 @@ function updateClient(nit, name, address, phone_number) {
         }
         // check length of number and contains no blank spaces or special characters
         if (phone_number.length < 8 || /\s|\.|\-/.test(phone_number)) {
-            console.log(isNaN(phone_number));
-            console.log(phone_number);
             reject('El número de teléfono debe contener 8 dígitos');
         }
 

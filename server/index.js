@@ -21,8 +21,10 @@ app.use(
     saveUninitialized: false,
     resave: false,
     user: {},
-    cart: [],
-    shopping_cart: [],
+    shopping_cart: {
+      client: {},
+      items: []
+    },
     reloaded: false // JUST FOR PRODUCTION, TODO REMOVE LATER
   })
 );
@@ -41,39 +43,42 @@ const mockSessionMiddleware = (req, res, next) => {
       // Add any other user information needed for testing
     };
     if (!req.session.reloaded) {
-      req.session.shopping_cart = req.session.shopping_cart = [
-        {
-          pledge_id: 1,
-          pledge_name: 'CHUMPA DE DIARIO ADVANCE',
-          pledge_size: '10',
-          pledge_price: 180.00,
-          quantity: 2,
-          extras: {}
-        },
-        {
-          pledge_id: 2,
-          pledge_name: 'CAMISA POLO ADVANCE',
-          pledge_size: '16',
-          pledge_price: 120.00,
-          quantity: 2,
-          extras: {}
-        },
-        {
-          pledge_id: 1,
-          pledge_name: 'CHUMPA DE DIARIO ADVANCE',
-          pledge_size: '14',
-          pledge_price: 200.00,
-          quantity: 4,
-          extras: { extras_price: 10, extras_note: 'Bordar: Daniel Bautista' }
-        }
-      ];
+      req.session.shopping_cart = req.session.shopping_cart = {
+        client: { name: 'Pepe', nit: 'CF', address: 'Calle 1', phone_number: '12345678' },
+        items: [
+          {
+            pledge_id: 1,
+            pledge_name: 'CHUMPA DE DIARIO ADVANCE',
+            pledge_size: '10',
+            pledge_price: 180.00,
+            quantity: 2,
+            extras: {}
+          },
+          {
+            pledge_id: 2,
+            pledge_name: 'CAMISA POLO ADVANCE',
+            pledge_size: '16',
+            pledge_price: 120.00,
+            quantity: 2,
+            extras: {}
+          },
+          {
+            pledge_id: 1,
+            pledge_name: 'CHUMPA DE DIARIO ADVANCE',
+            pledge_size: '14',
+            pledge_price: 200.00,
+            quantity: 4,
+            extras: { extras_price: 10, extras_note: 'Bordar: Daniel Bautista' }
+          }
+        ]
+      };
       req.session.reloaded = true;
     }
   }
   next();
 };
 
-// TODO HANDLE SQLINJECTION
+// TODO HANDLE SQL INJECTION
 
 // Apply the mock session middleware to your Express app
 app.use(mockSessionMiddleware);

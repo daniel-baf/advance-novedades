@@ -23,7 +23,7 @@
         <!-- Main content area -->
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 mt-5">
           <div>
-            <h1>Carrito de compra</h1>
+            <h1 class="text-capitalize">Carrito de compra</h1>
             <p class="text-center">
               Edita el listado para la factura antes de pasar al siguiente paso
             </p>
@@ -34,7 +34,7 @@
           </div>
 
           <section class="container container-fluid mt-4">
-            <% shopping_cart.forEach( _bag_item => {%>
+            <% shopping_cart.items.forEach( _bag_item => {%>
             <!-- SECTION TO DISPLAY CUSTOM FORMS -->
             <div class="mb-5">
               <div class="row d-flex justify-content-between table-info p-4">
@@ -49,7 +49,7 @@
                 <div class="col-md-7 d-flex justify-content-end">
                   <form
                     class="form"
-                    method="GET"
+                    method="POST"
                     action="/sells/cart/edit/<%=_bag_item.pledge_id%>/<%=_bag_item.pledge_size%>"
                   >
                     <div
@@ -75,13 +75,26 @@
                     <div class="row d-felx justify-content-end">
                       <div class="col-md-6">
                         <div class="form-group">
-                          <label for="extras_note">Notas</label>
+                          <!-- HIDDEN VALUE TO SAVE PREVIOUS TEXT -->
+                          <textarea
+                            class="form-control"
+                            name="extras_note_old"
+                            id="extras_note_old"
+                            rows="3"
+                            maxlength="100"
+                            hidden
+                            required
+                          >
+<%=_bag_item.extras.extras_note%></textarea
+                          >
+                          <!-- NEW VALUE TO NOTE -->
                           <textarea
                             class="form-control"
                             name="extras_note"
                             id="extras_note"
                             rows="3"
                             maxlength="100"
+                            required
                           >
 <%=_bag_item.extras.extras_note%></textarea
                           >
@@ -89,7 +102,21 @@
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label for="extras_price">Precio (GTQ)</label>
+                          <!-- HIDDEN INPUT TO SAVE PREVIOUS VALUE -->
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="1"
+                            class="form-control"
+                            name="extras_price_old"
+                            id="extras_price_old"
+                            aria-describedby="extras_price_small"
+                            placeholder="Q##.##"
+                            value="<%=Number(_bag_item.extras.extras_price).toFixed(2)%>"
+                            hidden
+                            required
+                          />
+                          <!-- NEW VALUE TO VALUE -->
                           <input
                             type="number"
                             step="0.01"
@@ -100,6 +127,7 @@
                             aria-describedby="extras_price_small"
                             placeholder="Q##.##"
                             value="<%=Number(_bag_item.extras.extras_price).toFixed(2)%>"
+                            required
                           />
                           <small
                             id="extras_price_small"
@@ -117,21 +145,21 @@
                   <a
                     class="btn btn-success"
                     role="button"
-                    href="/sells/cart/increase-one/<%=_bag_item.pledge_id%>/<%=_bag_item.pledge_size%>/<%=!(Object.keys(_bag_item.extras).length === 0)%>"
+                    href="/sells/cart/increase-one/<%=_bag_item.pledge_id%>/<%=_bag_item.pledge_size%>/<%=!(Object.keys(_bag_item.extras).length === 0)%>?extras_note=<%=_bag_item.extras.extras_note%>&extras_price=<%=_bag_item.extras.extras_price%>"
                   >
                     + 1
                   </a>
                   <a
                     class="btn btn-warning"
                     role="button"
-                    href="/sells/cart/decrease-one/<%=_bag_item.pledge_id%>/<%=_bag_item.pledge_size%>/<%=!(Object.keys(_bag_item.extras).length === 0)%>"
+                    href="/sells/cart/decrease-one/<%=_bag_item.pledge_id%>/<%=_bag_item.pledge_size%>/<%=!(Object.keys(_bag_item.extras).length === 0)%>?extras_note=<%=_bag_item.extras.extras_note%>&extras_price=<%=_bag_item.extras.extras_price%>"
                   >
                     - 1
                   </a>
                   <a
                     class="btn btn-danger"
                     role="button"
-                    href="/sells/cart/remove/<%=_bag_item.pledge_id%>/<%=_bag_item.pledge_size%>/<%=!(Object.keys(_bag_item.extras).length === 0)%>"
+                    href="/sells/cart/remove/<%=_bag_item.pledge_id%>/<%=_bag_item.pledge_size%>/<%=!(Object.keys(_bag_item.extras).length === 0)%>?extras_note=<%=_bag_item.extras.extras_note%>&extras_price=<%=_bag_item.extras.extras_price%>"
                   >
                     Borrar
                   </a>
@@ -149,6 +177,8 @@
           </div>
           <!-- DIV TO DISPLAY RESULT IN TABLE -->
           <section class="container mt-2" id="summary">
+            <h2 class="mb-4 text-capitalize">Resumen compra</h2>
+
             <!-- RESUMEN -->
             <table class="table">
               <thead>
@@ -162,7 +192,8 @@
                 </tr>
               </thead>
               <tbody>
-                <% let total = 0 %> <% shopping_cart.forEach( _bag_item => {%>
+                <% let total = 0 %> <% shopping_cart.items.forEach( _bag_item =>
+                {%>
                 <tr>
                   <td scope="row" class="text-left">
                     <%=_bag_item.pledge_name%>
@@ -194,22 +225,59 @@
               </tbody>
             </table>
 
-            <div class="alert alert-dark" role="alert">
-              El total de la factura es de
-              <strong>Q<%=total.toFixed(2)%></strong>
+            <!-- Horizontal split line -->
+            <div class="row">
+              <div class="col">
+                <hr class="split-line" />
+              </div>
             </div>
 
+            <div
+              class="alert alert-light text-uppercase d-flex justify-content-end"
+              role="alert"
+            >
+              <p>
+                El total de la factura es de
+                <strong>Q<%=total.toFixed(2)%></strong>
+              </p>
+            </div>
+
+            <!-- DISPLAY CLIENT USER SEARCH -->
             <!-- SAVE BILL -->
-            <div class="row d-flex justify-content-center">
-              <div class="col-lg-5">
+            <div class="row d-felx">
+              <div class="col-md-6">
+                <form class="form-inline">
+                  <label class="sr-only" for="client_nit">NIT cliente</label>
+                  <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">NIT</div>
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="client_nit"
+                      placeholder="NIT 12345678"
+                      required
+                      maxlength="10"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    class="btn btn-warning mb-2 text-uppercase"
+                  >
+                    Buscar
+                  </button>
+                </form>
+              </div>
+              <div class="col-md-6">
                 <!-- BUTTON TO CONFIRM BILL -->
                 <a
                   name="save_bill"
                   id="save_bill"
-                  class="btn btn-outline-primary btn-block"
+                  class="btn btn-outline-primary btn-block text-uppercase"
                   href="/sells/cart/checkout/"
                   role="button"
-                  >GENERAR RECIBO</a
+                  >Generar Recibo</a
                 >
               </div>
             </div>
@@ -386,8 +454,3 @@
 <!-- Bootstrap JS and dependencies -->
 <script src="/js/bootstrap.js"></script>
 <!-- Your custom JavaScript to handle panel visibility -->
-<script src="/js/sells/stock-search.js"></script>
-<script
-  src="https://kit.fontawesome.com/c3025f5f48.js"
-  crossorigin="anonymous"
-></script>

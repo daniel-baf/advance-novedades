@@ -10,8 +10,8 @@ const { renderLoginPage, render500Page } = require('../../modules/utils/renders.
 function renderShoppingCart(req, res, message = "", error_message = "") {
     try {
         // check if cart is empty
-        if (req.session.shopping_cart == undefined) {
-            req.session.shopping_cart = [];
+        if (req.session.shopping_cart === undefined) {
+            req.session.shopping_cart = { client: {}, items: [] };
         }
         res.render("users/sells/cart/shopping-cart-list.ejs", { name: req.session.user.id, message: message, error_message: error_message, shopping_cart: req.session.shopping_cart })
     } catch (error) {
@@ -57,10 +57,6 @@ router.post("/stock/search/", async (req, res) => {
 // add item to cart
 router.post("/cart/add/", async (req, res) => {
     // recover deleted cart
-    if (req.session.shopping_cart == undefined) {
-        req.session.shopping_cart = [];
-    }
-
     let data = await searchStockByParameter(CART_SEARCH_TYPES.ID, req.body.pledge_id, req.session.user.location.id).then((data) => {
         return data;
     }).catch((error) => {
@@ -89,15 +85,17 @@ router.get("/cart/list/", (req, res) => {
 })
 
 // update a element from cart
-router.get("/cart/edit/:pledge_id/:pledge_size", async (req, res) => {
+router.post("/cart/edit/:pledge_id/:pledge_size", async (req, res) => {
     try {
         let { pledge_id, pledge_size } = req.params;
-        let { extras_note, extras_price, quantity } = req.query;
+        let { extras_note, extras_price, quantity, extras_note_old, extras_price_old } = req.body;
         let json_object = { pledge_id: Number(pledge_id), pledge_size, quantity: Number(quantity), extras: {} }
+        let _old_json_extras = {}
         if (extras_note != undefined && extras_price != undefined) {
             json_object.extras = { extras_note, extras_price: Number(extras_price) }
+            _old_json_extras = { extras_note: extras_note_old, extras_price: Number(extras_price_old) }
         }
-        let response = await editCart(json_object, req.session)
+        let response = await editCart(json_object, req.session, _old_json_extras)
         if (response.error) {
             renderShoppingCart(req, res, '', response.message)
         } else {
@@ -112,7 +110,15 @@ router.get("/cart/edit/:pledge_id/:pledge_size", async (req, res) => {
 router.get("/cart/remove/:pledge_id/:pledge_size/:with_extras", (req, res) => {
     try {
         let { pledge_id, pledge_size, with_extras } = req.params;
-        let response = deleteFromCart(Number(pledge_id), pledge_size, with_extras === 'true', req.session);
+        let response;
+        with_extras = with_extras === 'true';
+        // get response
+        if (with_extras) {
+            let { extras_note, extras_price } = req.query;
+            response = deleteFromCart(Number(pledge_id), pledge_size, req.session, { extras_note, extras_price: Number(extras_price) });
+        } else {
+            response = deleteFromCart(Number(pledge_id), pledge_size, req.session);
+        }
         // check response status
         if (response.error) {
             renderShoppingCart(req, res, "", response.message);
@@ -125,11 +131,19 @@ router.get("/cart/remove/:pledge_id/:pledge_size/:with_extras", (req, res) => {
 });
 
 // decrease by 1 a element from cart, if 0 -> delete
-router.get("/cart/decrease-one/:pledge_id/:pledge_size/:with_extras", (req, res) => {
+router.get("/cart/decrease-one/:pledge_id/:pledge_size/:with_extras", async (req, res) => {
     try {
         let { pledge_id, pledge_size, with_extras } = req.params;
-        let response = decreaseFromCart(Number(pledge_id), pledge_size, with_extras === 'true', req.session);
+        with_extras = with_extras === 'true';
         // check response status
+        let response;
+        if (with_extras) {
+            let { extras_note, extras_price } = req.query;
+            response = decreaseFromCart(Number(pledge_id), pledge_size, req.session, { extras_note, extras_price: Number(extras_price) });
+
+        } else {
+            response = decreaseFromCart(Number(pledge_id), pledge_size, req.session);
+        }
         if (response.error) {
             renderShoppingCart(req, res, "", response.message);
         } else {
@@ -152,7 +166,6 @@ router.get("/cart/increase-one/:pledge_id/:pledge_size/:with_extras", async (req
         } else {
             response = await increaseFromCart(Number(pledge_id), pledge_size, req.session);
         }
-
         // check response status
         if (response.error) {
             renderShoppingCart(req, res, "", response.message);
