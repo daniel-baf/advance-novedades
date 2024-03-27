@@ -71,11 +71,13 @@ const CLIENTS_DELETE_QUERY = "DELETE FROM Client WHERE NIT = ?;"
 const CLIENTS_UPDATE_QUERY = "UPDATE Client SET name = ?, address = ?, phone_number = ? WHERE NIT = ?;"
 const CLIENTS_INSERT_QUERY = "INSERT INTO Client (NIT, name, address, phone_number) VALUES (?, ?, ?, ?);"
 // BILLS
-const BILLS_INSERT_QUERY = "INSERT INTO `Bill` (`Client_NIT`, `total`, `date`, `Order_id`, `Worker_id`) VALUES ('', '', '', '', '');"
+const BILLS_INSERT_QUERY = "INSERT INTO `Bill` (`Client_NIT`, `total`, `date`, `Order_id`, `Worker_id`) VALUES (?, ?, ?, ?, ?);"
 // BILL DETAIL
-const BILLS_DETAIL_INSERT_QUERY = "INSERT INTO `novedades`.`Bill_Detail` (`unitary_price`, `quantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `Extra_id`) VALUES (?, ?, ?, ?, ?, ?);"
+const BILLS_DETAIL_INSERT_QUERY = "INSERT INTO `Bill_Detail` (`unitary_price`, `quantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `Extra_id`) VALUES (?, ?, ?, ?, ?, ?);"
+const BILLS_DETAIL_INSERT_MULTIPLE_QUERY = "INSERT INTO `Bill_Detail` (`unitary_price`, `quantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `Extra_id`) VALUES ?;"
 // BILL DETAIL EXTRAS
-const EXTRA_BILL_DETAIL_INSERT_QUERY = "INSERT INTO `Extra` (`detail`, `price`) VALUES ('', '');"
+const EXTRA_BILL_DETAIL_INSERT_QUERY = "INSERT INTO `Extra` (`detail`, `price`) VALUES (?, ?);"
+const BILLS_DETAIL_EXTRAS_INSERT_MULTIPLE_QUERY = "INSERT INTO `Extra` (`detail`, `price`) VALUES ?;"
 
 // REPORTS TYPES
 const REPORT_TYPES = {
@@ -143,6 +145,6 @@ module.exports = {
     CLIENTS_SEARCH_QUERY, CLIENTS_SEARCH_BY_NIT_QUERY, CLIENTS_LIST_ALL_QUERY, CLIENTS_DELETE_QUERY, CLIENTS_UPDATE_QUERY, CLIENTS_INSERT_QUERY,
     // BILLS
     BILLS_INSERT_QUERY, DEFAULT_BILL_NIT,
-    BILLS_DETAIL_INSERT_QUERY,
-    EXTRA_BILL_DETAIL_INSERT_QUERY
+    BILLS_DETAIL_INSERT_QUERY, BILLS_DETAIL_INSERT_MULTIPLE_QUERY,
+    EXTRA_BILL_DETAIL_INSERT_QUERY, BILLS_DETAIL_EXTRAS_INSERT_MULTIPLE_QUERY
 }

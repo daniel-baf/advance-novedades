@@ -22,8 +22,8 @@ function searchStockByParameter(searchType, searchId, building) {
 }
 
 // search by ID in stock, and current session building
-function searchStockById(id, building) {
-    let connection = db_connection();
+async function searchStockById(id, building) {
+    let connection = await db_connection();
 
     return new Promise((resolve, reject) => {
         connection.query(STOCK_FILTER_BY_PLEDGE_ID_AND_BUILDING_QUERY, [building, id], (error, result) => {

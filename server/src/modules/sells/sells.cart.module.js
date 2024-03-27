@@ -1,6 +1,6 @@
 const path = require('path');
 const { findStockByPK } = require('../admin/admin.products.module');
-const { insertBill } = require('./sells.bills.module');
+const { insertBill, insertExtraBillDetail, insertMultipleExtraBillDetail, insertBillDetail, insertMultipleBillDetails } = require('./sells.bills.module');
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
 function isNullOrUndefined(value) {
@@ -208,12 +208,18 @@ async function editCart(json_object, session, _old_json_extras = {}) {
 // [ { pledge_id, pledge_name, pledge_size, pledge_price, quantity, extras: { extras_price, extras_note } } ]
 // worker is a JSON { id, role, name, location: { id, name } }
 async function generateBIll(shopping_cart, worker, order_id = null) {
-    let response = { error: true, message: '', inserted_id: null };
+    let response = { error: true, message: '', bill_id: null, n_extras: 0, n_details: 0 };
     let connection = await db_connection();
 
     try {
+        let total = 0; // bill total
+        let products_with_extras = shopping_cart.items.filter(item => Object.keys(item.extras).length !== 0); // filter products with extras
+        let extras = []; // extras to insert in a single SQL call
+        let details = []; // details to insert in a single SQL call
+
+
+
         await connection.beginTransaction(); // init a transaction
-        let total = 0;
         shopping_cart.items.forEach(item => {
             subtotal = item.pledge_price * item.quantity; // calculate subtotal and check if negative sub re
             // check if extras has values
@@ -225,17 +231,58 @@ async function generateBIll(shopping_cart, worker, order_id = null) {
             }
             total += subtotal;
         });
-        response = { error: false, message: 'Factura generada con éxito', inserted_id: 1, total };
-        // response.inserted_id = await insertBill(shopping_cart.total, new Date(), worker, shopping_cart.client.NIT, order_id); // await for success message -> continue to insert
-        connection.commit();
+        // try to insert bill
+        bill_status = await insertBill(total, new Date(), worker, shopping_cart.client.NIT, order_id); // await for success message -> continue to insert
+        // check if response is an error
+        if (bill_status.error) {
+            response.message = bill_status.bill_id;
+            return;
+        }
+
+        response.bill_id = bill_status.bill_id;
+        // try to insert bill detail with response.bill_id
+        // insert all product extras and save ids
+
+        products_with_extras.forEach(item => {
+            extras.push({ detail: item.extras.extras_note, price: item.extras.extras_price });
+        })
+        // insert all extras
+        if (extras.length != 0) {
+            let extras_response = await insertMultipleExtraBillDetail(extras);
+            // check if extras were inserted -> insert details
+            if (extras_response.error) {
+                response.message = extras_response.message;
+                return;
+            }
+            extras = extras_response.extras_ids;
+            response.n_extras = extras.length;
+        }
+
+        // insert all details, generate vector
+        let _tmp_extras_consumer = 0;
+        shopping_cart.items.forEach(item => {
+            let item_extras = Object.keys(item.extras).length === 0 ? null : extras[_tmp_extras_consumer++];
+            // unitary_price, quantity, bill_Id, inventory_pledge_id, inventory_size_id, extra_id = null
+            details.push([item.pledge_price, item.quantity, response.bill_id, item.pledge_id, item.pledge_size, item_extras]);
+        })
+        // insert extras
+        let details_response = await insertMultipleBillDetails(details);
+        // check if details were inserted
+        if (details_response.error) {
+            response.message = details_response.message;
+            return;
+        }
+        response.n_details = details_response.affected_rows; // final message
+        response.error = false;
+        response.message = 'Factura generada con éxito';
+        await connection.commit(); // commit transaction
     } catch (error) {
         // If any operation fails, rollback the transaction
-        response.message = `Error interno en la transacción implementada ${error}`;
+        response.message = `Error interno en la transacción implementada ${error.message}`;
     } finally {
         if (response.error) {
             await connection.rollback();
         }
-        await connection.end();
         return response;
     }
 }

@@ -209,7 +209,12 @@ router.post("/cart/search-client/", async (req, res) => {
 router.get("/cart/checkout/", async (req, res) => {
     try {
         let response = await generateBIll(req.session.shopping_cart, req.session.user);
-        res.status(200).json({ message: "Checkout", response, shopping_cart: req.session.shopping_cart })
+        if (response.error) {
+            renderShoppingCart(req, res, "", response.message);
+        } else {
+            req.session.shopping_cart = { client: {}, items: [] };  // RESET SHOPPING CART
+            renderShoppingCart(req, res, `ESTADO DE FACTURA: ${response.message} no. de items en factura: ${response.n_details} con extras: ${response.n_extras}`, "");
+        }
     } catch (error) {
         render500Page(res, error);
     }
