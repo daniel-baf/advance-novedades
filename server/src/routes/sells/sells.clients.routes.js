@@ -23,7 +23,7 @@ async function fetchClients() {
 
 
 // search for a user by nit
-router.post('/clients/search/', (req, res) => {
+router.post('/clients/search/', async (req, res) => {
     try {
         // recover USER data
         let { client_nit } = req.body;
@@ -31,7 +31,7 @@ router.post('/clients/search/', (req, res) => {
         if (!client_nit) {
             throw new Error('El NIT del cliente no puede estar vacío');
         }
-        searchClientByNit(client_nit).then(client => {
+        await searchClientByNit(client_nit).then(client => {
             if (!client) { // if empty result, -> message
                 renderSellsClientDashboard(req, res, 'No se encontró un cliente con el NIT proporcionado', '');
                 return;
@@ -61,7 +61,7 @@ router.get('/clients/list/all', async (req, res) => {
 });
 
 // create a new user
-router.post('/clients/create', (req, res) => {
+router.post('/clients/create', async (req, res) => {
     try {
         // recover data from request
         let { client_nit, client_name, client_address, client_phone_number } = req.body;
@@ -73,7 +73,7 @@ router.post('/clients/create', (req, res) => {
         // check if address is empty
         client_address = client_address === '' ? 'ciudad' : client_address;
         // try to insert into DB by calling a function from sells.client.module.js
-        insertClient(client_nit, client_name, client_address, client_phone_number).then(result => {
+        await insertClient(client_nit, client_name, client_address, client_phone_number).then(result => {
             renderSellsClientDashboard(req, res, 'Cliente creado exitosamente ', '');
         }).catch(error => {
             renderSellsClientDashboard(req, res, '', error);

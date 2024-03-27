@@ -6,8 +6,9 @@ const { INVENTORY_SELECT_QUERY, INVENTORY_DELETE_QUERY, INVENTORY_SELECT_BY_PK_Q
 // deletes a product from inventory (product and size)
 async function deleteProductFromInventory(pledge_id, pledge_size) {
     try {
+        let connection = await db_connection();
         await new Promise((resolve, reject) => {
-            db_connection.query(INVENTORY_DELETE_QUERY, [pledge_id, pledge_size], (err, result) => {
+            connection.query(INVENTORY_DELETE_QUERY, [pledge_id, pledge_size], (err, result) => {
                 if (err) {
                     reject(err)
                 }
@@ -23,11 +24,12 @@ async function deleteProductFromInventory(pledge_id, pledge_size) {
 // update a product from inventory (product and size)
 async function updateProductFromInventory(pledge_id, pledge_size, new_price) {
     try {
+        let connection = await db_connection();
         if (new_price < 0) {
             return [false, "Precio invalido, debe ser mayor a 0"]
         }
         await new Promise((resolve, reject) => {  // async call
-            db_connection.query(INVENTORY_UPDATE_QUERY, [new_price, pledge_id, pledge_size], (err, result) => {
+            connection.query(INVENTORY_UPDATE_QUERY, [new_price, pledge_id, pledge_size], (err, result) => {
                 if (err) {
                     reject(err)
                 }
@@ -45,8 +47,9 @@ async function updateProductFromInventory(pledge_id, pledge_size, new_price) {
 async function getAllInventory() {
     let sorted_data = [] // data to display at ejs
     try {
+        let connection = await db_connection();
         let db_inventory = await new Promise((resolve, reject) => { // inventory as a single array
-            db_connection.query(INVENTORY_SELECT_QUERY, (err, result) => {
+            connection.query(INVENTORY_SELECT_QUERY, (err, result) => {
                 if (err) {
                     reject(err)
                 }
@@ -75,8 +78,9 @@ async function getAllInventory() {
 // search inventory by primary key (double) into DB 
 async function searchInventoryByPK(pledge_id, pledge_size) {
     try {
+        let connection = await db_connection();
         db_data = await new Promise((resolve, reject) => {
-            db_connection.query(INVENTORY_SELECT_BY_PK_QUERY, [pledge_id, pledge_size], (err, result) => {
+            connection.query(INVENTORY_SELECT_BY_PK_QUERY, [pledge_id, pledge_size], (err, result) => {
                 if (err) {
                     reject(err)
                 }
@@ -94,6 +98,7 @@ async function searchInventoryByPK(pledge_id, pledge_size) {
 // structure sizes:prices = {size: '', price: n}
 async function insertInventory(pledge_id, sizes_prices) {
     try {
+        let connection = await db_connection();
         // gen SQL insert VALUES
         const inventory_pledges = [];
         sizes_prices.forEach(size => {
@@ -102,7 +107,7 @@ async function insertInventory(pledge_id, sizes_prices) {
         // insert into DB
         result = await new Promise((resolve, reject) => {
             // insert sizes
-            db_connection.query(INVENTORY_INSERT_QUERY, [inventory_pledges], (err, result) => {
+            connection.query(INVENTORY_INSERT_QUERY, [inventory_pledges], (err, result) => {
                 if (err) {
                     reject(err);
                 } else {

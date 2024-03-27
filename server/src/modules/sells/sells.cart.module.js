@@ -209,8 +209,10 @@ async function editCart(json_object, session, _old_json_extras = {}) {
 // worker is a JSON { id, role, name, location: { id, name } }
 async function generateBIll(shopping_cart, worker, order_id = null) {
     let response = { error: true, message: '', inserted_id: null };
+    let connection = await db_connection();
+
     try {
-        await db_connection.beginTransaction(); // init a transaction
+        await connection.beginTransaction(); // init a transaction
         let total = 0;
         shopping_cart.items.forEach(item => {
             subtotal = item.pledge_price * item.quantity; // calculate subtotal and check if negative sub re
@@ -225,15 +227,15 @@ async function generateBIll(shopping_cart, worker, order_id = null) {
         });
         response = { error: false, message: 'Factura generada con éxito', inserted_id: 1, total };
         // response.inserted_id = await insertBill(shopping_cart.total, new Date(), worker, shopping_cart.client.NIT, order_id); // await for success message -> continue to insert
-        db_connection.commit();
+        connection.commit();
     } catch (error) {
         // If any operation fails, rollback the transaction
         response.message = `Error interno en la transacción implementada ${error}`;
     } finally {
         if (response.error) {
-            await db_connection.rollback();
+            await connection.rollback();
         }
-        await db_connection.end();
+        await connection.end();
         return response;
     }
 }

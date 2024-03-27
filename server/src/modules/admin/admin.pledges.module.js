@@ -4,9 +4,10 @@ const { insertInventory } = require('./admin.inventory.module');
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
 // get all pledges from DB
-function getPledges() {
+async function getPledges() {
+    let connection = await db_connection();
     return new Promise((resolve, reject) => {
-        db_connection.query(PLEDGE_SELECT_QUERY, (error, result) => {
+        connection.query(PLEDGE_SELECT_QUERY, (error, result) => {
             if (error) {
                 reject("No hemos podido encontrar prendas: " + error); // Reject the Promise if there is an error
             } else {
@@ -19,8 +20,9 @@ function getPledges() {
 // get pledge by id from DB
 async function getPledgeById(pledge_id) {
     try {
+        let connection = await db_connection();
         db_data = await new Promise((resolve, reject) => {
-            db_connection.query(PLEDGE_SELECT_BY_PK_QUERY, [pledge_id], (error, result) => {
+            connection.query(PLEDGE_SELECT_BY_PK_QUERY, [pledge_id], (error, result) => {
                 if (error) {
                     reject("No hemos podido encontrar la prenda: " + error); // Reject the Promise if there is an error
                 } else {
@@ -37,8 +39,9 @@ async function getPledgeById(pledge_id) {
 // update a pledge on DB
 async function updatePledge(pledge_id, pledge_name) {
     try {
+        let connection = await db_connection();
         db_data = new Promise((resolve, reject) => {
-            db_connection.query(PLEDGE_UPDATE_QUERY, [pledge_name, pledge_id], (error, result) => {
+            connection.query(PLEDGE_UPDATE_QUERY, [pledge_name, pledge_id], (error, result) => {
                 if (error) {
                     reject("No hemos podido actualizar la prenda: " + error); // Reject the Promise if there is an error
                 } else {
@@ -55,8 +58,9 @@ async function updatePledge(pledge_id, pledge_name) {
 // delete a pledge from DB
 async function deletePledge(pledge_id) {
     try {
+        let connection = await db_connection();
         db_data = await new Promise((resolve, reject) => {
-            db_connection.query(PLEDGE_DELETE_QUERY, [pledge_id], (error, result) => {
+            connection.query(PLEDGE_DELETE_QUERY, [pledge_id], (error, result) => {
                 if (error) {
                     reject("No se puede borrar un registro que ya esta siendo usado en otras consultas"); // Reject the Promise if there is an error
                 } else {
@@ -75,10 +79,11 @@ async function deletePledge(pledge_id) {
 async function insertPledge(pledge_name) {
     // insert pledge
     try {
+        let connection = await db_connection();
         // pledge name to uppercase
         pledge_name = pledge_name.toUpperCase();
         let pledge_id = await new Promise((resolve, reject) => {
-            db_connection.query(PLEDGE_INSERT_QUERY, [pledge_name], (error, result) => {
+            connection.query(PLEDGE_INSERT_QUERY, [pledge_name], (error, result) => {
                 if (error) {
                     reject("No se pudo insertar la prenda: " + error);
                 } else {
@@ -96,10 +101,12 @@ async function insertPledge(pledge_name) {
 // sizes: [{size: "S", price: 100}, {size: "M", price: 200}, {size: "L", price: 300}]
 async function createPledge(pledge_name, sizes) {
     try {
+        let connection = await db_connection();
+
         let fetched_data = await new Promise((resolve, reject) => {
             let aborted_transaction = false;
             let message = "";
-            db_connection.beginTransaction(async (error) => {
+            connection.beginTransaction(async (error) => {
                 try {
                     if (error) { throw Error("Transacción imposible de iniciar") }  // invalid transaction
                     let _pledge_status = await insertPledge(pledge_name);
@@ -112,10 +119,10 @@ async function createPledge(pledge_name, sizes) {
                     message = error;
                 } finally {
                     if (aborted_transaction) {
-                        db_connection.rollback();
+                        connection.rollback();
                         reject([false, message]);
                     } else {
-                        db_connection.commit();
+                        connection.commit();
                         resolve([true, message])
                     }
                 }

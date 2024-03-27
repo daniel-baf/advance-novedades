@@ -4,9 +4,10 @@ const db_connection = require(path.join(__dirname, "../database/db-connection"))
 const encrypt = require(path.join(__dirname, "../../modules/database/encrypter.module"))
 
 // search all users on DB
-function searchAllUsers() {
+async function searchAllUsers() {
+    let connection = await db_connection();
     return new Promise((resolve, reject) => {
-        db_connection.query(USER_SELECT_ALL_NO_PASS_QUERY, (error, result) => {
+        connection.query(USER_SELECT_ALL_NO_PASS_QUERY, (error, result) => {
             if (error) {
                 reject("No hemos podido encontrar el usuario con id " + id); // Reject the Promise if there is an error
             } else {
@@ -19,9 +20,10 @@ function searchAllUsers() {
 
 // list all worker areas and create JSON object
 async function listWorkerAreas() {
+    let connection = await db_connection();
     // try to select all worker areas and return array of dictionaries
     return await new Promise((resolve, reject) => {
-        db_connection.query(USER_WORKER_AREA_SELECT_QUERY, (error, result) => {
+        connection.query(USER_WORKER_AREA_SELECT_QUERY, (error, result) => {
             if (error) {
                 reject("No hemos podido encontrar áreas de trabajo: " + error); // Reject the Promise if there is an error
             } else {
@@ -46,12 +48,13 @@ async function signup(password, name, Worker_area_id, authorized) {
         authorized = authorized == 'true' ? true : false;
         // encrypt and create password
         password = encrypt(password); // encrypt password
+        let connection = await db_connection();
         let fetched_data = await new Promise((resolve, reject) => {
-            db_connection.query(USER_INSERT_QUERY, [password, name, Worker_area_id, authorized], (error, result) => {
+            connection.query(USER_INSERT_QUERY, [password, name, Worker_area_id, authorized], (error, result) => {
                 // error handling
                 if (error) reject('No es posible insertar al usuario');
                 // retrieve OUT variable value
-                db_connection.query('SELECT @generated_id AS generated_key', (_error, _output_result) => {
+                connection.query('SELECT @generated_id AS generated_key', (_error, _output_result) => {
                     if (_error) {
                         // Handle error fetching OUT variable
                         reject('No es posible obtener el ID generado');
@@ -70,12 +73,14 @@ async function signup(password, name, Worker_area_id, authorized) {
 }
 
 // search a user on DB by id at parameter, must be string
-function searchUserById(id) {
+async function searchUserById(id) {
+    let connection = await db_connection();
+
     return new Promise((resolve, reject) => {
         if (!id) { // check for id undefined or null
             reject("No es un ID valido");
         }
-        db_connection.query(USER_SELECT_BY_ID_NO_PASS_QUERY, [id], (error, result) => {
+        connection.query(USER_SELECT_BY_ID_NO_PASS_QUERY, [id], (error, result) => {
             if (error) {
                 reject("No hemos podido encontrar el usuario con id " + id); // Reject the Promise if there is an error
                 return;
@@ -102,8 +107,9 @@ async function toggleAuthorizationToUser(id, session, authorize) {
             throw new Error('No puedes editar los permisos en ti mismo');
         }
         _query = authorize ? USER_GRANT_ACCESS_QUERY : USER_REMOVE_ACCESS_QUERY;
+        let connection = await db_connection();
         let fetched_data = await new Promise((resolve, reject) => {
-            db_connection.query(_query, [id], (error, result) => {
+            connection.query(_query, [id], (error, result) => {
                 // error handling
                 if (error) reject('No es posible cambiar los permisos al usuario');
                 resolve(result);
@@ -124,8 +130,10 @@ async function deleteUserById(id) {
         if (!id) {
             throw new Error('No se han enviado datos validos');
         }
+        let connection = await db_connection();
+
         let fetched_data = await new Promise((resolve, reject) => {
-            db_connection.query(USER_DELETE_QUERY, [id], (error, result) => {
+            connection.query(USER_DELETE_QUERY, [id], (error, result) => {
                 // error handling
                 if (error) {
                     reject('No es posible eliminar al usuario, es posible que el usuario ya sea parte del registro de otras transacciones');
@@ -159,8 +167,10 @@ async function updateUser(user, edit_password = false) {
             user.password = encrypt(user.password); // encrypt password
             _pool.unshift(user.password); // append password to beginning
         }
+        let connection = await db_connection();
+
         let fetched_data = await new Promise((resolve, reject) => {
-            db_connection.query(_query, _pool, (error, result) => {
+            connection.query(_query, _pool, (error, result) => {
                 // error handling
                 if (error) {
                     reject('No es posible actualizar al usuario ' + error);

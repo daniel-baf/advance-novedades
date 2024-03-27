@@ -9,7 +9,8 @@ async function insertExtraBillDetail(detail, price) {
     }
     // Insert the detail into the DB and return the last inserted ID
     try {
-        const result = await db_connection.query(EXTRA_BILL_DETAIL_INSERT_QUERY, [detail, price]);
+        let connection = await db_connection();
+        const result = await connection.query(EXTRA_BILL_DETAIL_INSERT_QUERY, [detail, price]);
         return result.insertId; // Return the last inserted ID
     } catch (error) {
         throw new Error("No hemos podido insertar el detalle de la factura, revisa los datos e inténtalo de nuevo");
@@ -32,7 +33,8 @@ async function insertBill(total, date = new Date(), worker, client_nit = DEFAULT
     }
 
     try {
-        const result = await db_connection.query(BILLS_INSERT_QUERY, [client_nit, total, date, order_id, worker.id]);
+        let connection = await db_connection();
+        const result = await connection.query(BILLS_INSERT_QUERY, [client_nit, total, date, order_id, worker.id]);
         return result.insertedId; // return the last inserted id
     } catch (error) {
         throw new Error("No hemos podido insertar la factura, revisa los datos e inténtalo de nuevo");
@@ -50,7 +52,8 @@ async function insertBillDetail(unitary_price, quantity, bill_Id, inventory_pled
     }
     // try to insert the bill detail into the DB
     try {
-        const result = await db_connection.query(BILLS_DETAIL_INSERT_QUERY, [unitary_price, quantity, bill_Id, inventory_pledge_id, inventory_size_id, extra_id]);
+        let connection = await db_connection();
+        const result = await connection.query(BILLS_DETAIL_INSERT_QUERY, [unitary_price, quantity, bill_Id, inventory_pledge_id, inventory_size_id, extra_id]);
         return result.insertId; // return the last inserted id
     } catch (error) {
         throw new Error("No hemos podido insertar el detalle de la factura, revisa los datos e inténtalo de nuevo");

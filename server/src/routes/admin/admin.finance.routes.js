@@ -57,11 +57,11 @@ router.get("/finance/list-all/expense-type", async (req, res) => {
 });
 
 // inserts a new expense type into DB and renders main view
-router.post("/finance/insert/expense-type", (req, res) => {
+router.post("/finance/insert/expense-type", async (req, res) => {
     // retrieve data from body
     try {
         let { expense_type } = req.body;
-        insertExpenseType(expense_type, req.session.user.id)
+        await insertExpenseType(expense_type, req.session.user.id)
             .then((message) => { renderDashboard(req, res, message, '', ADMIN_FINANCE_VIEW) })
             .catch((error) => { renderDashboard(req, res, '', error, ADMIN_FINANCE_VIEW) })
     } catch (error) {
@@ -108,7 +108,7 @@ router.post("/finance/insert/expense", async (req, res) => {
     // retrieve data from body
     try {
         let { expense_ammount, expense_type } = req.body;
-        insertExpense(expense_ammount, req.session.user.id, expense_type)
+        await insertExpense(expense_ammount, req.session.user.id, expense_type)
             .then((message) => { renderDashboard(req, res, message, '', ADMIN_FINANCE_VIEW) })
             .catch((error) => { renderDashboard(req, res, '', error, ADMIN_FINANCE_VIEW) })
         return;

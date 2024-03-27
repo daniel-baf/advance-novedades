@@ -179,7 +179,7 @@ router.get("/cart/increase-one/:pledge_id/:pledge_size/:with_extras", async (req
 });
 
 // find client and render a page with the cart + client
-router.post("/cart/search-client/", (req, res) => {
+router.post("/cart/search-client/", async (req, res) => {
     try {
         // check if cart is empty
         if (req.session.shopping_cart === undefined) {
@@ -187,7 +187,7 @@ router.post("/cart/search-client/", (req, res) => {
         }
         // search for client
         let { client_nit } = req.body;
-        searchClientByNit(client_nit).then(client => {
+        await searchClientByNit(client_nit).then(client => {
             // check if client is empty
             if (client === undefined) {
                 // redirect to add client page

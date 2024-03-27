@@ -67,30 +67,31 @@ async function generateReportJSONNoDates(reportType) {
 }
 
 // generate report with dates
-function generateReportJSONWithDates(reportType, _init_date, _end_date) {
+async function generateReportJSONWithDates(reportType, _init_date, _end_date) {
     let table_data = { titles: [], data: [] };
     switch (reportType) {
         case REPORT_TYPES.MOST_SOLD_PRODUCTS:
             table_data.titles = ["CÓDIGO", "NOMBRE", "TALLA", "TOTAL"];
-            table_data.data = queryReportWithDates(MOST_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY, _init_date, _end_date);
+            table_data.data = await queryReportWithDates(MOST_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY, _init_date, _end_date);
         case REPORT_TYPES.LESS_SOLD_PRODUCTS:
             table_data.titles = ["CÓDIGO", "NOMBRE", "TALLA", "TOTAL"];
-            table_data.data = queryReportWithDates(LESS_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY, _init_date, _end_date);
+            table_data.data = await queryReportWithDates(LESS_SOLD_PRODUCTS_FILTER_DATES_REPORT_QUERY, _init_date, _end_date);
         case REPORT_TYPES.EARNINGS:
             table_data.titles = ["CÓDIGO", "NIT", "TOTAL(GTQ)", "FECHA", "USUARIO"];
-            table_data.data = queryReportWithDates(EARNINGS_FILTER_DATES_REPORT_QUERY, _init_date, _end_date);
+            table_data.data = await queryReportWithDates(EARNINGS_FILTER_DATES_REPORT_QUERY, _init_date, _end_date);
         case REPORT_TYPES.EXPENSES:
             table_data.titles = ["CÓDIGO", "GASTOS (GTQ)", "FECHA", "USUARIO"];
-            table_data.data = queryReportWithDates(EXPENSE_FILTER_DATES_REPORT_QUERY, _init_date, _end_date);
+            table_data.data = await queryReportWithDates(EXPENSE_FILTER_DATES_REPORT_QUERY, _init_date, _end_date);
         default:
             return generateReportJSONNoDates(reportType);
     }
 }
 
 // generic function to execute queries with no parameters
-function queryReportNoDates(REPORT_QUERY) {
+async function queryReportNoDates(REPORT_QUERY) {
+    let connection = await db_connection();
     return new Promise((resolve, reject) => {
-        db_connection.query(REPORT_QUERY, (error, result) => {
+        connection.query(REPORT_QUERY, (error, result) => {
             if (error) {
                 reject("No ha sido posible recuperar los datos necesarios para el reporte " + error); // Reject the Promise if there is an error
             } else {
@@ -101,9 +102,10 @@ function queryReportNoDates(REPORT_QUERY) {
 }
 
 // generic function to execute queries with no parameters
-function queryReportWithDates(REPORT_QUERY, _init_date, _end_date) {
+async function queryReportWithDates(REPORT_QUERY, _init_date, _end_date) {
+    let connection = await db_connection();
     return new Promise((resolve, reject) => {
-        db_connection.query(REPORT_QUERY, [_init_date, _end_date], (error, result) => {
+        connection.query(REPORT_QUERY, [_init_date, _end_date], (error, result) => {
             if (error) {
                 reject("No ha sido posible recuperar los datos necesarios para el reporte " + error); // Reject the Promise if there is an error
             } else {

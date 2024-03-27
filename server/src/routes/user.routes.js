@@ -38,8 +38,9 @@ router.get("/logout", (req, res) => {
 
 // searches for a user and generates a session user
 async function getUserForSession(id, password) {
+  let connection = await db_connection();
   return await new Promise((resolve, reject) => {
-    db_connection.query(
+    connection.query(
       USER_SELECT_BY_PASS_ID_QUERY,
       [id, password],
       (_error, _result) => {

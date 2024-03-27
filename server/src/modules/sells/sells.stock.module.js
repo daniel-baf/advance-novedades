@@ -23,8 +23,10 @@ function searchStockByParameter(searchType, searchId, building) {
 
 // search by ID in stock, and current session building
 function searchStockById(id, building) {
+    let connection = db_connection();
+
     return new Promise((resolve, reject) => {
-        db_connection.query(STOCK_FILTER_BY_PLEDGE_ID_AND_BUILDING_QUERY, [building, id], (error, result) => {
+        connection.query(STOCK_FILTER_BY_PLEDGE_ID_AND_BUILDING_QUERY, [building, id], (error, result) => {
             if (error) {
                 reject("No hemos podido filtrar stock por id: " + error); // Reject the Promise if there is an error
             } else {
@@ -35,9 +37,11 @@ function searchStockById(id, building) {
 }
 
 // search by name in stock, and current session building
-function searchStockByName(name, building) {
+async function searchStockByName(name, building) {
+    let connection = await db_connection();
+
     return new Promise((resolve, reject) => {
-        db_connection.query(STOCK_FILTER_BY_PLEDGE_NAME_AND_BUILDING_QUERY, [`%${name}%`, building], (error, result) => {
+        connection.query(STOCK_FILTER_BY_PLEDGE_NAME_AND_BUILDING_QUERY, [`%${name}%`, building], (error, result) => {
             if (error) {
                 reject("No hemos podido filtrar stock por nombre: " + error); // Reject the Promise if there is an error
             } else {
@@ -48,9 +52,11 @@ function searchStockByName(name, building) {
 }
 
 // search by size in stock, and current session building
-function searchStockBySize(size, building) {
+async function searchStockBySize(size, building) {
+    let connection = await db_connection();
+
     return new Promise((resolve, reject) => {
-        db_connection.query(STOCK_FILTER_BY_PLEDGE_SIZE_AND_BUILDING_QUERY, [building, size], (error, result) => {
+        connection.query(STOCK_FILTER_BY_PLEDGE_SIZE_AND_BUILDING_QUERY, [building, size], (error, result) => {
             if (error) {
                 reject("No hemos podido filtrar stock por talla: " + error); // Reject the Promise if there is an error
             } else {
@@ -61,9 +67,11 @@ function searchStockBySize(size, building) {
 }
 
 // return all stock from current building
-function searchStockByBuilding(building) {
+async function searchStockByBuilding(building) {
+    let connection = await db_connection();
+
     return new Promise((resolve, reject) => {
-        db_connection.query(STOCK_FILTER_BY_BUILDING_QUERY, [building], (error, result) => {
+        connection.query(STOCK_FILTER_BY_BUILDING_QUERY, [building], (error, result) => {
             if (error) {
                 reject("No hemos podido filtrar stock por edificio: " + error); // Reject the Promise if there is an error
             } else {

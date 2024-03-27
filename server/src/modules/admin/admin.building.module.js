@@ -17,10 +17,10 @@ async function insertBuilding(building_name, building_direction) {
         if (building_name === '' || building_direction === '') {
             return [false, 'Valores ingresados inválidos'];
         }
-
+        let connection = await db_connection();
         // Perform the insert query
         const result = await new Promise((resolve, reject) => {
-            db_connection.query(BUILDING_INSERT_QUERY, [building_name, building_direction], (error, result) => {
+            connection.query(BUILDING_INSERT_QUERY, [building_name, building_direction], (error, result) => {
                 if (error) {
                     reject("No se ha podido insertar el edificio: " + error);
                 } else {
@@ -39,8 +39,10 @@ async function insertBuilding(building_name, building_direction) {
 async function searchBuilding(building_id) {
     // use promises to send the result
     try {
+        let connection = await db_connection();
+
         const result = await new Promise((resolve, reject) => {
-            db_connection.query(BUILDING_SEARCH_ID_QUERY, [building_id], (error, _result) => {
+            connection.query(BUILDING_SEARCH_ID_QUERY, [building_id], (error, _result) => {
                 if (error) {
                     reject("No se ha podido encontrar el edificio con id " + building_id + " ERROR " + error);
                 } else {
@@ -62,8 +64,10 @@ async function updateBuilding(building_id, building_name, building_direction) {
             return [false, "Atributo/os no valido/os"]
         }
 
+        let connection = await db_connection();
+
         const result = await new Promise((resolve, reject) => {
-            db_connection.query(BUILDING_UPDATE_QUERY, [building_name, building_direction, building_id], (_error, _result) => {
+            connection.query(BUILDING_UPDATE_QUERY, [building_name, building_direction, building_id], (_error, _result) => {
                 if (_error) {
                     reject("No se ha podido editar el edificio: " + _error)
                 } else {
@@ -84,8 +88,9 @@ async function deleteBuilding(building_id) {
             return [false, "No se reconoce el id"]
         }
         // fetch result
+        let connection = await db_connection();
         const result = await new Promise((resolve, reject) => {
-            db_connection.query(BUILDING_DELETE_QUERY, [building_id], (_error, _result) => {
+            connection.query(BUILDING_DELETE_QUERY, [building_id], (_error, _result) => {
                 if (_error) {
                     reject("No se pudo borrar el edificio seleccionado, este edificio es usado en otras consultas")
                 } else {

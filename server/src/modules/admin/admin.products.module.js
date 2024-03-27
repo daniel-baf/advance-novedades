@@ -19,9 +19,11 @@ async function loadProducts() {
 }
 
 // get buildings from DB
-function getBuildings() {
+async function getBuildings() {
+    let connection = await db_connection();
+
     return new Promise((resolve, reject) => {
-        db_connection.query(BUILDING_SELECT_EXCLUDE_DIR, (error, result) => {
+        connection.query(BUILDING_SELECT_EXCLUDE_DIR, (error, result) => {
             if (error) {
                 reject("No hemos podido encontrar edificios: " + error); // Reject the Promise if there is an error
             } else {
@@ -67,8 +69,9 @@ async function generateProductsJSON(_buildings, _pledges) {
 // find stock by 3PK id on DB
 async function findStockByPK(building_id, pledge_id, size_id) {
     try {
+        let connection = await db_connection();
         data = await new Promise((resolve, reject) => {
-            db_connection.query(STOCK_SELECT_BY_PK_QUERY, [pledge_id, size_id, building_id], (_error, _result) => {
+            connection.query(STOCK_SELECT_BY_PK_QUERY, [pledge_id, size_id, building_id], (_error, _result) => {
                 if (_error) {
                     reject("No se pudo encontrar datos para los datos proporcionados, llaves invalidas. " + _error);
                 } else {
@@ -85,10 +88,12 @@ async function findStockByPK(building_id, pledge_id, size_id) {
 // update the stock on db
 async function updateStock(building_id, pledge_id, size_id, stock) {
     try {
+        let connection = await db_connection();
+
         // check invalid stock
         if (stock < 0) throw new Error("Stock no puede ser negativo")
         data = await new Promise((resolve, reject) => {
-            db_connection.query(STOCK_UPDATE_QUERY, [stock, building_id, pledge_id, size_id], (_error, _result) => {
+            connection.query(STOCK_UPDATE_QUERY, [stock, building_id, pledge_id, size_id], (_error, _result) => {
                 if (_error) {
                     reject("No se pudo actualizar los datos para el stock" + _error);
                 } else {
@@ -104,8 +109,9 @@ async function updateStock(building_id, pledge_id, size_id, stock) {
 
 // get sizes list FROM DB
 async function getSizes() {
+    let connection = await db_connection();
     return new Promise((resolve, reject) => {
-        db_connection.query(SIZE_SELECT_ALL_QUERY, (error, result) => {
+        connection.query(SIZE_SELECT_ALL_QUERY, (error, result) => {
             if (error) {
                 reject("No hemos podido encontrar tallas: " + error); // Reject the Promise if there is an error
             } else {
@@ -117,8 +123,9 @@ async function getSizes() {
 
 // Define a function to get stock availability
 async function getStockByBuildingAndPledge(_pledge_id, _building_id) {
+    let connection = await db_connection();
     return new Promise((resolve, reject) => {
-        db_connection.query(STOCK_SELECT_QUERY, [_building_id, _pledge_id], (error, result) => {
+        connection.query(STOCK_SELECT_QUERY, [_building_id, _pledge_id], (error, result) => {
             if (error) {
                 reject("Unable to get stock availability: " + error);
             } else {

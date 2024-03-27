@@ -4,10 +4,12 @@ const { CLIENTS_SEARCH_BY_NIT_QUERY } = require(path.join(__dirname, "../../conf
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
 // function to insert a new user into DB
-function searchClientByNit(nit = DEFAULT_BILL_NIT) {
+async function searchClientByNit(nit = DEFAULT_BILL_NIT) {
     nit = nit.trim().toUpperCase();
+    let connection = await db_connection();
+
     return new Promise((resolve, reject) => {
-        db_connection.query(CLIENTS_SEARCH_BY_NIT_QUERY, [nit], (err, result) => {
+        connection.query(CLIENTS_SEARCH_BY_NIT_QUERY, [nit], (err, result) => {
             if (err) {
                 reject(err);
             }
@@ -17,9 +19,11 @@ function searchClientByNit(nit = DEFAULT_BILL_NIT) {
 }
 
 // function to list all users in DB
-function listClients() {
+async function listClients() {
+    let connection = await db_connection();
+
     return new Promise((resolve, reject) => {
-        db_connection.query(CLIENTS_LIST_ALL_QUERY, (err, result) => {
+        connection.query(CLIENTS_LIST_ALL_QUERY, (err, result) => {
             if (err) {
                 reject(err);
             }
@@ -29,9 +33,11 @@ function listClients() {
 }
 
 // function to delete a existing client in DB
-function deleteClient(nit) {
+async function deleteClient(nit) {
+    let connection = await db_connection();
+
     return new Promise((resolve, reject) => {
-        db_connection.query(CLIENTS_DELETE_QUERY, [nit], (err, result) => {
+        connection.query(CLIENTS_DELETE_QUERY, [nit], (err, result) => {
             if (err) {
                 reject("No podemos borrar al usuario, recuerda que no podemos borrar un usuario que ya ha realizado una compra.")
             }
@@ -41,7 +47,9 @@ function deleteClient(nit) {
 }
 
 // function to update a existing client in DB
-function updateClient(nit, name, address, phone_number) {
+async function updateClient(nit, name, address, phone_number) {
+    let connection = await db_connection();
+
     return new Promise((resolve, reject) => {
         // check valid insert types
         nit = nit.trim().toUpperCase();
@@ -56,7 +64,7 @@ function updateClient(nit, name, address, phone_number) {
             reject('El número de teléfono debe contener 8 dígitos');
         }
 
-        db_connection.query(CLIENTS_UPDATE_QUERY, [name, address, phone_number, nit], (err, result) => {
+        connection.query(CLIENTS_UPDATE_QUERY, [name, address, phone_number, nit], (err, result) => {
             if (err) {
                 reject(err);
             }
@@ -66,7 +74,9 @@ function updateClient(nit, name, address, phone_number) {
 }
 
 // function to insert a new client into DB
-function insertClient(nit, name, address = 'ciudad', phone_number) {
+async function insertClient(nit, name, address = 'ciudad', phone_number) {
+    let connection = await db_connection();
+
     return new Promise((resolve, reject) => {
         address = address.trim().toUpperCase();
         nit = nit.trim().toUpperCase();
@@ -75,7 +85,7 @@ function insertClient(nit, name, address = 'ciudad', phone_number) {
         if (address.length === 0) {
             reject('La dirección no puede estar vacía');
         }
-        db_connection.query(CLIENTS_INSERT_QUERY, [nit, name, address, phone_number], (err, result) => {
+        connection.query(CLIENTS_INSERT_QUERY, [nit, name, address, phone_number], (err, result) => {
             if (err) {
                 reject("No podemos insertar al cliente, el NIT ya esta registrado en la base de datos.");
             }
