@@ -1,3 +1,4 @@
+const { DEFAULT_BILL_NIT } = require("../../config/consts");
 const { getBuildings } = require("../admin/admin.products.module");
 
 // multiuse function to render login page
@@ -33,7 +34,7 @@ function renderSellsClientDashboard(req, res, message, error_message) {
 // render a sub page for clients, list client/clients into a table, and allow actions
 function renderSellsClientListDashboard(req, res, message, error_message, clients = []) {
     try {
-        res.render('users/sells/clients/sells-client-list-view.ejs', { name: req.session.user.id, message, error_message, clients })
+        res.render('users/sells/clients/sells-client-list-view.ejs', { name: req.session.user.id, message, error_message, clients, DEFAULT_BILL_NIT: DEFAULT_BILL_NIT })
     } catch (error) {
         render500Page(res, "No hemos podido recuperar tu sesión. " + error);
     }

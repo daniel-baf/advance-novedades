@@ -44,7 +44,7 @@ const mockSessionMiddleware = (req, res, next) => {
     };
     if (!req.session.reloaded) {
       req.session.shopping_cart = req.session.shopping_cart = {
-        client: { name: 'Pepe', nit: 'CF', address: 'Calle 1', phone_number: '12345678' },
+        client: { name: 'Daniel Eduardo Bautista Fuentes', NIT: '01010101', address: 'Calle A S.P.SM', phone_number: '1412312' },
         items: [
           {
             pledge_id: 1,

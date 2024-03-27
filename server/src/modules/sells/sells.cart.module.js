@@ -1,5 +1,6 @@
 const path = require('path');
 const { findStockByPK } = require('../admin/admin.products.module');
+const { insertBill } = require('./sells.bills.module');
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
 function isNullOrUndefined(value) {
@@ -175,12 +176,11 @@ async function editCart(json_object, session, _old_json_extras = {}) {
         }
         // check if json_object contains extras
         // update just the quantity
-        console.log(json_object);
         let recover_json = JSON.parse(JSON.stringify(json_object)); // fin index with previous values of JSON
         recover_json.extras = _old_json_extras;
         let index = findIndexCart(recover_json, session);
         if (index === -1) {
-            return { error: true, message: "El carrito no existía en el carrito de compras" }
+            return { error: true, message: "El producto no existía en el carrito de compras" }
         }
         // look out for the product stock
         let _db_product = await findStockByPK(session.user.location.id, json_object.pledge_id, json_object.pledge_size).then(db_product => {
@@ -201,4 +201,40 @@ async function editCart(json_object, session, _old_json_extras = {}) {
         return { error: true, message: 'No hemos podido recuperarnos de un error inesperado ' + error.message };
     }
 }
-module.exports = { addItemToCart, editCart, deleteFromCart, decreaseFromCart, increaseFromCart }
+
+
+// function to generate a bill into DB
+// shopping cart is a JSON with the following structure
+// [ { pledge_id, pledge_name, pledge_size, pledge_price, quantity, extras: { extras_price, extras_note } } ]
+// worker is a JSON { id, role, name, location: { id, name } }
+async function generateBIll(shopping_cart, worker, order_id = null) {
+    let response = { error: true, message: '', inserted_id: null };
+    try {
+        await db_connection.beginTransaction(); // init a transaction
+        let total = 0;
+        shopping_cart.items.forEach(item => {
+            subtotal = item.pledge_price * item.quantity; // calculate subtotal and check if negative sub re
+            // check if extras has values
+            if (Object.keys(item.extras).length !== 0) {
+                subtotal += item.extras.extras_price;
+            }
+            if (subtotal <= 0) {
+                throw new Error(`Se ha calculado un subtotal negativo o igual a 0 para el producto ${item.pledge_name}`);
+            }
+            total += subtotal;
+        });
+        response = { error: false, message: 'Factura generada con éxito', inserted_id: 1, total };
+        // response.inserted_id = await insertBill(shopping_cart.total, new Date(), worker, shopping_cart.client.NIT, order_id); // await for success message -> continue to insert
+        db_connection.commit();
+    } catch (error) {
+        // If any operation fails, rollback the transaction
+        response.message = `Error interno en la transacción implementada ${error}`;
+    } finally {
+        if (response.error) {
+            await db_connection.rollback();
+        }
+        await db_connection.end();
+        return response;
+    }
+}
+module.exports = { addItemToCart, editCart, deleteFromCart, decreaseFromCart, increaseFromCart, generateBIll }

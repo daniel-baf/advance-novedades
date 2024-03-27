@@ -11,7 +11,6 @@ router.post('/report/generate', async (req, res) => {
         // get data from body
         let { initDate, endDate, reportType } = req.body;
         let _table_data = await generateReportJSON(initDate, endDate, reportType);
-        // TODO implement view for expenses vs earnings
         // render view dynamic-table-report.ejs
         res.render('users/admin/reports/dynamic-table-report', { name: req.session.user.id, table_data: _table_data, reportType: reportType });
         // res.status(200).json({ table_data: _table_data, reportType: reportType });

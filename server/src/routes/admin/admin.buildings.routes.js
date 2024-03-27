@@ -97,7 +97,7 @@ async function renderDashboard(req, res, message, error_message, view) {
             _data = { buildings: [], sizes: [] }
             _data.buildings = await listBuildings();  // get buildings list
             _data.sizes = await getSizes();  // get sizes list
-        } else if (view == ADMIN_USER_VIEW) { // TODO display all needed data from users
+        } else if (view == ADMIN_USER_VIEW) { 
             _data = { worker_areas: [] }
             _data.worker_areas = await listWorkerAreas();  // get worker areas list
         } else if (view == ADMIN_FINANCE_VIEW) {

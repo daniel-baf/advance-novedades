@@ -15,6 +15,21 @@ var db_connection = mysql.createConnection({
 db_connection.connect((err) => {
     console.log(!err ? "Successfully connected to DB" : "Unable to connect to DB: " + err);
     // TODO implement an error manager and call it
+    return;
 });
+
+// Function to get a connection from the pool
+function getConnection() {
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(connection);
+        });
+    });
+}
+
 
 module.exports = db_connection;

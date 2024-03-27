@@ -62,7 +62,7 @@ INSERT INTO `Stock` (`Building_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, 
 INSERT INTO `Order_Status` (`id`) VALUES ('ENLISTED'), ('WAREHOUSE'),('DELIVERED'),('PARTIALLY DELIVERED'),('CANCELED');
 -- ORDER FOR 3 CAMISA POLO ADVANCE 8 (240) + EMBROIDERY ON EXTRAS (20) 
 INSERT INTO `Order` (`total`, `is_special`, `phone`, `name`, `Order_Status_id`, `date`) VALUES (260, TRUE, CONCAT('', FLOOR(10000000 + RAND() * (99999999 - 10000000 + 1))), 'Chismosin', 'DELIVERED', CURDATE() - INTERVAL 1 WEEK);
-INSERT INTO `Order_Detail` (`Order_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `cuantity`, `Order_Status_id`, `anotation`) VALUES ('1', '2', '8', '3', 'DELIVERED', 'Bordar el nombre Fino Filipino');
+INSERT INTO `Order_Detail` (`Order_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `quantity`, `Order_Status_id`, `anotation`) VALUES ('1', '2', '8', '3', 'DELIVERED', 'Bordar el nombre Fino Filipino');
 
 
 -- BILLS / RECEIPES
@@ -74,7 +74,7 @@ INSERT INTO `Bill` (`Client_NIT`, `total`, `date`, `Worker_id`) VALUES ('1231231
 INSERT INTO `Bill` (`Client_NIT`, `total`, `date`, `Worker_id`, `Order_id`) VALUES ('12312312', 260, CURDATE(), 'SLLS1', 1);
 -- NOTE: may i switch FK for 1:1 at Extra and Order Detail?
 INSERT INTO `Extra` (`detail`, `price`) VALUES ('Bordar el nombre Juanito Perez', '20');
-INSERT INTO `Bill_Detail` (`unitary_price`, `cuantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `Extra_id`) VALUES ('80', '3', '3', '2', '8', '1');
+INSERT INTO `Bill_Detail` (`unitary_price`, `quantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`, `Extra_id`) VALUES ('80', '3', '3', '2', '8', '1');
 
 -- EXPENSES
 INSERT INTO `Expense_Type` (`name`) VALUES ('SALARIOS'), ('Mobiliario y Equipo'), ('Herramientas'),('Alquileres'),('Gastos Varios');

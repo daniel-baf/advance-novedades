@@ -8,7 +8,6 @@ adminBuildingRouter = require(path.join(__dirname, 'admin.buildings.routes'));
 
 // render view of usersListPage
 function renderUserListPage(_users_db, res, req, message = '', error_message = '', current_view = '') {
-    // TODO render a new view with users list, may be 1 or none
     res.render('users/admin/users/user-list', { users: _users_db, name: req.session.user.name, message: message, error_message: error_message, current_view: current_view })
 }
 
@@ -79,7 +78,6 @@ router.get("/user/search", async (req, res) => {
             adminBuildingRouter.renderDashboard(req, res, "No existe un usuario con el ID proporcionado", '', ADMIN_USER_VIEW);
             return;
         }
-        // TODO valid user data, render a new view
         renderUserListPage(db_user, res, req, '', '', current_view = user);
     } catch (error) {
         adminBuildingRouter.renderDashboard(req, res, '', "No se pudo procesar la búsqueda de usuarios, " + error, ADMIN_USER_VIEW);

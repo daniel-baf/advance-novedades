@@ -21,7 +21,10 @@
         <div><%- include("../../../partials/asides/sells-aside") %></div>
 
         <!-- Main content area -->
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 mt-5">
+        <main
+          role="main"
+          class="col-md-9 ml-sm-auto col-lg-10 px-4 mt-5 container"
+        >
           <div>
             <h1 class="text-capitalize">Carrito de compra</h1>
             <p class="text-center">
@@ -33,7 +36,7 @@
             </div>
           </div>
 
-          <section class="container container-fluid mt-4">
+          <section class="w-75 mt-4 m-auto">
             <% shopping_cart.items.forEach( _bag_item => {%>
             <!-- SECTION TO DISPLAY CUSTOM FORMS -->
             <div class="mb-5">
@@ -176,7 +179,7 @@
             </div>
           </div>
           <!-- DIV TO DISPLAY RESULT IN TABLE -->
-          <section class="container mt-2" id="summary">
+          <section class="mt-2" id="summary">
             <h2 class="mb-4 text-capitalize">Resumen compra</h2>
 
             <!-- RESUMEN -->
@@ -241,214 +244,152 @@
                 <strong>Q<%=total.toFixed(2)%></strong>
               </p>
             </div>
+          </section>
 
-            <!-- DISPLAY CLIENT USER SEARCH -->
-            <!-- SAVE BILL -->
-            <div class="row d-felx">
-              <div class="col-md-6">
-                <form class="form-inline">
-                  <label class="sr-only" for="client_nit">NIT cliente</label>
+          <section class="mb-4">
+            <div class="mb-4">
+              <h3 class="text-capitalize">Datos Cliente</h3>
+              <p class="text-center">
+                Estos son los datos actuales para la factura descrita arriba,
+                puedes dejar <strong>vacío / no buscar</strong> para que la
+                factura sea <strong>Consumidor Final</strong>
+              </p>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <!-- CLIENT FOUND DATA -->
+                <div class="row">
+                  <div class="col-md-6">
+                    <label class="sr-only" for="client_nit">NIT cliente</label>
+                    <div class="input-group mb-2 mr-sm-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">NIT</div>
+                      </div>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="client_nit"
+                        placeholder="NIT 12345678"
+                        required
+                        maxlength="10"
+                        readonly
+                        value="<%=shopping_cart.client.NIT%>"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="sr-only" for="client_nit">No. Teléfono</label>
+                    <div class="input-group mb-2 mr-sm-2">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">No. Celular</div>
+                      </div>
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="client_nit"
+                        placeholder="NIT 12345678"
+                        required
+                        min="10000000"
+                        max="99999999"
+                        readonly
+                        value="<%=shopping_cart.client.phone_number%>"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-2">
+                  <label class="sr-only" for="client_name"
+                    >Nombre Cliente</label
+                  >
                   <div class="input-group mb-2 mr-sm-2">
                     <div class="input-group-prepend">
-                      <div class="input-group-text">NIT</div>
+                      <div class="input-group-text">Nombre</div>
                     </div>
                     <input
                       type="text"
                       class="form-control"
-                      id="client_nit"
-                      placeholder="NIT 12345678"
+                      id="client_name"
+                      placeholder="ej. Juan Perez"
                       required
-                      maxlength="10"
+                      readonly
+                      value="<%=shopping_cart.client.name%>"
                     />
                   </div>
-                  <button
-                    type="submit"
-                    class="btn btn-warning mb-2 text-uppercase"
+                </div>
+                <div class="mt-2">
+                  <label class="sr-only" for="client_address"
+                    >Dirección del cliente</label
                   >
-                    Buscar
-                  </button>
-                </form>
+                  <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">Dirección</div>
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="client_address"
+                      placeholder="ej. Ciudad"
+                      required
+                      readonly
+                      value="<%=shopping_cart.client.address%>"
+                    />
+                  </div>
+                </div>
               </div>
-              <div class="col-md-6">
-                <!-- BUTTON TO CONFIRM BILL -->
-                <a
-                  name="save_bill"
-                  id="save_bill"
-                  class="btn btn-outline-primary btn-block text-uppercase"
-                  href="/sells/cart/checkout/"
-                  role="button"
-                  >Generar Recibo</a
-                >
+              <div class="col-lg-6 mb-4">
+                <div>
+                  <div class="row">
+                    <!-- SEARCH CLIENT -->
+                    <div class="m-auto">
+                      <form
+                        class="form-inline mb-3"
+                        action="/sells/cart/search-client/"
+                        method="post"
+                      >
+                        <label class="sr-only" for="client_nit"
+                          >NIT cliente</label
+                        >
+                        <div class="input-group mb-2 mr-sm-2">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">NIT</div>
+                          </div>
+                          <input
+                            type="text"
+                            class="form-control"
+                            name="client_nit"
+                            id="client_nit"
+                            placeholder="NIT 12345678"
+                            required
+                            maxlength="10"
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          class="btn btn-warning mb-2 text-uppercase"
+                        >
+                          Buscar
+                        </button>
+                      </form>
+                    </div>
+                    <!-- SAVE BILL -->
+                    <a
+                      name="save_bill"
+                      id="save_bill"
+                      class="btn btn-outline-primary btn-block text-uppercase"
+                      href="/sells/cart/checkout/"
+                      role="button"
+                      >Generar Recibo</a
+                    >
+                  </div>
+                </div>
               </div>
             </div>
           </section>
         </main>
       </div>
     </div>
-    <!-- MODALS -->
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
-              Agregar al carrito
-            </h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form action="/sells/cart/add/" method="post" id="addToCartForm">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="pledge_id">Código</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      name="pledge_id"
-                      id="pledge_id"
-                      aria-describedby="pledge_id_small"
-                      placeholder="Código producto"
-                      readonly
-                      required
-                    />
-                    <small id="pledge_id_small" class="form-text text-muted"
-                      >Código del producto (no editable)</small
-                    >
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="pledge_size">Talla</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="pledge_size"
-                      id="pledge_size"
-                      aria-describedby="pledge_size_small"
-                      placeholder="Talla xxx"
-                      readonly
-                      required
-                    />
-                    <small id="pledge_size_small" class="form-text text-muted"
-                      >Talla del producto (no editable)</small
-                    >
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="pledge_name">Nombre</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name="pledge_name"
-                  id="pledge_name"
-                  aria-describedby="pledge_name_small"
-                  placeholder="Producto xxx"
-                  readonly
-                  required
-                />
-                <small id="pledge_name_small" class="form-text text-muted"
-                  >Nombre del producto (no editable)</small
-                >
-              </div>
-              <div class="form-group">
-                <label for="quantity">Cantidad</label>
-                <input
-                  type="number"
-                  class="form-control"
-                  name="quantity"
-                  id="quantity"
-                  aria-describedby="quantity_small"
-                  placeholder="1"
-                  required
-                  step="1"
-                  min="1"
-                />
-                <small id="quantity_small" class="form-text text-muted"
-                  >Cantidad a agregar a carrito</small
-                >
-              </div>
-              <!-- OPTIONAL EXTRA ATTRIBUTES -->
-              <div>
-                <div class="form-check form-check-inline">
-                  <label class="form-check-label">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="addExtras"
-                      id="addExtras"
-                      value="true"
-                    />
-                    Agregar extras
-                  </label>
-                </div>
-                <div class="row" id="extrasInputsForm" hidden>
-                  <div class="col-md-8">
-                    <div class="form-group">
-                      <label for="extras_note">Notas</label>
-                      <textarea
-                        class="form-control"
-                        name="extras_note"
-                        id="extras_note"
-                        rows="5"
-                      ></textarea>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label for="extras_price">Precio</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        name="extras_price"
-                        id="extras_price"
-                        min="0"
-                        step="0.01"
-                        aria-describedby="extras_price_small"
-                        placeholder="Q10.00"
-                      />
-                      <small
-                        id="extras_price_small"
-                        class="form-text text-muted"
-                        >Precio para el extra/(s)</small
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" form="addToCartForm">
-              Agregar</button
-            ><button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Cerrar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </body>
-
-  <footer><%- include("../../../partials/footer.ejs")%></footer>
+  <%- include("../../../partials/footer.ejs")%>
 </html>
 
 <!-- Bootstrap JS and dependencies -->

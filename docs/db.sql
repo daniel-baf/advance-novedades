@@ -17,7 +17,8 @@ CREATE TABLE `Client` (
   `address` VARCHAR(100) NOT NULL DEFAULT 'CIUDAD',
   `phone_number` VARCHAR(12) NOT NULL,
   PRIMARY KEY (`NIT`),
-  UNIQUE INDEX `NIT_UNIQUE` (`NIT` ASC) VISIBLE);
+  UNIQUE INDEX `NIT_UNIQUE` (`NIT` ASC) VISIBLE)
+  ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -29,9 +30,7 @@ CREATE TABLE IF NOT EXISTS `Worker_Area` (
   `id` VARCHAR(15) NOT NULL,
   `name` VARCHAR(15) NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -52,10 +51,7 @@ CREATE TABLE IF NOT EXISTS `Worker` (
     REFERENCES `Worker_Area` (`id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
-
+ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `Expense_Type`
@@ -96,8 +92,6 @@ CREATE TABLE IF NOT EXISTS `Expense` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB;
 
-USE `novedades` ;
-
 -- -----------------------------------------------------
 -- Table `Order_Status`
 -- -----------------------------------------------------
@@ -106,10 +100,7 @@ DROP TABLE IF EXISTS `Order_Status` ;
 CREATE TABLE IF NOT EXISTS `Order_Status` (
   `id` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
-
+ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `Order`
@@ -131,9 +122,7 @@ CREATE TABLE IF NOT EXISTS `Order` (
     REFERENCES `Order_Status` (`id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -166,9 +155,7 @@ CREATE TABLE IF NOT EXISTS `Bill` (
     REFERENCES `Worker` (`id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -181,9 +168,7 @@ CREATE TABLE IF NOT EXISTS `Extra` (
   `detail` VARCHAR(100) NOT NULL,
   `price` DOUBLE(7,2) NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -196,9 +181,7 @@ CREATE TABLE IF NOT EXISTS `Pledge` (
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name` (`name` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -209,9 +192,7 @@ DROP TABLE IF EXISTS `Size` ;
 CREATE TABLE IF NOT EXISTS `Size` (
   `id` VARCHAR(4) NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -236,9 +217,7 @@ CREATE TABLE IF NOT EXISTS `Inventory` (
     REFERENCES `Size` (`id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -249,7 +228,7 @@ DROP TABLE IF EXISTS `Bill_Detail` ;
 CREATE TABLE IF NOT EXISTS `Bill_Detail` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `unitary_price` DOUBLE(7,2) NOT NULL,
-  `cuantity` TINYINT(2) NOT NULL DEFAULT 1,
+  `quantity` TINYINT(2) NOT NULL DEFAULT 1,
   `Bill_id` INT(11) NOT NULL,
   `Inventory_Pledge_id` INT(11) NOT NULL,
   `Inventory_Size_id` VARCHAR(4) NOT NULL,
@@ -276,9 +255,7 @@ CREATE TABLE IF NOT EXISTS `Bill_Detail` (
     REFERENCES `Inventory` (`Pledge_id` , `Size_id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -292,9 +269,7 @@ CREATE TABLE IF NOT EXISTS `Building` (
   `direction` VARCHAR(85) NOT NULL DEFAULT 'city',
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name` (`name` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -320,9 +295,7 @@ CREATE TABLE IF NOT EXISTS `Stock` (
     REFERENCES `Inventory` (`Pledge_id` , `Size_id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -350,9 +323,7 @@ CREATE TABLE IF NOT EXISTS `Log` (
     REFERENCES `Worker` (`id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -364,7 +335,7 @@ CREATE TABLE IF NOT EXISTS `Order_Detail` (
   `Order_id` INT(11) NOT NULL,
   `Inventory_Pledge_id` INT(11) NOT NULL,
   `Inventory_Size_id` VARCHAR(4) NOT NULL,
-  `cuantity` TINYINT(4) NOT NULL DEFAULT 1,
+  `quantity` TINYINT(4) NOT NULL DEFAULT 1,
   `anotation` VARCHAR(100) NULL DEFAULT NULL,
   `Order_Status_id` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`Order_id`, `Inventory_Pledge_id`, `Inventory_Size_id`),
@@ -386,9 +357,7 @@ CREATE TABLE IF NOT EXISTS `Order_Detail` (
     REFERENCES `Order` (`id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+ENGINE = InnoDB;
 
 
 DROP TRIGGER IF EXISTS `Expense_Type_BEFORE_INSERT`;
@@ -493,7 +462,7 @@ BEGIN
       SET random_price = (SELECT price FROM Inventory WHERE Pledge_id = random_pledge_id AND Size_id = random_size_id);
       SET tmp_product_count = FLOOR(RAND() * 3) + 1;
 
-      INSERT INTO `Bill_Detail` (`unitary_price`, `cuantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`) 
+      INSERT INTO `Bill_Detail` (`unitary_price`, `quantity`, `Bill_id`, `Inventory_Pledge_id`, `Inventory_Size_id`) 
       VALUES (random_price, tmp_product_count, bill_id, random_pledge_id, random_size_id);
 
       SET total = total + (random_price * tmp_product_count);

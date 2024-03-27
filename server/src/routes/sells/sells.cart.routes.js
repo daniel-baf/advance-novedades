@@ -3,9 +3,10 @@ const router = express.Router();
 
 const { CART_SEARCH_TYPES } = require("../../config/consts");
 const { searchStockByParameter } = require('../../modules/sells/sells.stock.module');
-const { addItemToCart, editCart, deleteFromCart, decreaseFromCart, increaseFromCart } = require('../../modules/sells/sells.cart.module');
+const { addItemToCart, editCart, deleteFromCart, decreaseFromCart, increaseFromCart, generateBIll } = require('../../modules/sells/sells.cart.module');
 
-const { renderLoginPage, render500Page } = require('../../modules/utils/renders.common.utils.module');
+const { renderLoginPage, render500Page, renderSellsClientDashboard } = require('../../modules/utils/renders.common.utils.module');
+const { searchClientByNit } = require('../../modules/sells/sells.client.module');
 
 function renderShoppingCart(req, res, message = "", error_message = "") {
     try {
@@ -173,11 +174,46 @@ router.get("/cart/increase-one/:pledge_id/:pledge_size/:with_extras", async (req
             renderShoppingCart(req, res, response.message, "");
         }
     } catch (error) {
-        render500Page(res, "No hemos podido continuar con las operaciones del carro de compras " + error.message);
+        render500Page(res, error.message);
+    }
+});
+
+// find client and render a page with the cart + client
+router.post("/cart/search-client/", (req, res) => {
+    try {
+        // check if cart is empty
+        if (req.session.shopping_cart === undefined) {
+            renderShoppingCart(req, res, "", "No hay elementos en el carro de compras");
+        }
+        // search for client
+        let { client_nit } = req.body;
+        searchClientByNit(client_nit).then(client => {
+            // check if client is empty
+            if (client === undefined) {
+                // redirect to add client page
+                renderSellsClientDashboard(req, res, `No existe un usuario con NIT ${client_nit}, por favor ingresa los datos`, "")
+            } else {
+                req.session.shopping_cart.client = client;
+                renderShoppingCart(req, res, "Usuario encontrado, se ha guardado, genera la factura ahora");
+            }
+        }).catch(error => {
+            renderShoppingCart(req, res, "", error);
+        });
+    } catch (error) {
+        render500Page(res, error.message);
     }
 });
 
 
+// generate a sell
+router.get("/cart/checkout/", async (req, res) => {
+    try {
+        let response = await generateBIll(req.session.shopping_cart, req.session.user);
+        res.status(200).json({ message: "Checkout", response, shopping_cart: req.session.shopping_cart })
+    } catch (error) {
+        render500Page(res, error);
+    }
+});
 
 module.exports = router;
 

@@ -1,10 +1,10 @@
 const path = require('path');
-const { CLIENTS_LIST_ALL_QUERY, CLIENTS_DELETE_QUERY, CLIENTS_UPDATE_QUERY, CLIENTS_INSERT_QUERY } = require('../../config/consts');
+const { CLIENTS_LIST_ALL_QUERY, CLIENTS_DELETE_QUERY, CLIENTS_UPDATE_QUERY, CLIENTS_INSERT_QUERY, DEFAULT_BILL_NIT } = require('../../config/consts');
 const { CLIENTS_SEARCH_BY_NIT_QUERY } = require(path.join(__dirname, "../../config/consts"));
 const db_connection = require(path.join(__dirname, "../database/db-connection"));
 
 // function to insert a new user into DB
-function searchClientByNit(nit = 'CF') {
+function searchClientByNit(nit = DEFAULT_BILL_NIT) {
     nit = nit.trim().toUpperCase();
     return new Promise((resolve, reject) => {
         db_connection.query(CLIENTS_SEARCH_BY_NIT_QUERY, [nit], (err, result) => {
